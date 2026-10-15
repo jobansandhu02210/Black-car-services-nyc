@@ -1,0 +1,27 @@
+# dependencies
+node_modules
+
+# Next.js build output (do not commit)
+.next
+out
+
+# env
+.env*.local
+.env
+
+# Vercel
+.vercel
+
+# debug / OS
+npm-debug.log*
+.DS_Store
+*.pem
+
+# IDE
+.idea
+.vscode
+
+/lib/generated/prisma
+
+# TypeScript build cache
+*.tsbuildinfo

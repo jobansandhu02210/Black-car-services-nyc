@@ -1,0 +1,10 @@
+To use your own fleet photos:
+1. Copy your images into this folder (public) with these exact filenames:
+   fleet-business-sedan.png   → Volvo (Business Class Sedan)
+   fleet-business-suv.png     → Chevrolet Suburban (Business Class SUV)
+   fleet-first-suv.png        → Cadillac Escalade (First Class SUV)
+   fleet-first-sedan.png      → Mercedes-Benz S-Class (First Class Sedan)
+
+2. In app/page.tsx and app/fleet/page.tsx, change each vehicle's "image" value from the current Unsplash URL to the path (e.g. "/fleet-business-sedan.png").
+
+Until then, the site uses placeholder images so nothing appears broken.

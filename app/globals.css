@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-black: #0a0a0a;
+  --color-charcoal: #171717;
+  --color-dark: #262626;
+  --color-grey: #525252;
+  --color-silver: #a3a3a3;
+  --color-light: #e5e5e5;
+  --color-offwhite: #fafafa;
+  --color-white: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-brand-offwhite text-brand-black antialiased;
+  font-weight: 300;
+}
+
+/* Serif headings — h2/h3 bolder for visual hierarchy */
+h1, h4, h5, h6,
+.font-serif {
+  font-weight: 400 !important;
+}
+
+h3 {
+  font-weight: 500 !important;
+}
+
+h2 {
+  font-weight: 600 !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Focus styles for accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  @apply outline-2 outline-offset-2 outline-brand-black;
+}

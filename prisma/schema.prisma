@@ -1,0 +1,142 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Driver {
+  id        String   @id @default(cuid())
+  name      String
+  code      String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  referrals Referral[]
+  bookings  Booking[]
+}
+
+/** Fleet chauffeurs for dispatch/assignment (separate from the referral Driver model). */
+model Chauffeur {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String?
+  email     String?
+  notes     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active])
+}
+
+model Referral {
+  id            String   @id @default(cuid())
+  promoCode     String
+  customerEmail String?
+  customerPhone String?
+  createdAt     DateTime @default(now())
+
+  driver   Driver @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  driverId String
+
+  booking   Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  bookingId String?  @unique
+
+  @@index([promoCode])
+  @@index([driverId, createdAt])
+}
+
+model Invoice {
+  id            String    @id @default(cuid())
+  token         String    @unique @default(cuid())
+
+  customerName  String
+  customerEmail String
+
+  rideDate      String?
+  rideFrom      String?
+  rideTo        String?
+
+  lineItems     Json      // [{label: string, amount: number}]
+
+  status        String    @default("unpaid")  // unpaid | paid
+
+  tipAmount     Float?
+  stripePaymentIntentId String?
+
+  notes         String?
+
+  createdAt     DateTime  @default(now())
+  paidAt        DateTime?
+
+  @@index([token])
+  @@index([customerEmail])
+  @@index([createdAt])
+}
+
+model Booking {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+
+  service         String
+  pickup          String
+  dropoff         String?
+  airport         String?
+  date            String?
+  time            String?
+  vehicle         String?
+  passengers      Int?
+  luggage         Int?
+  hours           Int?
+  specialRequests String?
+
+  quoteAmount     Float?
+  quoteLabel      String?
+
+  tipAmount       Float?   // gratuity selected at booking (added to the after-trip charge)
+  tipPercent      Int?     // 15 / 20 / 25, or null when a custom amount was entered
+
+  customerName    String?
+  customerEmail   String?
+  customerPhone   String?
+
+  promoCode       String?
+
+  stripeCustomerId      String?
+  stripePaymentMethodId String?
+  stripeSetupIntentId   String?
+  stripePaymentIntentId String?
+  paymentStatus         String?  @default("pending")
+  chargedAmount         Float?
+  paidAt                DateTime?
+
+  source          String?  @default("web")  // web | manual | whatsapp
+  sourceMessage   String?  // raw inbound text (e.g. the original WhatsApp message)
+
+  // Dispatch / operations
+  assignedDriver      String?          // name of the chauffeur assigned to this ride
+  assignedChauffeurId String?          // id of the Chauffeur record assigned (for contact/notify)
+  rideStatus          String?  @default("new")  // new | confirmed | completed | cancelled
+  confirmationSentAt  DateTime?        // when the admin emailed the customer a confirmation
+  driverNotifiedAt    DateTime?        // when the assigned driver was emailed the trip details
+
+  driver   Driver? @relation(fields: [driverId], references: [id], onDelete: SetNull)
+  driverId String?
+
+  referral Referral?
+
+  @@index([createdAt])
+  @@index([promoCode])
+  @@index([driverId])
+  @@index([rideStatus])
+  @@index([stripePaymentIntentId])
+  @@index([stripeCustomerId])
+}

@@ -1,0 +1,116 @@
+import { Resend } from 'resend';
+import { NextResponse, type NextRequest } from 'next/server';
+import { CONTACT_EMAIL_BOOKINGS } from '@/lib/contact';
+import { escapeHtml } from '@/lib/escape-html';
+import { assertAllowedPlacesCaller } from '@/lib/places-request';
+import { publicEmailSendError } from '@/lib/resend-user-error';
+
+export const dynamic = 'force-dynamic';
+
+const MAX_NOTES = 8000;
+
+function str(v: unknown, max = 500): string {
+  if (typeof v !== 'string') return '';
+  return v.trim().slice(0, max);
+}
+
+function oneLine(s: string, max: number): string {
+  return s.replace(/[\r\n]+/g, ' ').trim().slice(0, max);
+}
+
+function row(label: string, value: string): string {
+  return `<tr><td style="padding:6px 12px 6px 0;font-weight:600;vertical-align:top;white-space:nowrap">${label}</td><td>${escapeHtml(value || '—')}</td></tr>`;
+}
+
+export async function POST(request: NextRequest) {
+  const denied = assertAllowedPlacesCaller(request);
+  if (denied) return denied;
+
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        error:
+          'Email is not configured. Add RESEND_API_KEY in Vercel (see .env.example).',
+      },
+      { status: 503 }
+    );
+  }
+
+  const from =
+    process.env.EMAIL_FROM?.trim() ||
+    'Eagle Eye Chauffeur <onboarding@resend.dev>';
+  const to = process.env.BOOKING_NOTIFY_TO?.trim() || CONTACT_EMAIL_BOOKINGS;
+
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  const companyName = str(body.companyName, 200);
+  const contactName = str(body.contactName, 200);
+  const email = str(body.email, 200);
+  const phone = str(body.phone, 80);
+  const title = str(body.title, 200);
+  const monthlyRides = str(body.monthlyRides, 50);
+  const useCase = str(body.useCase, 100);
+  const notes = str(body.notes, MAX_NOTES);
+
+  if (
+    !companyName ||
+    !contactName ||
+    !email ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  ) {
+    return NextResponse.json(
+      { error: 'Company name, full name, and a valid email are required.' },
+      { status: 400 }
+    );
+  }
+
+  if (!phone) {
+    return NextResponse.json(
+      { error: 'Phone number is required.' },
+      { status: 400 }
+    );
+  }
+
+  const html = `
+<p><strong>Corporate Account Inquiry</strong> — ${escapeHtml(companyName)}</p>
+<table style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
+  ${row('Company', companyName)}
+  ${row('Contact Name', contactName)}
+  ${row('Title / Role', title)}
+  ${row('Email', email)}
+  ${row('Phone', phone)}
+  ${row('Monthly Rides', monthlyRides)}
+  ${row('Primary Use Case', useCase)}
+</table>
+${
+  notes
+    ? `<p style="margin-top:16px"><strong>Notes / Special Requirements:</strong></p>
+<p style="white-space:pre-wrap;font-family:sans-serif;font-size:14px">${escapeHtml(notes)}</p>`
+    : ''
+}`;
+
+  const resend = new Resend(apiKey);
+  const { error } = await resend.emails.send({
+    from,
+    to: [to],
+    replyTo: email,
+    subject: `Corporate Account Inquiry — ${oneLine(companyName, 80)} — ${oneLine(contactName, 80)}`,
+    html,
+  });
+
+  if (error) {
+    console.error('[corporate-inquiry]', error);
+    return NextResponse.json(
+      { error: publicEmailSendError(error.message) },
+      { status: 502 }
+    );
+  }
+
+  return NextResponse.json({ ok: true });
+}
