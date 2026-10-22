@@ -10,7 +10,7 @@ import {
  */
 export function LeadCaptureStrip() {
   return (
-    <div className="hidden md:block bg-brand-black border-b border-brand-dark text-brand-white">
+    <div className="hidden md:block bg-brand-ink border-b border-brand-dark text-brand-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
           <span className="text-brand-silver font-medium">
@@ -36,7 +36,7 @@ export function LeadCaptureStrip() {
           </a>
           <Link
             href="/book"
-            className="inline-flex items-center rounded-sm bg-brand-white px-4 py-1.5 text-sm font-semibold text-brand-black hover:bg-brand-offwhite transition-colors"
+            className="inline-flex items-center rounded-md bg-brand-white px-4 py-1.5 text-sm font-semibold text-brand-ink hover:bg-brand-offwhite transition-colors"
           >
             Instant quote
           </Link>

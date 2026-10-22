@@ -3,14 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --color-black: #0a0a0a;
-  --color-charcoal: #171717;
-  --color-dark: #262626;
-  --color-grey: #525252;
-  --color-silver: #a3a3a3;
-  --color-light: #e5e5e5;
-  --color-offwhite: #fafafa;
-  --color-white: #ffffff;
+  /* Palette A "Calm Corporate" as RGB triplets (for Tailwind alpha support) */
+  --c-white: 255 255 255;
+  --c-tint: 243 247 251;        /* #F3F7FB section tint */
+  --c-sky: 220 233 245;         /* #DCE9F5 light-blue accent */
+  --c-line: 227 234 241;        /* #E3EAF1 borders */
+  --c-blue: 46 94 140;          /* #2E5E8C primary */
+  --c-blue-hover: 36 75 112;    /* #244B70 */
+  --c-ink: 20 38 58;            /* #14263A navy text / dark sections */
+  --c-ink-2: 27 49 73;          /* #1B3149 */
+  --c-ink-3: 41 66 94;          /* #29425E */
+  --c-muted: 91 107 124;        /* #5B6B7C muted text (AA on white) */
+  --c-on-dark-muted: 176 194 212; /* #B0C2D4 secondary text on navy */
 }
 
 html {
@@ -18,21 +22,22 @@ html {
 }
 
 body {
-  @apply bg-brand-offwhite text-brand-black antialiased;
-  font-weight: 300;
+  @apply bg-brand-white text-brand-ink antialiased;
 }
 
-/* Serif headings — h2/h3 bolder for visual hierarchy */
-h1, h4, h5, h6,
+/* Headings use the display face (Manrope). `.font-serif` is the template's heading
+   class — it maps to the display face too, so un-rewritten pages pick it up. */
+h1, h2, h3, h4, h5, h6,
 .font-serif {
-  font-weight: 400 !important;
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.015em;
 }
 
-h3 {
-  font-weight: 500 !important;
+h1, h2 {
+  font-weight: 700 !important;
 }
 
-h2 {
+h3, h4 {
   font-weight: 600 !important;
 }
 
@@ -48,5 +53,5 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  @apply outline-2 outline-offset-2 outline-brand-black;
+  @apply outline-2 outline-offset-2 outline-brand-blue;
 }

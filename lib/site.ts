@@ -18,8 +18,7 @@ export function getSiteUrl(): string {
 }
 
 /**
- * Header / splash logo paths. null = render the text wordmark (the files in /public are
- * still Eagle Eye's logos and must not be shown). Set once new brand logos are added.
+ * Header logo path. null = render the text wordmark (the files in /public are still
+ * Eagle Eye's logos and must not be shown). Set once a new brand logo is added.
  */
 export const BRAND_LOGO_SRC: string | null = null;
-export const BRAND_SPLASH_LOGO_SRC: string | null = null;

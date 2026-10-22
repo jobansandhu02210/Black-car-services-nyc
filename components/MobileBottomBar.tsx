@@ -40,7 +40,7 @@ export default function MobileBottomBar() {
         {/* Book */}
         <Link
           href="/book"
-          className="flex-1 flex flex-col items-center justify-center gap-1 py-3 bg-brand-black text-brand-white text-xs font-medium hover:bg-brand-charcoal transition-colors"
+          className="flex-1 flex flex-col items-center justify-center gap-1 py-3 bg-brand-blue text-brand-white text-xs font-semibold hover:bg-brand-blue-hover transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />

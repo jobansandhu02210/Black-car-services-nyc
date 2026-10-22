@@ -13,7 +13,6 @@ const navLinks = [
   { href: '/fleet', label: 'Fleet' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
-  { href: '/book', label: 'Book Now' },
 ];
 
 export default function Header() {
@@ -22,12 +21,13 @@ export default function Header() {
   const [logoError, setLogoError] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-brand-white border-b border-brand-light">
+    <header className="sticky top-0 z-50 bg-brand-white/95 backdrop-blur border-b border-brand-line">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           <Link href="/" className="flex items-center shrink-0">
             {logoError || !BRAND_LOGO_SRC ? (
-              <span className="font-serif text-2xl lg:text-3xl font-semibold text-brand-black tracking-tight">
+              <span className="flex items-center gap-2 font-display text-lg lg:text-xl font-bold text-brand-ink tracking-tight">
+                <span aria-hidden="true" className="inline-block h-6 w-1.5 rounded-full bg-brand-blue" />
                 {SITE_NAME}
               </span>
             ) : (
@@ -50,9 +50,9 @@ export default function Header() {
                 href={href}
                 className={clsx(
                   'text-sm font-medium transition-colors',
-                  pathname === href
-                    ? 'text-brand-black border-b-2 border-brand-black'
-                    : 'text-brand-grey hover:text-brand-black'
+                  pathname === href || (href !== '/' && pathname.startsWith(`${href}/`))
+                    ? 'text-brand-blue'
+                    : 'text-brand-muted hover:text-brand-ink'
                 )}
               >
                 {label}
@@ -73,9 +73,9 @@ export default function Header() {
             </a>
             <Link
               href="/book"
-              className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 bg-brand-black text-brand-white text-sm font-medium hover:bg-brand-charcoal transition-colors"
+              className="hidden sm:inline-flex items-center justify-center rounded-lg px-5 py-2.5 bg-brand-blue text-brand-white text-sm font-semibold hover:bg-brand-blue-hover transition-colors"
             >
-              Get a Quote
+              Get my price
             </Link>
             <button
               type="button"
@@ -108,7 +108,7 @@ export default function Header() {
                     onClick={() => setMobileOpen(false)}
                     className={clsx(
                       'block py-3 px-2 text-sm font-medium',
-                      pathname === href ? 'text-brand-black bg-brand-light' : 'text-brand-grey'
+                      pathname === href ? 'text-brand-blue bg-brand-tint rounded-md' : 'text-brand-muted'
                     )}
                   >
                     {label}
@@ -119,9 +119,9 @@ export default function Header() {
                 <Link
                   href="/book"
                   onClick={() => setMobileOpen(false)}
-                  className="block text-center py-3 bg-brand-black text-brand-white text-sm font-medium"
+                  className="block text-center rounded-lg py-3 bg-brand-blue text-brand-white text-sm font-semibold"
                 >
-                  Get a Quote
+                  Get my price
                 </Link>
               </li>
             </ul>

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Poppins, Playfair_Display } from 'next/font/google';
+import { Manrope, Source_Sans_3 } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -8,24 +8,24 @@ import { GtagLeadEvents } from '@/components/GtagLeadEvents';
 import { LeadCaptureStrip } from '@/components/LeadCaptureStrip';
 import { LocalBusinessJsonLd } from '@/components/JsonLd';
 import { WebSiteJsonLd } from '@/components/JsonLd';
-import { SplashScreen } from '@/components/SplashScreen';
 import MobileBottomBar from '@/components/MobileBottomBar';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { ogDefaults } from '@/lib/og';
 import { defaultSiteDescription, siteKeywords } from '@/lib/seo';
 
-const poppins = Poppins({
-  weight: ['300', '400', '500'],
+// Body: Source Sans 3 (very readable at small sizes). Display: Manrope (headings, UI labels).
+const sourceSans = Source_Sans_3({
+  weight: ['400', '600'],
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
 });
 
-const playfair = Playfair_Display({
-  weight: ['400', '500'],
+const manrope = Manrope({
+  weight: ['600', '700'],
   subsets: ['latin'],
-  variable: '--font-serif',
+  variable: '--font-display',
   display: 'swap',
 });
 
@@ -77,12 +77,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${poppins.variable} ${playfair.variable}`}>
+    <html lang="en" className={`${sourceSans.variable} ${manrope.variable}`}>
       {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <body className="font-sans min-h-screen flex flex-col">
         <LocalBusinessJsonLd />
         <WebSiteJsonLd />
-        <SplashScreen />
         <Header />
         <LeadCaptureStrip />
         {gaMeasurementId ? <GtagLeadEvents /> : null}

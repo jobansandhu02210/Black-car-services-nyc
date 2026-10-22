@@ -5,6 +5,12 @@ export default function robots(): MetadataRoute.Robots {
   const site = getSiteUrl();
   return {
     rules: [
+      // AI answer engines may read public pages (docs/REFERENCE-RESEARCH.md §3 GEO/AEO).
+      {
+        userAgent: ['GPTBot', 'OAI-SearchBot', 'ClaudeBot', 'Claude-SearchBot', 'PerplexityBot', 'Google-Extended'],
+        allow: '/',
+        disallow: ['/admin/', '/api/', '/invoice/'],
+      },
       {
         userAgent: '*',
         allow: '/',

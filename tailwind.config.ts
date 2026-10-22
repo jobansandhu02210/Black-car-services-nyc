@@ -8,21 +8,34 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // Palette A "Calm Corporate" (docs/REFERENCE-RESEARCH.md §4). Values live as CSS
+      // variables in app/globals.css; the legacy names (black, charcoal, grey, …) are
+      // remapped onto the new palette so template pages not yet rewritten stay on-brand.
       colors: {
         brand: {
-          black: '#0a0a0a',
-          charcoal: '#171717',
-          dark: '#262626',
-          grey: '#525252',
-          silver: '#a3a3a3',
-          light: '#e5e5e5',
-          offwhite: '#fafafa',
-          white: '#ffffff',
+          // New semantic tokens — use these in new code
+          ink: 'rgb(var(--c-ink) / <alpha-value>)',
+          blue: 'rgb(var(--c-blue) / <alpha-value>)',
+          'blue-hover': 'rgb(var(--c-blue-hover) / <alpha-value>)',
+          sky: 'rgb(var(--c-sky) / <alpha-value>)',
+          tint: 'rgb(var(--c-tint) / <alpha-value>)',
+          line: 'rgb(var(--c-line) / <alpha-value>)',
+          muted: 'rgb(var(--c-muted) / <alpha-value>)',
+          // Legacy template names → new palette
+          black: 'rgb(var(--c-ink) / <alpha-value>)',
+          charcoal: 'rgb(var(--c-ink-2) / <alpha-value>)',
+          dark: 'rgb(var(--c-ink-3) / <alpha-value>)',
+          grey: 'rgb(var(--c-muted) / <alpha-value>)',
+          silver: 'rgb(var(--c-on-dark-muted) / <alpha-value>)',
+          light: 'rgb(var(--c-line) / <alpha-value>)',
+          offwhite: 'rgb(var(--c-tint) / <alpha-value>)',
+          white: 'rgb(var(--c-white) / <alpha-value>)',
         },
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-display)', 'system-ui', 'sans-serif'],
       },
     },
   },

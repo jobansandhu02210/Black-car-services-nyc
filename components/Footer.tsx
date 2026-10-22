@@ -24,11 +24,11 @@ const company = [
 
 export default function Footer() {
   return (
-    <footer className="bg-brand-black text-brand-offwhite">
+    <footer className="bg-brand-ink text-brand-tint">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           <div className="lg:col-span-1">
-            <Link href="/" className="font-serif text-2xl font-semibold text-brand-white tracking-tight">
+            <Link href="/" className="font-display text-xl font-bold text-brand-white tracking-tight">
               {SITE_NAME}
             </Link>
             <p className="mt-4 text-brand-silver text-sm max-w-xs">

@@ -32,7 +32,7 @@ const VEHICLE_META: Record<VehicleType, { image: string; passengers: number; lug
   'first-sedan':    { image: '/fleet-first-sedan.png',   passengers: 3, luggage: 3, description: 'Premium comfort with elegant style',  hourlyRate: 210 },
 };
 
-const AIRPORTS = ['JFK - John F. Kennedy', 'LGA - LaGuardia', 'EWR - Newark Liberty', 'HPN - Westchester County'];
+const AIRPORTS = ['JFK - John F. Kennedy', 'LGA - LaGuardia', 'EWR - Newark Liberty'];
 
 type EstimateLine = { label: string; amount: number };
 
@@ -84,6 +84,22 @@ export default function BookPage() {
     'first-sedan': null,
   });
   const [allEstimatesLoading, setAllEstimatesLoading] = useState(false);
+
+  // Prefill from the home-page trip card (/book?service=…&pickup=…&airport=…&date=…&time=…).
+  // Read once on mount from window.location so the page can stay statically rendered.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const s = q.get('service');
+    if (s === 'airport' || s === 'point-to-point' || s === 'hourly') setService(s);
+    const a = q.get('airport');
+    if (a && AIRPORTS.includes(a)) setAirport(a);
+    setPickup((v) => v || (q.get('pickup') ?? '').slice(0, 300));
+    setDropoff((v) => v || (q.get('dropoff') ?? '').slice(0, 300));
+    const d = q.get('date');
+    if (d && /^\d{4}-\d{2}-\d{2}$/.test(d)) setDate(d);
+    const t = q.get('time');
+    if (t && /^\d{2}:\d{2}$/.test(t)) setTime(t);
+  }, []);
 
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail.trim());
 

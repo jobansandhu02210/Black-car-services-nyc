@@ -11,7 +11,7 @@ export default function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Book on WhatsApp"
-      className="fixed bottom-24 right-5 z-50 lg:bottom-8 lg:right-8 flex items-center gap-2 bg-[#25D366] text-white pl-4 pr-5 py-3 rounded-full shadow-lg hover:bg-[#1ebe5d] transition-colors group"
+      className="fixed bottom-8 right-8 z-50 hidden lg:flex items-center gap-2 bg-[#25D366] text-white pl-4 pr-5 py-3 rounded-full shadow-lg hover:bg-[#1ebe5d] transition-colors group"
     >
       {/* WhatsApp icon */}
       <svg
