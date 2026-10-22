@@ -7,55 +7,17 @@ const nextConfig = {
     ],
   },
   async redirects() {
+    // New domain, no legacy URLs to preserve (Eagle Eye's historical redirects were dropped).
     return [
       {
         source: '/bookings',
         destination: '/book',
         permanent: true,
       },
+      // No /services index in the lean page set; hubs are /services/airport and /services/long-distance.
       {
-        source: '/sitemap',
-        destination: '/site-map',
-        permanent: true,
-      },
-      // Fix 4xx: TEB linked as /services/airport/teb, canonical page is /services/areas/teb-airport
-      {
-        source: '/services/airport/teb',
-        destination: '/services/areas/teb-airport',
-        permanent: true,
-      },
-      // World Cup 2026 Final page retired after the event — fold into the evergreen MetLife hub
-      {
-        source: '/world-cup-2026/final',
-        destination: '/world-cup-2026',
-        permanent: true,
-      },
-      // Wedding car service had two competing pages — consolidate into the fuller /services/wedding page
-      {
-        source: '/services/wedding-car-service',
-        destination: '/services/wedding',
-        permanent: true,
-      },
-      // Consolidate near-duplicate airport pages (areas/*-airport vs airport/*) that were
-      // cannibalizing each other's rankings for the same head term — one canonical page per airport.
-      {
-        source: '/services/areas/jfk-airport',
-        destination: '/services/airport/jfk',
-        permanent: true,
-      },
-      {
-        source: '/services/areas/lga-airport',
-        destination: '/services/airport/lga',
-        permanent: true,
-      },
-      {
-        source: '/services/areas/ewr-airport',
-        destination: '/services/airport/ewr',
-        permanent: true,
-      },
-      {
-        source: '/services/areas/hpn-airport',
-        destination: '/services/airport/hpn',
+        source: '/services',
+        destination: '/',
         permanent: true,
       },
     ];

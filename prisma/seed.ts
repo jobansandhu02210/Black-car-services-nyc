@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
-import { DRIVER_PROMOS } from '../lib/referral-driver-list';
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg(
@@ -12,13 +11,7 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  for (const d of DRIVER_PROMOS) {
-    await prisma.driver.upsert({
-      where: { code: d.code },
-      update: { name: d.name, active: true },
-      create: { name: d.name, code: d.code, active: true },
-    });
-  }
+  // No seed data yet. (Eagle Eye's driver promo-code list was removed with the referral feature.)
 }
 
 main()

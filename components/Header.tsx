@@ -8,16 +8,12 @@ import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164 } from '@/lib/contact';
 import { BRAND_LOGO_SRC, SITE_NAME } from '@/lib/site';
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/services', label: 'Services' },
+  { href: '/services/airport', label: 'Airports' },
+  { href: '/services/long-distance', label: 'Long Distance' },
   { href: '/fleet', label: 'Fleet' },
-  { href: '/book', label: 'Book Now' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/world-cup-2026', label: 'MetLife Stadium' },
-  { href: '/us-open-2026', label: 'US Open' },
-  { href: '/referrals', label: 'Refer' },
+  { href: '/book', label: 'Book Now' },
 ];
 
 export default function Header() {

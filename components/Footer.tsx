@@ -3,29 +3,23 @@ import { CONTACT_EMAIL_BOOKINGS, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164, WHAT
 import { SITE_NAME } from '@/lib/site';
 
 const services = [
-  { href: '/black-car-service-nyc', label: 'Black Car Service NYC' },
-  { href: '/services/chauffeur-service', label: 'Chauffeur Service' },
-  { href: '/services/airport', label: 'Airport Car Service' },
-  { href: '/services/corporate', label: 'Corporate Car Service' },
-  { href: '/services/hourly', label: 'Hourly Chauffeur Service' },
-  { href: '/services/limousine-service', label: 'Limousine Service' },
-  { href: '/services/sprinter-van-service', label: 'Sprinter Van Service' },
+  { href: '/services/airport', label: 'NYC Airport Car Service' },
+  { href: '/services/airport/jfk', label: 'JFK Car Service' },
+  { href: '/services/airport/lga', label: 'LaGuardia Car Service' },
+  { href: '/services/airport/ewr', label: 'Newark Airport Car Service' },
   { href: '/services/long-distance', label: 'Long-Distance Car Service' },
-  { href: '/services/wedding', label: 'Wedding Car Service' },
-  { href: '/services/executive-vip', label: 'Executive VIP Service' },
-  { href: '/services/corporate-roadshow', label: 'Corporate Roadshow Service' },
+  { href: '/services/routes/nyc-to-philadelphia', label: 'NYC to Philadelphia' },
+  { href: '/services/routes/nyc-to-washington-dc', label: 'NYC to Washington, DC' },
+  { href: '/services/areas/new-jersey', label: 'New Jersey Car Service' },
+  { href: '/services/areas/connecticut', label: 'Connecticut Car Service' },
 ];
 
 const company = [
+  { href: '/book', label: 'Book a Ride' },
+  { href: '/pricing', label: 'Pricing & Rates' },
   { href: '/fleet', label: 'Our Fleet' },
   { href: '/about', label: 'About Us' },
   { href: '/contact', label: 'Contact' },
-  { href: '/book', label: 'Book Now' },
-  { href: '/pricing', label: 'Pricing & Rates' },
-  { href: '/world-cup-2026', label: 'MetLife Stadium' },
-  { href: '/us-open-2026', label: 'US Open 2026' },
-  { href: '/referrals', label: 'Refer & Earn $50' },
-  { href: '/blog', label: 'Blog' },
 ];
 
 export default function Footer() {
@@ -100,7 +94,7 @@ export default function Footer() {
                   WhatsApp
                 </a>
               </li>
-              <li>New York, NY</li>
+              <li>Serving NYC, NJ, CT, PA &amp; DC</li>
             </ul>
           </div>
         </div>
@@ -115,9 +109,6 @@ export default function Footer() {
             </Link>
             <Link href="/terms" className="text-brand-silver hover:text-brand-white transition-colors">
               Terms of Service
-            </Link>
-            <Link href="/site-map" className="text-brand-silver hover:text-brand-white transition-colors">
-              Site Map
             </Link>
           </div>
         </div>

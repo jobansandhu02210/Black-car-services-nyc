@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GooglePlacesAutocomplete } from '@/components/GooglePlacesAutocomplete';
-import { PromoCodeField } from '@/components/PromoCodeField';
 import {
   CONTACT_EMAIL_BOOKINGS,
   CONTACT_PHONE_DISPLAY,
@@ -85,12 +84,6 @@ export default function BookPage() {
     'first-sedan': null,
   });
   const [allEstimatesLoading, setAllEstimatesLoading] = useState(false);
-  const [promoCode, setPromoCode] = useState('');
-  const [promoResolved, setPromoResolved] = useState<{
-    driverId: string;
-    driverName: string;
-    code: string;
-  } | null>(null);
 
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail.trim());
 
@@ -129,7 +122,6 @@ export default function BookPage() {
             hours,
             passengers,
             luggage,
-            promoCode: promoResolved?.code || promoCode.trim() || '',
             customerEmail: customerEmail.trim(),
             customerPhone: customerPhone.trim(),
           }),
@@ -160,7 +152,7 @@ export default function BookPage() {
       cancelled = true;
       clearTimeout(t);
     };
-  }, [step, service, vehicle, pickup, dropoff, airport, hours, passengers, luggage, promoCode, promoResolved, customerEmail, customerPhone]);
+  }, [step, service, vehicle, pickup, dropoff, airport, hours, passengers, luggage, customerEmail, customerPhone]);
 
   // Fetch prices for ALL vehicle types simultaneously when user reaches step 3
   useEffect(() => {
@@ -304,8 +296,6 @@ export default function BookPage() {
           luggage,
           hours: service === 'hourly' ? hours : undefined,
           specialRequests,
-          promoCode: promoResolved?.code || promoCode.trim() || undefined,
-          promoDriverName: promoResolved?.driverName || undefined,
           quoteAmount: service === 'hourly' ? 0 : quoteAmount,
           quoteLabel:
             service === 'hourly'
@@ -336,40 +326,6 @@ export default function BookPage() {
         );
       }
 
-      // Best-effort: store referral + booking in DB if a promo code was provided.
-      if (promoResolved?.code || promoCode.trim()) {
-        fetch('/api/referrals', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'same-origin',
-          body: JSON.stringify({
-            promoCode: promoResolved?.code || promoCode.trim(),
-            customerEmail: customerEmail.trim(),
-            customerPhone: customerPhone.trim(),
-            booking: {
-              service: SERVICE_LABELS[service],
-              pickup,
-              dropoff: service === 'point-to-point' || service === 'hourly' ? dropoff : '',
-              airport: service === 'airport' ? airport : '',
-              date,
-              time,
-              vehicle: VEHICLE_LABELS[vehicle],
-              passengers,
-              luggage,
-              hours: service === 'hourly' ? hours : undefined,
-              specialRequests,
-              quoteAmount: service === 'hourly' ? 0 : quoteAmount,
-              quoteLabel:
-                service === 'hourly'
-                  ? `Hourly chauffeur, ${hours} hr (2 hr minimum)`
-                  : quoteReady
-                    ? quoteLabel
-                    : 'Pending estimate',
-              customerName: customerName.trim(),
-            },
-          }),
-        }).catch(() => {});
-      }
 
       setBookingSubmitted(true);
       setBookingStatus('idle');
@@ -692,13 +648,6 @@ export default function BookPage() {
           {/* Step 4: Details */}
           {step === 4 && (
             <div className="space-y-6">
-              <PromoCodeField
-                value={promoCode}
-                onChange={setPromoCode}
-                onResolved={(r) =>
-                  setPromoResolved(r ? { driverId: r.driverId, driverName: r.driverName, code: r.code } : null)
-                }
-              />
               <div>
                 <label htmlFor="requests" className="block text-sm font-medium text-brand-black mb-2">
                   Special requests

@@ -67,8 +67,6 @@ export async function POST(request: NextRequest) {
   const specialRequests = str(body.specialRequests, MAX);
   const quoteAmount = num(body.quoteAmount, 0, 100000, 0);
   const quoteLabel = str(body.quoteLabel, 200);
-  const promoCode = str(body.promoCode, 64).toUpperCase();
-  const promoDriverName = str(body.promoDriverName, 120);
 
   if (!pickup || !date || !time) {
     return NextResponse.json({ error: 'Missing required booking fields.' }, { status: 400 });
@@ -79,15 +77,9 @@ export async function POST(request: NextRequest) {
   const twoHoursFromNow = new Date(Date.now() + 2 * 60 * 60 * 1000);
   const isLastMinute = !isNaN(pickupDatetime.getTime()) && pickupDatetime < twoHoursFromNow;
 
-  const promoDisplay =
-    promoCode && promoDriverName
-      ? `${promoCode} (${promoDriverName})`
-      : promoCode || '—';
-
   const rows: [string, string][] = [
     ['Service', service],
     ['Vehicle', vehicle],
-    ['Driver promo / referral', promoDisplay],
     ['Pick-up', pickup],
     ['Drop-off', dropoff || '—'],
     ['Airport', airport || '—'],
@@ -124,9 +116,7 @@ export async function POST(request: NextRequest) {
 <p style="margin-top:16px;font-size:13px;color:#666">Reply-to is set to the guest&apos;s address.</p>`;
 
   const resend = new Resend(apiKey);
-  const subject = `${isLastMinute ? '⚠️ URGENT — ' : ''}Booking request — ${oneLine(customerName, 80)} — ${oneLine(service || 'Ride', 50)}${
-    promoCode ? ` — Promo ${promoCode}` : ''
-  }`;
+  const subject = `${isLastMinute ? '⚠️ URGENT — ' : ''}Booking request — ${oneLine(customerName, 80)} — ${oneLine(service || 'Ride', 50)}`;
 
   const { data, error } = await resend.emails.send({
     from,
@@ -149,16 +139,9 @@ export async function POST(request: NextRequest) {
       ? `<p style="margin:12px 0;font-size:13px;color:#555">Reference estimate from our website: <strong>$${quoteAmount}</strong> (${escapeHtml(quoteLabel)}). This is <strong>not</strong> a final bill — you will receive a formal invoice from us with the confirmed price.</p>`
       : `<p style="margin:12px 0;font-size:13px;color:#555">Final pricing will appear on your invoice after we confirm your trip details.</p>`;
 
-  const promoNote = promoCode
-    ? `<p style="margin:12px 0;font-size:14px">We recorded your driver promo / referral code: <strong>${escapeHtml(promoCode)}</strong>${
-        promoDriverName ? ` (${escapeHtml(promoDriverName)})` : ''
-      }.</p>`
-    : '';
-
   const confirmHtml = `<p>Hi ${escapeHtml(customerName)},</p>
 <p>Thank you — we received your booking request for <strong>${SITE_NAME}</strong>.</p>
 <p><strong>Trip summary:</strong> ${escapeHtml(service)} on ${escapeHtml(date)} at ${escapeHtml(time)}. We have your pick-up and trip details on file.</p>
-${promoNote}
 ${referenceEstimate}
 <p><strong>What happens next:</strong> Our team will review your request and email you an <strong>official invoice</strong> for the ride when pricing is confirmed. If you need anything sooner, call or text <strong>${escapeHtml(CONTACT_PHONE_DISPLAY)}</strong>.</p>
 <p>— ${SITE_NAME}<br/><a href="mailto:${escapeHtml(CONTACT_EMAIL_BOOKINGS)}">${escapeHtml(CONTACT_EMAIL_BOOKINGS)}</a></p>`;

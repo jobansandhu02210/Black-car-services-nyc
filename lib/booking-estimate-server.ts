@@ -7,9 +7,6 @@
  */
 import { resolveDrivingMilesForPricing } from '@/lib/google-driving-distance';
 import { getPlacesServerApiKey } from '@/lib/places-env';
-import { prisma } from '@/lib/prisma';
-import { isKnownDriverPromoCode } from '@/lib/referral-driver-list';
-import { normalizePromoCode } from '@/lib/referral-utils';
 
 /**
  * Pricing — read from Vercel env vars so rates can be updated without a code deploy.
@@ -92,7 +89,6 @@ export async function computeBookingEstimate(input: {
   hours: number;
   passengers: number;
   luggage: number;
-  promoCode?: string;
   customerEmail?: string;
   customerPhone?: string;
 }): Promise<BookingEstimateResponse> {
@@ -185,38 +181,6 @@ export async function computeBookingEstimate(input: {
   if (input.luggage > capacity.luggage) {
     const n = input.luggage - capacity.luggage;
     lines.push({ label: `Additional luggage (${n})`, amount: n * EXTRA_LUGGAGE });
-  }
-
-  // Promo discount: 10% off first ride per customer email/phone.
-  const promoCode = normalizePromoCode(input.promoCode ?? '');
-  const email = (input.customerEmail ?? '').trim().toLowerCase();
-  const phone = (input.customerPhone ?? '').trim();
-  if (promoCode && (email || phone) && isKnownDriverPromoCode(promoCode)) {
-    let alreadyUsed = false;
-    try {
-      const existing = await prisma.booking.findFirst({
-        where: {
-          promoCode,
-          OR: [
-            ...(email ? [{ customerEmail: email }] : []),
-            ...(phone ? [{ customerPhone: phone }] : []),
-          ],
-        },
-        select: { id: true },
-      });
-      alreadyUsed = !!existing;
-    } catch {
-      // DB unavailable — still honor first-ride discount for known driver promo codes.
-      alreadyUsed = false;
-    }
-
-    if (!alreadyUsed) {
-      const subtotal = lines.reduce((s, l) => s + l.amount, 0);
-      const discount = roundUsd2(Math.max(0, subtotal * 0.1));
-      if (discount > 0) {
-        lines.push({ label: 'Promo discount (10% off first ride)', amount: -discount });
-      }
-    }
   }
 
   const amount = roundUsd2(lines.reduce((s, l) => s + l.amount, 0));

@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
     hours: num(body.hours, 2, 24, 2),
     passengers: num(body.passengers, 1, 20, 1),
     luggage: num(body.luggage, 0, 50, 0),
-    promoCode: str(body.promoCode, 64),
     customerEmail: str(body.customerEmail, 320).toLowerCase(),
     customerPhone: str(body.customerPhone, 64),
   });
