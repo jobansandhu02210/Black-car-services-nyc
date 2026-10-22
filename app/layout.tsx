@@ -11,7 +11,8 @@ import { WebSiteJsonLd } from '@/components/JsonLd';
 import { SplashScreen } from '@/components/SplashScreen';
 import MobileBottomBar from '@/components/MobileBottomBar';
 import WhatsAppButton from '@/components/WhatsAppButton';
-import { getSiteUrl } from '@/lib/site';
+import { getSiteUrl, SITE_NAME } from '@/lib/site';
+import { ogDefaults } from '@/lib/og';
 import { defaultSiteDescription, siteKeywords } from '@/lib/seo';
 
 const poppins = Poppins({
@@ -36,32 +37,21 @@ const gtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim();
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default:
-      'Eagle Eye Chauffeur | NYC Luxury Chauffeur & Black Car — JFK LGA EWR Airport',
-    template: '%s | Eagle Eye',
+    default: 'Black Car Service NYC | Airport & Long-Distance Car Service',
+    template: `%s | ${SITE_NAME}`,
   },
   description: defaultSiteDescription,
   keywords: [...siteKeywords],
-  authors: [{ name: 'Eagle Eye Chauffeur', url: siteUrl }],
-  creator: 'Eagle Eye Chauffeur',
+  authors: [{ name: SITE_NAME, url: siteUrl }],
+  creator: SITE_NAME,
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    siteName: 'Eagle Eye Chauffeur',
-    title: 'Eagle Eye Chauffeur | NYC Luxury Chauffeur & Black Car Service',
+    ...ogDefaults,
+    title: 'Black Car Service NYC | Airport & Long-Distance Car Service',
     description: defaultSiteDescription,
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Eagle Eye Chauffeur — luxury black car service in New York City',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Eagle Eye Chauffeur | NYC Chauffeur & Airport Car Service',
+    title: 'Black Car Service NYC | Airport & Long-Distance Car Service',
     description: defaultSiteDescription,
     images: [`${siteUrl}/og-image.jpg`],
   },

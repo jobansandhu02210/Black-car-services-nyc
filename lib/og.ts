@@ -1,3 +1,5 @@
+import { SITE_NAME } from '@/lib/site';
+
 /**
  * Shared Open Graph defaults.
  *
@@ -11,13 +13,13 @@
 export const ogDefaults = {
   type: 'website' as const,
   locale: 'en_US',
-  siteName: 'Eagle Eye Chauffeur',
+  siteName: SITE_NAME,
   images: [
     {
       url: '/og-image.jpg',
       width: 1200,
       height: 630,
-      alt: 'Eagle Eye Chauffeur — luxury black car service in New York City',
+      alt: `${SITE_NAME} — private black car service from New York City`,
     },
   ],
 };

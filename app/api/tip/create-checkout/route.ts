@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { getSiteUrl } from '@/lib/site';
+import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { assertAllowedPlacesCaller } from '@/lib/places-request';
 
 export const dynamic = 'force-dynamic';
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
             currency: 'usd',
             unit_amount: tipCents,
             product_data: {
-              name: 'Tip — Eagle Eye Chauffeur',
+              name: `Tip — ${SITE_NAME}`,
               description: 'Thank you for tipping your driver!',
             },
           },

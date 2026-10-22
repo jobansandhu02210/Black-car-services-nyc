@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 import { prisma } from '@/lib/prisma';
 import { escapeHtml } from '@/lib/escape-html';
 import { CONTACT_EMAIL_BOOKINGS, CONTACT_PHONE_DISPLAY } from '@/lib/contact';
+import { SITE_NAME } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -57,8 +58,8 @@ export async function POST(request: NextRequest) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   if (apiKey) {
     const resend = new Resend(apiKey);
-    const from = process.env.EMAIL_FROM?.trim() || 'Eagle Eye Chauffeur <onboarding@resend.dev>';
-    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://eagleeyechauffeur.com').replace(/\/$/, '');
+    const from = process.env.EMAIL_FROM?.trim() || `${SITE_NAME} <onboarding@resend.dev>`;
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
     const invoiceUrl = `${siteUrl}/invoice/${invoice.token}`;
 
     const subtotal = lineItems.reduce((s, l) => s + l.amount, 0);
@@ -71,7 +72,7 @@ export async function POST(request: NextRequest) {
 
     const html = `
 <p>Hi ${escapeHtml(customerName)},</p>
-<p>Thank you for riding with <strong>Eagle Eye Chauffeur</strong>. Your invoice is ready — click the button below to review the details, add a gratuity, and pay securely by card.</p>
+<p>Thank you for riding with <strong>${SITE_NAME}</strong>. Your invoice is ready — click the button below to review the details, add a gratuity, and pay securely by card.</p>
 <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px;margin:16px 0">${rowsHtml}
 <tr><td colspan="2" style="border-top:1px solid #ddd;padding-top:8px"></td></tr>
 <tr><td style="padding:5px 16px 5px 0;font-weight:700">Subtotal</td><td style="padding:5px 0;text-align:right;font-weight:700">$${subtotal.toFixed(2)}</td></tr>
@@ -82,13 +83,13 @@ ${notes ? `<p style="font-size:13px;color:#555"><strong>Note:</strong> ${escapeH
 </p>
 <p style="font-size:13px;color:#777">Or copy this link: <a href="${invoiceUrl}">${invoiceUrl}</a></p>
 <p style="font-size:13px;color:#777">Questions? Call or text <strong>${escapeHtml(CONTACT_PHONE_DISPLAY)}</strong> or reply to this email.</p>
-<p>— Eagle Eye Chauffeur</p>`;
+<p>— ${SITE_NAME}</p>`;
 
     await resend.emails.send({
       from,
       to: [customerEmail],
       replyTo: CONTACT_EMAIL_BOOKINGS,
-      subject: `Your Eagle Eye Chauffeur invoice${rideDate ? ` — ${rideDate}` : ''}`,
+      subject: `Your ${SITE_NAME} invoice${rideDate ? ` — ${rideDate}` : ''}`,
       html,
     });
   }

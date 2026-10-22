@@ -1,5 +1,5 @@
-import { CONTACT_EMAIL_BOOKINGS, CONTACT_PHONE_E164, CONTACT_PHONE_2_E164 } from '@/lib/contact';
-import { getSiteUrl } from '@/lib/site';
+import { CONTACT_EMAIL_BOOKINGS, CONTACT_PHONE_E164 } from '@/lib/contact';
+import { getSiteUrl, SITE_NAME, SITE_NAME_LONG } from '@/lib/site';
 
 /**
  * JSON-LD structured data for local business and service offerings.
@@ -7,30 +7,19 @@ import { getSiteUrl } from '@/lib/site';
  */
 export function LocalBusinessJsonLd() {
   const site = getSiteUrl();
+  // Service-area business: no street address or geo pin until there is a real, staffed
+  // office. Google requires SABs to hide the address rather than publish a fake one.
   const schema = {
     '@context': 'https://schema.org',
     '@type': ['LocalBusiness', 'TaxiService'],
     '@id': `${site}/#business`,
-    name: 'Eagle Eye Chauffeur',
-    alternateName: ['Eagle Eye Black Car', 'Eagle Eye Car Service NYC'],
+    name: SITE_NAME,
+    alternateName: SITE_NAME_LONG,
     description:
-      'Eagle Eye Chauffeur provides luxury black car and chauffeur service in New York City: JFK, LGA, EWR, and HPN airport transfers, Manhattan and boroughs, hourly hire, corporate travel, and point-to-point rides. Professional, discreet, and reliable.',
+      'Private black car service based in New York City: JFK, LaGuardia and Newark airport transfers, and door-to-door long-distance rides to New Jersey, Connecticut, Philadelphia and Washington, DC.',
     url: site,
-    telephone: [CONTACT_PHONE_E164, CONTACT_PHONE_2_E164],
+    telephone: CONTACT_PHONE_E164,
     email: CONTACT_EMAIL_BOOKINGS,
-    founder: { '@type': 'Person', name: 'Joban Sandhu' },
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'New York',
-      addressRegion: 'NY',
-      postalCode: '10001',
-      addressCountry: 'US',
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: 40.7128,
-      longitude: -74.006,
-    },
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
@@ -39,59 +28,29 @@ export function LocalBusinessJsonLd() {
         closes: '23:59',
       },
     ],
-    priceRange: '$$$',
-    paymentAccepted: 'Credit Card, Debit Card, Cash, Bank Transfer',
     currenciesAccepted: 'USD',
-    logo: {
-      '@type': 'ImageObject',
-      url: `${site}/logo-2026-04-25.png`,
-      width: 400,
-      height: 120,
-    },
-    image: [`${site}/og-image.jpg`, `${site}/logo-2026-04-25.png`],
+    image: [`${site}/og-image.jpg`],
     // NOTE: aggregateRating / review markup intentionally omitted. Google
     // prohibits self-serving review snippets on your own LocalBusiness. Re-add
     // only with genuine third-party reviews (e.g. synced Google Business reviews).
     areaServed: [
       { '@type': 'City', name: 'New York City', sameAs: 'https://www.wikidata.org/wiki/Q60' },
-      { '@type': 'AdministrativeArea', name: 'Manhattan', sameAs: 'https://www.wikidata.org/wiki/Q11299' },
-      { '@type': 'AdministrativeArea', name: 'Brooklyn', sameAs: 'https://www.wikidata.org/wiki/Q18419' },
-      { '@type': 'AdministrativeArea', name: 'Queens', sameAs: 'https://www.wikidata.org/wiki/Q18432' },
-      { '@type': 'AdministrativeArea', name: 'Bronx', sameAs: 'https://www.wikidata.org/wiki/Q18426' },
-      { '@type': 'AdministrativeArea', name: 'Staten Island', sameAs: 'https://www.wikidata.org/wiki/Q60750' },
-      { '@type': 'AdministrativeArea', name: 'Westchester County', sameAs: 'https://www.wikidata.org/wiki/Q498726' },
-      { '@type': 'AdministrativeArea', name: 'Long Island' },
-      { '@type': 'State', name: 'New Jersey' },
-      { '@type': 'State', name: 'Connecticut' },
+      { '@type': 'State', name: 'New Jersey', sameAs: 'https://www.wikidata.org/wiki/Q1408' },
+      { '@type': 'State', name: 'Connecticut', sameAs: 'https://www.wikidata.org/wiki/Q779' },
+      { '@type': 'State', name: 'Pennsylvania', sameAs: 'https://www.wikidata.org/wiki/Q1400' },
+      { '@type': 'City', name: 'Washington, D.C.', sameAs: 'https://www.wikidata.org/wiki/Q61' },
       { '@type': 'Airport', name: 'John F. Kennedy International Airport', sameAs: 'https://www.wikidata.org/wiki/Q8685' },
       { '@type': 'Airport', name: 'LaGuardia Airport', sameAs: 'https://www.wikidata.org/wiki/Q8977' },
       { '@type': 'Airport', name: 'Newark Liberty International Airport', sameAs: 'https://www.wikidata.org/wiki/Q16564' },
     ],
-    hasMap: 'https://maps.google.com/?q=Eagle+Eye+Chauffeur+New+York+NY',
-    sameAs: [
-      'https://www.instagram.com/eagleeyechauffeur',
-      'https://www.facebook.com/eagleeyechauffeur',
-    ],
-    knowsAbout: [
-      'Airport Transfers',
-      'Luxury Chauffeur Service',
-      'Black Car Service',
-      'Corporate Transportation',
-      'Wedding Car Service',
-      'NYC Limousine Service',
-    ],
+    // sameAs (social profiles) omitted until the brand's own profiles exist.
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Chauffeur & Black Car Services',
+      name: 'Black Car Services',
       itemListElement: [
         { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'JFK Airport Car Service', url: `${site}/services/airport/jfk` } },
-        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'LGA Airport Car Service', url: `${site}/services/airport/lga` } },
-        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'EWR Airport Car Service', url: `${site}/services/airport/ewr` } },
-        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'HPN Airport Car Service', url: `${site}/services/airport/hpn` } },
-        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Corporate Car Service NYC', url: `${site}/services/corporate` } },
-        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Hourly Chauffeur NYC', url: `${site}/services/hourly` } },
-        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Point-to-Point Car Service', url: `${site}/services/point-to-point` } },
-        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Special Events Car Service', url: `${site}/services/special-events` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'LaGuardia Airport Car Service', url: `${site}/services/airport/lga` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Newark Airport Car Service', url: `${site}/services/airport/ewr` } },
       ],
     },
   };
@@ -162,9 +121,8 @@ export function BlogPostingJsonLd({
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     publisher: {
       '@type': 'Organization',
-      name: 'Eagle Eye Chauffeur',
+      name: SITE_NAME,
       url: site,
-      logo: { '@type': 'ImageObject', url: `${site}/logo-2026-04-25.png`, width: 400, height: 120 },
     },
   };
 
@@ -214,10 +172,10 @@ export function ServiceJsonLd({
     name,
     description,
     ...(url ? { url } : {}),
-    serviceType: 'Chauffeur & Black Car Service',
+    serviceType: 'Black Car Service',
     provider: {
       '@type': ['LocalBusiness', 'TaxiService'],
-      name: 'Eagle Eye Chauffeur',
+      name: SITE_NAME,
       telephone: CONTACT_PHONE_E164,
       url: site,
     },
@@ -241,7 +199,7 @@ export function WebSiteJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': `${site}/#website`,
-    name: 'Eagle Eye Chauffeur',
+    name: SITE_NAME,
     url: site,
     potentialAction: {
       '@type': 'SearchAction',

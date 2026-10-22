@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 import { assertAdmin } from '@/lib/admin-auth';
 import { escapeHtml } from '@/lib/escape-html';
 import { CONTACT_EMAIL_BOOKINGS, CONTACT_PHONE_DISPLAY } from '@/lib/contact';
+import { SITE_NAME } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   const apiKey = process.env.RESEND_API_KEY?.trim();
   if (!apiKey) return NextResponse.json({ error: 'Email is not configured (set RESEND_API_KEY).' }, { status: 503 });
 
-  const from = process.env.EMAIL_FROM?.trim() || 'Eagle Eye Chauffeur <onboarding@resend.dev>';
+  const from = process.env.EMAIL_FROM?.trim() || `${SITE_NAME} <onboarding@resend.dev>`;
   const dest = b.dropoff || b.airport || '';
   const rows = [
     ['Service', b.service],
@@ -37,19 +38,19 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   ].filter(([, v]) => v);
 
   const html = `<p>Hi ${escapeHtml(b.customerName ?? '')},</p>
-<p>Your ride with <strong>Eagle Eye Chauffeur</strong> is confirmed. Here are the details:</p>
+<p>Your ride with <strong>${SITE_NAME}</strong> is confirmed. Here are the details:</p>
 <table cellpadding="6" style="border-collapse:collapse;font-size:14px">
 ${rows.map(([k, v]) => `<tr><td style="color:#666">${escapeHtml(String(k))}</td><td><strong>${escapeHtml(String(v))}</strong></td></tr>`).join('')}
 </table>
 <p>Your chauffeur will arrive on time, and we track flights on airport pickups. Need to change anything? Reply to this email or call ${escapeHtml(CONTACT_PHONE_DISPLAY)}.</p>
-<p>— Eagle Eye Chauffeur<br/><a href="mailto:${escapeHtml(CONTACT_EMAIL_BOOKINGS)}">${escapeHtml(CONTACT_EMAIL_BOOKINGS)}</a></p>`;
+<p>— ${SITE_NAME}<br/><a href="mailto:${escapeHtml(CONTACT_EMAIL_BOOKINGS)}">${escapeHtml(CONTACT_EMAIL_BOOKINGS)}</a></p>`;
 
   try {
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
       from,
       to: [b.customerEmail],
-      subject: 'Your Eagle Eye Chauffeur booking is confirmed',
+      subject: `Your ${SITE_NAME} booking is confirmed`,
       html,
     });
     if (error) {

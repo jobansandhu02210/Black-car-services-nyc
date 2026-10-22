@@ -4,6 +4,7 @@ import { CONTACT_EMAIL_BOOKINGS } from '@/lib/contact';
 import { escapeHtml } from '@/lib/escape-html';
 import { assertAllowedPlacesCaller } from '@/lib/places-request';
 import { publicEmailSendError } from '@/lib/resend-user-error';
+import { SITE_NAME } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
 
   const from =
     process.env.EMAIL_FROM?.trim() ||
-    'Eagle Eye Chauffeur <onboarding@resend.dev>';
+    `${SITE_NAME} <onboarding@resend.dev>`;
   const to = process.env.BOOKING_NOTIFY_TO?.trim() || CONTACT_EMAIL_BOOKINGS;
 
   let body: Record<string, unknown>;

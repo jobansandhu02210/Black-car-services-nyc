@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getSiteUrl } from '@/lib/site';
+import { getSiteUrl, SITE_DOMAIN } from '@/lib/site';
 
 function siteUrlHostnames(): string[] {
   const hosts: string[] = [];
@@ -33,7 +33,7 @@ export function hostnameAllowed(hostname: string): boolean {
   const h = hostname.toLowerCase();
   if (h === 'localhost' || h === '127.0.0.1') return true;
   if (h === 'vercel.app' || h.endsWith('.vercel.app')) return true;
-  if (h === 'eagleeyechauffeur.com' || h.endsWith('.eagleeyechauffeur.com')) return true;
+  if (h === SITE_DOMAIN || h.endsWith(`.${SITE_DOMAIN}`)) return true;
 
   for (const siteHost of siteUrlHostnames()) {
     if (h === siteHost) return true;

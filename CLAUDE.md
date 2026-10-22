@@ -2,7 +2,11 @@
 
 New NYC black car / chauffeur website. **Started as a copy of the Eagle Eye Chauffeur codebase** (Next.js 14 App Router, TypeScript, Tailwind, Prisma). It is a *separate business/brand*: separate repo, Vercel project, domain, analytics, email, payments and database.
 
-## STATUS: PRE-LAUNCH TEMPLATE — NOT REBRANDED YET
+## Brand facts
+Brand **Black Car Service** · domain **blackcarservicesnyc.com** · phone (929) 710-1444. Brand constants live in `lib/site.ts` (`SITE_NAME`, `SITE_DOMAIN`) and `lib/contact.ts` — import them, never hardcode. Service-area business (no office address). Lean page set + prune list: `LAUNCH-PLAN.md`.
+**Design/SEO reference research (Ridelux, Detailed Drivers, Noble, Blacklane): `docs/REFERENCE-RESEARCH.md`** — heading blueprints, schema map, design direction, creative ideas. `LAUNCH-PLAN.md` stays the source of truth for WHICH pages exist; the research doc says HOW to build them.
+
+## STATUS: PRE-LAUNCH TEMPLATE — REBRAND IN PROGRESS (shared layout/schema/emails done; page copy not yet)
 Everything in `app/`, `components/` and `lib/` still says "Eagle Eye Chauffeur" (~1,400 mentions) and still contains Eagle Eye's phone, email, founder name, prices and copy. **Nothing here may go live as-is.**
 
 ### Safety rails already in place

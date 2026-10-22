@@ -1,10 +1,10 @@
 /**
- * Shared SEO copy for eagleeyechauffeur.com (NYC chauffeur / black car).
+ * Shared SEO copy for blackcarservicesnyc.com.
  * Titles & descriptions are primary signals; keywords supplement other systems.
  */
 export const siteKeywords: string[] = [
   // Brand
-  'Eagle Eye Chauffeur',
+  'Black Car Services NYC',
   // Core service
   'NYC chauffeur',
   'New York chauffeur service',
@@ -139,4 +139,4 @@ export const siteKeywords: string[] = [
 ];
 
 export const defaultSiteDescription =
-  'NYC luxury chauffeur and black car service: Manhattan & boroughs, JFK LGA EWR HPN airport transfers, hourly chauffeur, corporate travel, and point-to-point rides. Eagle Eye Chauffeur.';
+  'Black car service from New York City: JFK, LaGuardia and Newark airport rides, plus door-to-door trips to New Jersey, Connecticut, Philadelphia and DC.';

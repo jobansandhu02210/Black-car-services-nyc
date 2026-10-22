@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe';
+import { SITE_NAME } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,7 +33,7 @@ export async function POST(request: Request, { params }: { params: { token: stri
       tipAmount: String(tip),
     },
     receipt_email: invoice.customerEmail,
-    description: `Eagle Eye Chauffeur — ${invoice.rideDate ?? 'Ride'}`,
+    description: `${SITE_NAME} — ${invoice.rideDate ?? 'Ride'}`,
   });
 
   return NextResponse.json({ clientSecret: intent.client_secret });

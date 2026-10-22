@@ -39,6 +39,6 @@ export const TRACKING_COOKIE = 'ref_driver';
  * e.g. https://eagleeyechauffeur.com/go/joban
  */
 export function driverLink(slug: string): string {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.eagleeyechauffeur.com';
+  const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
   return `${base}/go/${slug}`;
 }

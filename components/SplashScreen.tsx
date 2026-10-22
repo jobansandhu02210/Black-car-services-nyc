@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { BRAND_SPLASH_LOGO_SRC, SITE_NAME } from '@/lib/site';
 
-const SPLASH_STORAGE_KEY = 'eagle-eye-splash-shown';
+const SPLASH_STORAGE_KEY = 'bcs-splash-shown';
 
 export function SplashScreen() {
   const [show, setShow] = useState(false);
@@ -40,15 +41,15 @@ export function SplashScreen() {
       style={{ pointerEvents: 'none', backgroundColor: '#000000' }}
       aria-hidden="true"
     >
-      {logoError ? (
+      {logoError || !BRAND_SPLASH_LOGO_SRC ? (
         <span className="font-serif text-4xl lg:text-5xl font-semibold text-white tracking-tight text-center">
-          Eagle Eye Chauffeur
+          {SITE_NAME}
         </span>
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src="/logo-splash-2026-04-25.png"
-          alt="Eagle Eye Chauffeur"
+          src={BRAND_SPLASH_LOGO_SRC}
+          alt={SITE_NAME}
           width={360}
           height={180}
           className="object-contain w-[min(86vw,360px)] h-auto"

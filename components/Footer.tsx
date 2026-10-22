@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { CONTACT_EMAIL_BOOKINGS, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164, CONTACT_PHONE_2_DISPLAY, CONTACT_PHONE_2_E164, WHATSAPP_BOOKING_URL } from '@/lib/contact';
+import { CONTACT_EMAIL_BOOKINGS, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164, WHATSAPP_BOOKING_URL } from '@/lib/contact';
+import { SITE_NAME } from '@/lib/site';
 
 const services = [
   { href: '/black-car-service-nyc', label: 'Black Car Service NYC' },
@@ -34,10 +35,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           <div className="lg:col-span-1">
             <Link href="/" className="font-serif text-2xl font-semibold text-brand-white tracking-tight">
-              Eagle Eye Chauffeur
+              {SITE_NAME}
             </Link>
             <p className="mt-4 text-brand-silver text-sm max-w-xs">
-              NYC&apos;s premier luxury chauffeur service. Professional, discreet, and reliable.
+              Private black cars from New York City to New Jersey, Connecticut, Philadelphia and Washington, DC.
             </p>
           </div>
 
@@ -82,11 +83,6 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href={`tel:${CONTACT_PHONE_2_E164}`} className="hover:text-brand-white transition-colors">
-                  {CONTACT_PHONE_2_DISPLAY}
-                </a>
-              </li>
-              <li>
                 <a href={`mailto:${CONTACT_EMAIL_BOOKINGS}`} className="hover:text-brand-white transition-colors">
                   {CONTACT_EMAIL_BOOKINGS}
                 </a>
@@ -111,7 +107,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-brand-dark flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-brand-silver text-sm">
-            © {new Date().getFullYear()} Eagle Eye Chauffeur. All rights reserved.
+            © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
             <Link href="/privacy" className="text-brand-silver hover:text-brand-white transition-colors">

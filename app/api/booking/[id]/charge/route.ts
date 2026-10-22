@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 import { CONTACT_EMAIL_BOOKINGS } from '@/lib/contact';
 import { escapeHtml } from '@/lib/escape-html';
 import { assertAdmin } from '@/lib/admin-auth';
+import { SITE_NAME } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -101,7 +102,7 @@ export async function POST(
       payment_method: paymentMethodId,
       off_session: true,
       confirm: true,
-      description: `Eagle Eye Chauffeur — ${booking.service} — ${booking.date} ${booking.time}`,
+      description: `${SITE_NAME} — ${booking.service} — ${booking.date} ${booking.time}`,
       receipt_email: booking.customerEmail ?? undefined,
       metadata: { bookingId: booking.id },
     });
@@ -148,16 +149,16 @@ export async function POST(
   const apiKey = process.env.RESEND_API_KEY?.trim();
   if (apiKey && booking.customerEmail) {
     const resend = new Resend(apiKey);
-    const from = process.env.EMAIL_FROM?.trim() || 'Eagle Eye Chauffeur <onboarding@resend.dev>';
+    const from = process.env.EMAIL_FROM?.trim() || `${SITE_NAME} <onboarding@resend.dev>`;
     const html = `<p>Hi ${escapeHtml(booking.customerName ?? '')},</p>
-<p>Thank you for riding with <strong>Eagle Eye Chauffeur</strong>. Your card on file has been charged <strong>$${(total / 100).toFixed(2)}</strong> for your ${escapeHtml(booking.service)} on ${escapeHtml(booking.date ?? '')}.</p>
+<p>Thank you for riding with <strong>${SITE_NAME}</strong>. Your card on file has been charged <strong>$${(total / 100).toFixed(2)}</strong> for your ${escapeHtml(booking.service)} on ${escapeHtml(booking.date ?? '')}.</p>
 <p>We hope to see you again soon.</p>
-<p>— Eagle Eye Chauffeur<br/><a href="mailto:${escapeHtml(CONTACT_EMAIL_BOOKINGS)}">${escapeHtml(CONTACT_EMAIL_BOOKINGS)}</a></p>`;
+<p>— ${SITE_NAME}<br/><a href="mailto:${escapeHtml(CONTACT_EMAIL_BOOKINGS)}">${escapeHtml(CONTACT_EMAIL_BOOKINGS)}</a></p>`;
     await resend.emails
       .send({
         from,
         to: [booking.customerEmail],
-        subject: 'Your Eagle Eye Chauffeur receipt',
+        subject: `Your ${SITE_NAME} receipt`,
         html,
       })
       .catch(() => {});

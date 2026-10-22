@@ -1,18 +1,23 @@
+import { SITE_NAME } from '@/lib/site';
+
 /** E.164 for tel: links */
-export const CONTACT_PHONE_E164 = '+19299196499';
+export const CONTACT_PHONE_E164 = '+19297101444';
 
 /** Human-readable US format */
-export const CONTACT_PHONE_DISPLAY = '(929) 919-6499';
+export const CONTACT_PHONE_DISPLAY = '(929) 710-1444';
 
-/** Secondary phone number */
-export const CONTACT_PHONE_2_E164 = '+19294244201';
-export const CONTACT_PHONE_2_DISPLAY = '(929) 424-4201';
+/**
+ * Booking notifications and primary inquiries.
+ * TODO(rebrand): placeholder — confirm the real mailbox exists before launch
+ * (and verify blackcarservicesnyc.com in Resend so mail sends from it).
+ */
+export const CONTACT_EMAIL_BOOKINGS = 'info@blackcarservicesnyc.com';
 
-/** Booking notifications and primary inquiries */
-export const CONTACT_EMAIL_BOOKINGS = 'info@eagleeyechauffeur.com';
-
-/** WhatsApp number (E.164 without +) used in WhatsApp click-to-chat links */
-export const CONTACT_WHATSAPP_NUMBER = '19299196499';
+/**
+ * WhatsApp number (E.164 without +) used in WhatsApp click-to-chat links.
+ * Same as the main line unless a separate WhatsApp number is provided.
+ */
+export const CONTACT_WHATSAPP_NUMBER = '19297101444';
 
 /**
  * WhatsApp click-to-chat base. Uses api.whatsapp.com/send (WhatsApp's documented
@@ -24,7 +29,7 @@ const WHATSAPP_SEND_BASE = `https://api.whatsapp.com/send?phone=${CONTACT_WHATSA
 /** Pre-filled WhatsApp booking message with a form template */
 export const WHATSAPP_BOOKING_URL =
   `${WHATSAPP_SEND_BASE}&text=${encodeURIComponent(
-    'Hi Eagle Eye Chauffeur! I\'d like to book a ride.\n\n' +
+    `Hi ${SITE_NAME}! I'd like to book a ride.\n\n` +
     '📅 Date:\n' +
     '⏰ Pick-up Time:\n' +
     '📍 Pick-up Address:\n' +

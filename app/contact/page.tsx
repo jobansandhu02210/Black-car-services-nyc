@@ -7,8 +7,6 @@ import {
   CONTACT_EMAIL_BOOKINGS,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_E164,
-  CONTACT_PHONE_2_DISPLAY,
-  CONTACT_PHONE_2_E164,
   WHATSAPP_BOOKING_URL,
 } from '@/lib/contact';
 import { ogDefaults } from '@/lib/og';
@@ -102,7 +100,6 @@ export default function ContactPage() {
                   <li>
                     <span className="text-brand-silver block text-sm font-medium">Phone</span>
                     <a href={`tel:${CONTACT_PHONE_E164}`} className="text-brand-black hover:underline block">{CONTACT_PHONE_DISPLAY}</a>
-                    <a href={`tel:${CONTACT_PHONE_2_E164}`} className="text-brand-black hover:underline block">{CONTACT_PHONE_2_DISPLAY}</a>
                   </li>
                   <li>
                     <span className="text-brand-silver block text-sm font-medium">Email</span>

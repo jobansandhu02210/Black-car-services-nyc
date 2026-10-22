@@ -20,7 +20,7 @@ export function publicEmailSendError(errorMessage: string | undefined): string {
   ) {
     return (
       'Email from your domain is not accepted yet. In Vercel, set EMAIL_FROM to exactly the sender Resend expects, e.g. ' +
-      'Eagle Eye Chauffeur <bookings@yourdomain.com> — the part after @ must match a domain that shows Verified in Resend ' +
+      'Black Car Service <bookings@blackcarservicesnyc.com> — the part after @ must match a domain that shows Verified in Resend ' +
       '(Domains). After changing env vars, redeploy. Until DNS is verified, you can send tests from onboarding@resend.dev only.'
     );
   }

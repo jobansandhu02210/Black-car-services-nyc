@@ -4,6 +4,7 @@ import { CONTACT_EMAIL_BOOKINGS, CONTACT_PHONE_DISPLAY } from '@/lib/contact';
 import { escapeHtml } from '@/lib/escape-html';
 import { assertAllowedPlacesCaller } from '@/lib/places-request';
 import { publicEmailSendError } from '@/lib/resend-user-error';
+import { SITE_NAME } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const from = process.env.EMAIL_FROM?.trim() || 'Eagle Eye Chauffeur <onboarding@resend.dev>';
+  const from = process.env.EMAIL_FROM?.trim() || `${SITE_NAME} <onboarding@resend.dev>`;
   const to = process.env.BOOKING_NOTIFY_TO?.trim() || CONTACT_EMAIL_BOOKINGS;
 
   let body: Record<string, unknown>;
@@ -155,18 +156,18 @@ export async function POST(request: NextRequest) {
     : '';
 
   const confirmHtml = `<p>Hi ${escapeHtml(customerName)},</p>
-<p>Thank you — we received your booking request for <strong>Eagle Eye Chauffeur</strong>.</p>
+<p>Thank you — we received your booking request for <strong>${SITE_NAME}</strong>.</p>
 <p><strong>Trip summary:</strong> ${escapeHtml(service)} on ${escapeHtml(date)} at ${escapeHtml(time)}. We have your pick-up and trip details on file.</p>
 ${promoNote}
 ${referenceEstimate}
 <p><strong>What happens next:</strong> Our team will review your request and email you an <strong>official invoice</strong> for the ride when pricing is confirmed. If you need anything sooner, call or text <strong>${escapeHtml(CONTACT_PHONE_DISPLAY)}</strong>.</p>
-<p>— Eagle Eye Chauffeur<br/><a href="mailto:${escapeHtml(CONTACT_EMAIL_BOOKINGS)}">${escapeHtml(CONTACT_EMAIL_BOOKINGS)}</a></p>`;
+<p>— ${SITE_NAME}<br/><a href="mailto:${escapeHtml(CONTACT_EMAIL_BOOKINGS)}">${escapeHtml(CONTACT_EMAIL_BOOKINGS)}</a></p>`;
 
   const { error: guestError } = await resend.emails.send({
     from,
     to: [customerEmail],
     replyTo: to,
-    subject: 'Booking received — invoice to follow — Eagle Eye Chauffeur',
+    subject: `Booking received — invoice to follow — ${SITE_NAME}`,
     html: confirmHtml,
   });
 

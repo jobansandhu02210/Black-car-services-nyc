@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 import { assertAdmin } from '@/lib/admin-auth';
 import { escapeHtml } from '@/lib/escape-html';
 import { CONTACT_PHONE_DISPLAY } from '@/lib/contact';
+import { SITE_NAME } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   const apiKey = process.env.RESEND_API_KEY?.trim();
   if (!apiKey) return NextResponse.json({ error: 'Email is not configured (set RESEND_API_KEY).' }, { status: 503 });
 
-  const from = process.env.EMAIL_FROM?.trim() || 'Eagle Eye Chauffeur <onboarding@resend.dev>';
+  const from = process.env.EMAIL_FROM?.trim() || `${SITE_NAME} <onboarding@resend.dev>`;
   const dest = b.dropoff || b.airport || '';
   const row = (k: string, v: string) => v ? `<tr><td style="padding:6px 14px 6px 0;color:#666;font-weight:600;vertical-align:top">${k}</td><td>${v}</td></tr>` : '';
   const html = `<p>Hi ${escapeHtml(driver.name)},</p>
@@ -45,7 +46,7 @@ ${row('Passengers', b.passengers != null ? String(b.passengers) : '')}
 ${row('Special requests', escapeHtml(b.specialRequests || ''))}
 </table>
 <p style="margin-top:14px">Please confirm you can cover this trip. Questions? Call dispatch at ${escapeHtml(CONTACT_PHONE_DISPLAY)}.</p>
-<p>— Eagle Eye Chauffeur</p>`;
+<p>— ${SITE_NAME}</p>`;
 
   try {
     const resend = new Resend(apiKey);

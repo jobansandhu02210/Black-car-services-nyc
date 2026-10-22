@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { clsx } from 'clsx';
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164 } from '@/lib/contact';
+import { BRAND_LOGO_SRC, SITE_NAME } from '@/lib/site';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -29,15 +30,15 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           <Link href="/" className="flex items-center shrink-0">
-            {logoError ? (
+            {logoError || !BRAND_LOGO_SRC ? (
               <span className="font-serif text-2xl lg:text-3xl font-semibold text-brand-black tracking-tight">
-                Eagle Eye Chauffeur
+                {SITE_NAME}
               </span>
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src="/logo-2026-04-25.png"
-                alt="Eagle Eye Chauffeur"
+                src={BRAND_LOGO_SRC}
+                alt={SITE_NAME}
                 width={180}
                 height={56}
                 className="h-12 w-auto lg:h-14 object-contain object-left"
