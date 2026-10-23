@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { DM_Sans } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -14,9 +14,9 @@ import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { ogDefaults } from '@/lib/og';
 import { defaultSiteDescription, siteKeywords } from '@/lib/seo';
 
-// Plus Jakarta Sans for body and headings. Loaded once as --font-sans; globals.css points
+// DM Sans for body and headings. Loaded once as --font-sans; globals.css points
 // --font-display at it so heading styles keep working if a separate display face returns.
-const jakarta = Plus_Jakarta_Sans({
+const dmSans = DM_Sans({
   weight: ['400', '600', '700'],
   subsets: ['latin'],
   variable: '--font-sans',
@@ -71,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={jakarta.variable}>
+    <html lang="en" className={dmSans.variable}>
       {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <body className="font-sans min-h-screen flex flex-col">
         <LocalBusinessJsonLd />
