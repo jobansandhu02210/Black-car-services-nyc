@@ -5,6 +5,8 @@ import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { FaqJsonLd, SpeakableJsonLd } from '@/components/JsonLd';
 import { HeroBookingCard } from '@/components/HeroBookingCard';
 import { SkylineArt } from '@/components/SkylineArt';
+import { SectionHeading } from '@/components/SectionHeading';
+import { ComparisonTable, type Cell } from '@/components/ComparisonTable';
 import { ogDefaults } from '@/lib/og';
 
 const title = 'NYC Black Car Service | JFK, LGA, EWR & Long Distance';
@@ -43,17 +45,14 @@ const routes = [
   { to: 'New Haven, CT', href: '/services/areas/connecticut', miles: '≈ 80 mi', time: '≈ 1 h 45 min' },
 ];
 
-type Cell = 'yes' | 'no' | 'varies';
-const comparison: { row: string; car: Cell; rideshare: Cell; taxi: Cell; train: Cell }[] = [
-  { row: 'Picks you up at your door', car: 'yes', rideshare: 'yes', taxi: 'varies', train: 'no' },
-  { row: 'Drops you at the exact address', car: 'yes', rideshare: 'yes', taxi: 'yes', train: 'no' },
-  { row: 'Booked ahead for a set time', car: 'yes', rideshare: 'varies', taxi: 'no', train: 'yes' },
-  { row: 'Room for your luggage guaranteed', car: 'yes', rideshare: 'varies', taxi: 'varies', train: 'no' },
-  { row: 'Waits if your flight lands late', car: 'yes', rideshare: 'no', taxi: 'no', train: 'no' },
-  { row: 'No transfers on long trips', car: 'yes', rideshare: 'varies', taxi: 'varies', train: 'no' },
+const comparison: { row: string; cells: Cell[] }[] = [
+  { row: 'Picks you up at your door', cells: ['yes', 'yes', 'varies', 'no'] },
+  { row: 'Drops you at the exact address', cells: ['yes', 'yes', 'yes', 'no'] },
+  { row: 'Booked ahead for a set time', cells: ['yes', 'varies', 'no', 'yes'] },
+  { row: 'Room for your luggage guaranteed', cells: ['yes', 'varies', 'varies', 'no'] },
+  { row: 'Waits if your flight lands late', cells: ['yes', 'no', 'no', 'no'] },
+  { row: 'No transfers on long trips', cells: ['yes', 'varies', 'varies', 'no'] },
 ];
-
-const cellLabel: Record<Cell, string> = { yes: 'Yes', no: 'No', varies: 'Varies' };
 
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts.
 const vehicles = [
@@ -105,31 +104,6 @@ const faqs = [
   },
 ];
 
-function Check({ cell }: { cell: Cell }) {
-  const styles: Record<Cell, string> = {
-    yes: 'bg-brand-sky text-brand-blue',
-    varies: 'bg-brand-tint text-brand-muted',
-    no: 'bg-brand-white text-brand-muted ring-1 ring-brand-line',
-  };
-  return (
-    <span className={`inline-flex min-w-[4.5rem] justify-center rounded-full px-2.5 py-1 text-xs font-semibold ${styles[cell]}`}>
-      {cellLabel[cell]}
-    </span>
-  );
-}
-
-function SectionHeading({ id, eyebrow, title, intro }: { id: string; eyebrow: string; title: string; intro?: string }) {
-  return (
-    <div className="max-w-2xl mb-10 lg:mb-12">
-      <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-3">{eyebrow}</p>
-      <h2 id={id} className="text-3xl lg:text-[2.5rem] leading-tight text-brand-ink text-balance">
-        {title}
-      </h2>
-      {intro && <p className="mt-4 text-lg text-brand-muted leading-relaxed">{intro}</p>}
-    </div>
-  );
-}
-
 export default function HomePage() {
   return (
     <>
@@ -146,10 +120,10 @@ export default function HomePage() {
             </p>
             <h1 id="hero-title" className="text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-brand-ink text-balance">
               NYC Black Car Service
-              <span className="block mt-2 text-2xl sm:text-3xl lg:text-[2.1rem] leading-tight font-semibold text-brand-blue">
-                Airports and long rides, door to door.
-              </span>
             </h1>
+            <p className="mt-2 font-display text-2xl sm:text-3xl lg:text-[2.1rem] leading-tight font-semibold text-brand-blue">
+              Airports and long rides, door to door.
+            </p>
             <p id="hero-answer" className="mt-6 max-w-xl text-lg leading-relaxed text-brand-muted">
               {SITE_NAME} picks you up anywhere in New York City and drives you to JFK, LaGuardia or Newark — or all the
               way to New Jersey, Connecticut, Philadelphia or Washington, DC. One private car, one driver, no transfers.
@@ -179,7 +153,7 @@ export default function HomePage() {
             <li key={t.title} className="flex gap-3">
               <span aria-hidden="true" className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-brand-blue" />
               <div>
-                <h3 className="text-base text-brand-ink">{t.title}</h3>
+                <p className="font-display text-base font-semibold text-brand-ink">{t.title}</p>
                 <p className="mt-1 text-sm leading-relaxed text-brand-muted">{t.body}</p>
               </div>
             </li>
@@ -233,8 +207,8 @@ export default function HomePage() {
           <SectionHeading
             id="routes-heading"
             eyebrow="Long-distance car service"
-            title="From New York to the next city, without the station"
-            intro="When the train means a cab to Penn Station, a transfer and another cab at the other end, one car from door to door is often simpler — especially with bags, kids or a meeting to prepare for."
+            title="Long-distance car service from NYC"
+            intro="From New York to the next city, without the station. When the train means a cab to Penn Station, a transfer and another cab at the other end, one car from door to door is often simpler — especially with bags, kids or a meeting to prepare for."
           />
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {routes.map((r) => (
@@ -274,38 +248,18 @@ export default function HomePage() {
             title="Black car vs rideshare, taxi and train"
             intro="Each has its place. A booked black car is the one built around a fixed time, your luggage and getting you all the way there."
           />
-          <div className="overflow-x-auto rounded-2xl border border-brand-line">
-            <table className="w-full min-w-[640px] text-left text-sm">
-              <caption className="sr-only">How a booked black car compares with rideshare, taxi and train</caption>
-              <thead className="bg-brand-tint font-display text-brand-ink">
-                <tr>
-                  <th scope="col" className="px-5 py-4 font-bold">&nbsp;</th>
-                  <th scope="col" className="px-4 py-4 font-bold text-brand-blue">Black car</th>
-                  <th scope="col" className="px-4 py-4 font-bold">Rideshare</th>
-                  <th scope="col" className="px-4 py-4 font-bold">Taxi</th>
-                  <th scope="col" className="px-4 py-4 font-bold">Train</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-brand-line">
-                {comparison.map((c) => (
-                  <tr key={c.row}>
-                    <th scope="row" className="px-5 py-3.5 font-semibold text-brand-ink">{c.row}</th>
-                    <td className="px-4 py-3.5"><Check cell={c.car} /></td>
-                    <td className="px-4 py-3.5"><Check cell={c.rideshare} /></td>
-                    <td className="px-4 py-3.5"><Check cell={c.taxi} /></td>
-                    <td className="px-4 py-3.5"><Check cell={c.train} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ComparisonTable
+            caption="How a booked black car compares with rideshare, taxi and train"
+            columns={['Black car', 'Rideshare', 'Taxi', 'Train']}
+            rows={comparison}
+          />
         </div>
       </section>
 
       {/* Vehicles */}
       <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="fleet-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="Pick the car that fits the trip" />
+          <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="Black car fleet: sedans and SUVs" />
           <div className="grid gap-5 md:grid-cols-3">
             {vehicles.map((v) => (
               <div key={v.name} className="rounded-2xl bg-brand-white p-6 ring-1 ring-brand-line">
@@ -361,7 +315,7 @@ export default function HomePage() {
           <SectionHeading
             id="areas-heading"
             eyebrow="Where we drive"
-            title="New York City, New Jersey, Connecticut, Philadelphia and DC"
+            title="Black car service in New York City, New Jersey, Connecticut, Philadelphia and DC"
           />
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {areas.map((a) => (
@@ -379,7 +333,7 @@ export default function HomePage() {
       {/* FAQ */}
       <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="faq-heading">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading id="faq-heading" eyebrow="FAQ" title="Black car service questions" />
+          <SectionHeading id="faq-heading" eyebrow="FAQ" title="NYC black car service FAQs" />
           <div className="divide-y divide-brand-line border-y border-brand-line">
             {faqs.map((f) => (
               <details key={f.q} className="group py-5">
@@ -397,10 +351,10 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="relative overflow-hidden bg-brand-ink py-16 text-brand-white lg:py-20" aria-labelledby="cta-heading">
+      <section className="relative overflow-hidden bg-brand-ink py-16 text-brand-white lg:py-20" aria-label="Book a ride">
         <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-32 w-full text-brand-white/10" />
         <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 id="cta-heading" className="text-3xl lg:text-4xl">Your car, when you need it.</h2>
+          <p className="font-display text-3xl font-bold tracking-tight lg:text-4xl">Your car, when you need it.</p>
           <p className="mt-4 text-lg text-brand-silver">Book in a couple of minutes, or talk to us now.</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link href="/book" className="rounded-lg bg-brand-white px-6 py-3 font-display font-bold text-brand-ink hover:bg-brand-sky">

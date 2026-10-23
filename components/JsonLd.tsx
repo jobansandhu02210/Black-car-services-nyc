@@ -201,11 +201,7 @@ export function WebSiteJsonLd() {
     '@id': `${site}/#website`,
     name: SITE_NAME,
     url: site,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: { '@type': 'EntryPoint', urlTemplate: `${site}/blog?q={search_term_string}` },
-      'query-input': 'required name=search_term_string',
-    },
+    publisher: { '@id': `${site}/#business` },
   };
   return (
     <script
@@ -227,6 +223,70 @@ export function SpeakableJsonLd({ cssSelectors }: { cssSelectors: string[] }) {
     },
   };
 
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+/**
+ * Airport transfer Service, linked to the sitewide LocalBusiness by @id and scoped to
+ * one Airport (+ the city it serves). Use on /services/airport/* pages.
+ */
+export function AirportServiceJsonLd({
+  name,
+  description,
+  url,
+  airportName,
+  airportWikidata,
+  iataCode,
+}: {
+  name: string;
+  description: string;
+  url: string;
+  airportName: string;
+  airportWikidata: string;
+  iataCode: string;
+}) {
+  const site = getSiteUrl();
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name,
+    description,
+    url,
+    serviceType: 'Airport transfer',
+    provider: { '@id': `${site}/#business` },
+    areaServed: [
+      { '@type': 'Airport', name: airportName, iataCode, sameAs: airportWikidata },
+      { '@type': 'City', name: 'New York City', sameAs: 'https://www.wikidata.org/wiki/Q60' },
+    ],
+    // Offer without a price: rates are confirmed per trip until the owner decides to publish them.
+    offers: { '@type': 'Offer', url: `${site}/book`, availability: 'https://schema.org/InStock' },
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+export function HowToJsonLd({
+  name,
+  steps,
+}: {
+  name: string;
+  steps: { name: string; text: string }[];
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name,
+    step: steps.map((s, i) => ({ '@type': 'HowToStep', position: i + 1, name: s.name, text: s.text })),
+  };
   return (
     <script
       type="application/ld+json"
