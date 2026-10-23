@@ -11,7 +11,20 @@ import {
 } from '@/components/JsonLd';
 import { SectionHeading } from '@/components/SectionHeading';
 import { ComparisonTable, type Cell } from '@/components/ComparisonTable';
-import { SkylineArt } from '@/components/SkylineArt';
+import {
+  AirportHero,
+  DriveTimeTable,
+  FactorTable,
+  FaqList,
+  InfoCards,
+  RelatedLinks,
+  StepsList,
+  TerminalCards,
+  airportBookHref,
+} from '@/components/AirportSections';
+import { TerminalFinder } from '@/components/TerminalFinder';
+import { PickupPlanner } from '@/components/PickupPlanner';
+import { AIRPORTS } from '@/lib/airports';
 import { ogDefaults } from '@/lib/og';
 
 const path = '/services/airport/jfk';
@@ -27,7 +40,8 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', title, description },
 };
 
-const bookHref = `/book?service=airport&airport=${encodeURIComponent('JFK - John F. Kennedy')}`;
+const airport = AIRPORTS.JFK;
+const bookHref = airportBookHref(airport);
 
 const priceFactors = [
   { factor: 'Distance and route', detail: 'Where you start or finish matters most. Midtown and Downtown Brooklyn are similar distances; New Jersey and Connecticut add mileage and time.' },
@@ -48,55 +62,11 @@ const comparison: { row: string; cells: Cell[] }[] = [
   { row: 'Same booking for NJ, CT or Philadelphia', cells: ['yes', 'varies', 'varies', 'no'] },
 ];
 
-// JFK is mid-rebuild (New Terminal One and the new Terminal 6 open in phases; Terminal 7 is
-// closing). Only name airlines whose terminal is stable. Re-check every few months.
-const terminals = [
-  {
-    name: 'Terminal 4',
-    airlines: 'Delta and many of its international partners.',
-    note: 'The largest terminal at JFK. Arrivals and departures are on separate levels, so tell us whether you are flying out or landing.',
-  },
-  {
-    name: 'Terminal 5',
-    airlines: 'JetBlue and some of its partner airlines.',
-    note: 'JetBlue’s home at JFK, right next to the new Terminal 6 that is opening in phases.',
-  },
-  {
-    name: 'Terminal 8',
-    airlines: 'American Airlines and oneworld partners, including British Airways.',
-    note: 'On the north side of the airport, closest to the Van Wyck for trips back to Manhattan and the Bronx.',
-  },
-  {
-    name: 'Terminal 1 and the New Terminal One',
-    airlines: 'International airlines, moving from the old Terminal 1 to the New Terminal One as it opens.',
-    note: 'The first gates of the New Terminal One are due to open from late 2026, with more added through 2030. Check your airline’s app for which building you are using.',
-  },
-  {
-    name: 'Terminals 6 and 7',
-    airlines: 'Airlines are moving out of Terminal 7 and into the new Terminal 6 in stages through 2026 and 2027.',
-    note: 'If your airline used Terminal 7 before, confirm the terminal on your boarding pass the day before you fly.',
-  },
-];
-
-// Approximate road distance and typical drive time to/from JFK (public-map estimates, rounded).
-const driveTimes = [
-  { place: 'Midtown Manhattan', miles: '16 mi', offPeak: '40–55 min', peak: '60–90 min' },
-  { place: 'Lower Manhattan / FiDi', miles: '18 mi', offPeak: '40–55 min', peak: '60–90 min' },
-  { place: 'Upper East Side', miles: '17 mi', offPeak: '40–55 min', peak: '60–90 min' },
-  { place: 'Downtown Brooklyn', miles: '17 mi', offPeak: '35–50 min', peak: '50–80 min' },
-  { place: 'Williamsburg', miles: '16 mi', offPeak: '35–45 min', peak: '50–75 min' },
-  { place: 'Long Island City', miles: '14 mi', offPeak: '30–40 min', peak: '45–70 min' },
-  { place: 'Jersey City / Hoboken', miles: '25 mi', offPeak: '50–70 min', peak: '75–110 min' },
-  { place: 'Stamford, CT', miles: '40 mi', offPeak: '55–75 min', peak: '80–120 min' },
-  { place: 'Princeton, NJ', miles: '65 mi', offPeak: '85–110 min', peak: '110–150 min' },
-  { place: 'Philadelphia, PA', miles: '105 mi', offPeak: '2–2.5 h', peak: '2.5–3.5 h' },
-];
-
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts.
 const vehicles = [
-  { name: 'Business Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'Right for one or two travelers with checked bags. The most common choice for JFK.' },
-  { name: 'Business SUV', spec: 'Up to 6 passengers · 6 bags', body: 'For families, small teams, strollers, golf bags and long-haul luggage.' },
-  { name: 'First Class', spec: 'Sedan or SUV · same capacity', body: 'A newer, top-trim vehicle when you are collecting a client or senior executive.' },
+  { title: 'Business Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'Right for one or two travelers with checked bags. The most common choice for JFK.' },
+  { title: 'Business SUV', spec: 'Up to 6 passengers · 6 bags', body: 'For families, small teams, strollers, golf bags and long-haul luggage.' },
+  { title: 'First Class', spec: 'Sedan or SUV · same capacity', body: 'A newer, top-trim vehicle when you are collecting a client or senior executive.' },
 ];
 
 const steps = [
@@ -134,7 +104,7 @@ const faqs = [
   },
   {
     q: 'How early should I leave Manhattan for a JFK flight?',
-    a: 'Aim to reach the terminal two hours before a domestic flight and three hours before an international one, then add the drive time and a 30-minute buffer. For a 6 pm international departure from Midtown, leaving around 1:30 pm is sensible.',
+    a: 'Aim to reach the terminal two hours before a domestic flight and three hours before an international one, then add the drive time and a 30-minute buffer. For a 6 pm international departure from Midtown on a weekday, a pickup around 1 pm is sensible.',
   },
   {
     q: 'Can you take a group or a lot of luggage to JFK?',
@@ -182,46 +152,15 @@ export default function JfkCarServicePage() {
       <FaqJsonLd faqs={faqs} />
       <SpeakableJsonLd cssSelectors={['#jfk-title', '#jfk-answer']} />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-brand-tint to-brand-sky/60">
-        <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-32 w-full text-brand-blue/20 lg:h-44" />
-        <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8 lg:pb-28 lg:pt-12">
-          <nav aria-label="Breadcrumb" className="mb-8 text-sm text-brand-muted">
-            <ol className="flex flex-wrap items-center gap-2">
-              <li><Link href="/" className="hover:text-brand-blue">Home</Link></li>
-              <li aria-hidden="true">/</li>
-              <li><Link href="/services/airport" className="hover:text-brand-blue">Airports</Link></li>
-              <li aria-hidden="true">/</li>
-              <li aria-current="page" className="font-semibold text-brand-ink">JFK</li>
-            </ol>
-          </nav>
-          <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-4">
-            John F. Kennedy International Airport
-          </p>
-          <h1 id="jfk-title" className="max-w-3xl text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-brand-ink text-balance">
-            JFK Car Service NYC
-          </h1>
-          <p id="jfk-answer" className="mt-6 max-w-2xl text-lg leading-relaxed text-brand-muted">
-            {SITE_NAME} drives you between JFK and anywhere in New York City, New Jersey and Connecticut in a private
-            sedan or SUV. Book ahead for a set pickup time, add your flight number, and your driver works around when
-            you actually land. The drive to Midtown usually takes 40 to 90 minutes.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href={bookHref}
-              className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display font-bold text-brand-white hover:bg-brand-blue-hover"
-            >
-              Get my JFK price
-            </Link>
-            <a
-              href={`tel:${CONTACT_PHONE_E164}`}
-              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
-            >
-              Call {CONTACT_PHONE_DISPLAY}
-            </a>
-          </div>
-        </div>
-      </section>
+      <AirportHero
+        airport={airport}
+        idPrefix="jfk"
+        h1="JFK Car Service NYC"
+        answer={`${SITE_NAME} drives you between JFK and anywhere in New York City, New Jersey and Connecticut in a private sedan or SUV. Book ahead for a set pickup time, add your flight number, and your driver works around when you actually land. The drive to Midtown usually takes 40 to 90 minutes.`}
+        ctaLabel="Get my JFK price"
+        phoneDisplay={CONTACT_PHONE_DISPLAY}
+        phoneE164={CONTACT_PHONE_E164}
+      />
 
       {/* Cost */}
       <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="cost-heading">
@@ -232,25 +171,7 @@ export default function JfkCarServicePage() {
             title="How much does a car service to JFK cost?"
             intro="A JFK fare comes down to six things. Knowing them helps you compare quotes and avoid surprises."
           />
-          <div className="overflow-x-auto rounded-2xl border border-brand-line">
-            <table className="w-full min-w-[560px] text-left text-sm">
-              <caption className="sr-only">What affects the price of a JFK car service</caption>
-              <thead className="bg-brand-tint font-display text-brand-ink">
-                <tr>
-                  <th scope="col" className="w-1/4 px-5 py-4 font-bold">Factor</th>
-                  <th scope="col" className="px-5 py-4 font-bold">What it means for your fare</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-brand-line">
-                {priceFactors.map((f) => (
-                  <tr key={f.factor}>
-                    <th scope="row" className="px-5 py-4 align-top font-semibold text-brand-ink">{f.factor}</th>
-                    <td className="px-5 py-4 leading-relaxed text-brand-muted">{f.detail}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <FactorTable caption="What affects the price of a JFK car service" rows={priceFactors} />
           <p className="mt-6 max-w-3xl text-brand-muted leading-relaxed">
             The fastest way to a real number is to{' '}
             <Link href={bookHref} className="font-semibold text-brand-blue hover:underline">enter your trip</Link>. You see an
@@ -304,23 +225,14 @@ export default function JfkCarServicePage() {
             title="JFK terminals and where your driver meets you"
             intro="JFK is in the middle of a rebuild, and some airlines are changing terminals during 2026 and 2027. We check your flight before pickup, but it is worth confirming your terminal in the airline’s app the day before."
           />
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {terminals.map((t) => (
-              <div key={t.name} className="rounded-2xl border border-brand-line p-6">
-                <h3 className="text-xl text-brand-ink">{t.name}</h3>
-                <p className="mt-2 text-sm font-semibold text-brand-blue">{t.airlines}</p>
-                <p className="mt-3 text-brand-muted leading-relaxed">{t.note}</p>
-              </div>
-            ))}
-            <div className="rounded-2xl bg-brand-tint p-6">
-              <h3 className="text-xl text-brand-ink">Not sure which terminal?</h3>
-              <p className="mt-3 text-brand-muted leading-relaxed">
-                Give us your flight number when you book. For departures we drop you at the right door; for arrivals we
-                confirm the meeting point with you before you land — inside after baggage claim, or at the curb once you
-                have your bags.
-              </p>
-            </div>
+          <div className="mb-10">
+            <TerminalFinder initialAirport="JFK" />
           </div>
+          <TerminalCards
+            airport={airport}
+            fallbackTitle="Not sure which terminal?"
+            fallbackBody="Give us your flight number when you book. For departures we drop you at the right door; for arrivals we confirm the meeting point with you before you land — inside after baggage claim, or at the curb once you have your bags."
+          />
         </div>
       </section>
 
@@ -333,29 +245,7 @@ export default function JfkCarServicePage() {
             title="JFK drive times by neighborhood"
             intro="Typical door-to-door times by car. Weekday afternoons, Friday evenings and holiday weekends sit at the top of the rush-hour range or above it."
           />
-          <div className="overflow-x-auto rounded-2xl border border-brand-line bg-brand-white">
-            <table className="w-full min-w-[560px] text-left text-sm">
-              <caption className="sr-only">Approximate distance and drive time between JFK and nearby neighborhoods and cities</caption>
-              <thead className="bg-brand-tint font-display text-brand-ink">
-                <tr>
-                  <th scope="col" className="px-5 py-4 font-bold">To or from</th>
-                  <th scope="col" className="px-5 py-4 font-bold">Distance</th>
-                  <th scope="col" className="px-5 py-4 font-bold">Off-peak</th>
-                  <th scope="col" className="px-5 py-4 font-bold">Rush hour</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-brand-line">
-                {driveTimes.map((d) => (
-                  <tr key={d.place}>
-                    <th scope="row" className="px-5 py-3.5 font-semibold text-brand-ink">{d.place}</th>
-                    <td className="px-5 py-3.5 text-brand-muted">{d.miles}</td>
-                    <td className="px-5 py-3.5 text-brand-muted">{d.offPeak}</td>
-                    <td className="px-5 py-3.5 text-brand-muted">{d.peak}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DriveTimeTable airport={airport} />
           <p className="mt-6 text-sm text-brand-muted">
             Approximate road distances and times; live traffic decides on the day. Going further?{' '}
             <Link href="/services/routes/nyc-to-philadelphia" className="font-semibold text-brand-blue hover:underline">
@@ -370,15 +260,7 @@ export default function JfkCarServicePage() {
       <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="fleet-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="JFK black car fleet: vehicles and capacity" />
-          <div className="grid gap-5 md:grid-cols-3">
-            {vehicles.map((v) => (
-              <div key={v.name} className="rounded-2xl border border-brand-line p-6">
-                <h3 className="text-xl text-brand-ink">{v.name}</h3>
-                <p className="mt-1 text-sm font-semibold text-brand-blue">{v.spec}</p>
-                <p className="mt-3 text-brand-muted leading-relaxed">{v.body}</p>
-              </div>
-            ))}
-          </div>
+          <InfoCards items={vehicles} />
           <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-blue hover:underline">
             See every vehicle →
           </Link>
@@ -451,6 +333,9 @@ export default function JfkCarServicePage() {
               <p className="mt-3 text-sm text-brand-muted">Plans changed? Call or message us as early as you can.</p>
             </div>
           </div>
+          <div className="mt-12 max-w-2xl">
+            <PickupPlanner airportCode="JFK" />
+          </div>
         </div>
       </section>
 
@@ -458,17 +343,7 @@ export default function JfkCarServicePage() {
       <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="how-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="how-heading" eyebrow="How it works" title="How to book JFK car service" />
-          <ol className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {steps.map((s, i) => (
-              <li key={s.name}>
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-blue font-display font-bold text-brand-white">
-                  {i + 1}
-                </span>
-                <h3 className="mt-4 text-lg text-brand-ink">{s.name}</h3>
-                <p className="mt-2 text-brand-muted leading-relaxed">{s.text}</p>
-              </li>
-            ))}
-          </ol>
+          <StepsList steps={steps} />
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link href={bookHref} className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
               Book your JFK car
@@ -489,19 +364,7 @@ export default function JfkCarServicePage() {
       <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="faq-heading">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="faq-heading" eyebrow="FAQ" title="JFK car service FAQs" />
-          <div className="divide-y divide-brand-line border-y border-brand-line">
-            {faqs.map((f) => (
-              <details key={f.q} className="group py-5">
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-                  <h3 className="text-lg text-brand-ink">{f.q}</h3>
-                  <span aria-hidden="true" className="mt-1 font-display text-xl text-brand-blue transition-transform group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-3 leading-relaxed text-brand-muted">{f.a}</p>
-              </details>
-            ))}
-          </div>
+          <FaqList faqs={faqs} />
         </div>
       </section>
 
@@ -509,16 +372,7 @@ export default function JfkCarServicePage() {
       <section className="bg-brand-tint py-16 lg:py-20" aria-labelledby="related-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="related-heading" eyebrow="Keep planning" title="Related NYC airports and routes" />
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((r) => (
-              <li key={r.href}>
-                <Link href={r.href} className="block h-full rounded-xl bg-brand-white p-5 ring-1 ring-brand-line hover:ring-brand-blue">
-                  <span className="font-display font-bold text-brand-ink">{r.title} →</span>
-                  <span className="mt-1 block text-sm text-brand-muted">{r.body}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <RelatedLinks links={related} />
         </div>
       </section>
     </>

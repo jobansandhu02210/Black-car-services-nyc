@@ -1,543 +1,376 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getSiteUrl } from '@/lib/site';
-import { ServiceJsonLd, FaqJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
-import { WHATSAPP_BOOKING_URL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164, CONTACT_EMAIL_BOOKINGS } from '@/lib/contact';
+import { getSiteUrl, SITE_NAME } from '@/lib/site';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164, WHATSAPP_BOOKING_URL } from '@/lib/contact';
+import {
+  AirportServiceJsonLd,
+  BreadcrumbJsonLd,
+  FaqJsonLd,
+  HowToJsonLd,
+  SpeakableJsonLd,
+} from '@/components/JsonLd';
+import { SectionHeading } from '@/components/SectionHeading';
+import { ComparisonTable, type Cell } from '@/components/ComparisonTable';
+import {
+  AirportHero,
+  DriveTimeTable,
+  FactorTable,
+  FaqList,
+  InfoCards,
+  RelatedLinks,
+  StepsList,
+  TerminalCards,
+  airportBookHref,
+} from '@/components/AirportSections';
+import { TerminalFinder } from '@/components/TerminalFinder';
+import { PickupPlanner } from '@/components/PickupPlanner';
+import { AIRPORTS } from '@/lib/airports';
 import { ogDefaults } from '@/lib/og';
 
+const airport = AIRPORTS.EWR;
+const path = airport.path;
+const bookHref = airportBookHref(airport);
+const title = 'Newark Airport Car Service (EWR) | Black Car Service';
+const description =
+  'Private car service between Newark Airport and Manhattan, Jersey City, Hoboken, Princeton and Philadelphia. Flight-tracked pickups at every terminal.';
+
 export const metadata: Metadata = {
-  title: 'EWR Car Service NYC | Black Car Airport Transfers',
-  description:
-    'Newark car service EWR — all NJ tolls included, meet & greet Terminals A, B & C. NJ to JFK transfers available. No surge pricing. Book Eagle Eye 24/7.',
-  alternates: { canonical: `${getSiteUrl()}/services/airport/ewr` },
-  openGraph: { ...ogDefaults, url: `${getSiteUrl()}/services/airport/ewr` },
+  title: { absolute: title },
+  description,
+  alternates: { canonical: `${getSiteUrl()}${path}` },
+  openGraph: { ...ogDefaults, url: `${getSiteUrl()}${path}`, title, description },
+  twitter: { card: 'summary_large_image', title, description },
 };
 
+const priceFactors = [
+  { factor: 'Which side of the Hudson', detail: 'Trips within New Jersey avoid the river crossings entirely. Trips to or from Manhattan and Brooklyn use a tunnel or bridge, which adds both time and tolls.' },
+  { factor: 'Direction of travel', detail: 'The Port Authority tunnels and bridges collect tolls only in the New York-bound direction, so a ride from Newark into Manhattan pays a crossing toll that the ride out does not.' },
+  { factor: 'Manhattan congestion charge', detail: 'Rides that begin or end south of 60th Street — Lower Manhattan via the Holland Tunnel, for example — include the congestion pricing charge for for-hire vehicles.' },
+  { factor: 'Vehicle', detail: 'A sedan fits most travelers. An SUV costs more but takes up to six people, which often beats two separate cars.' },
+  { factor: 'Turnpike and time of day', detail: 'New Jersey Turnpike tolls apply on some routes, and the tunnel approaches are slowest on weekday evenings.' },
+  { factor: 'Waiting and stops', detail: 'Waiting beyond your pickup or landing time and any stop on the way should be in the quote. Tell us when you book.' },
+];
+
+const comparisonColumns = ['Black car', 'Taxi', 'Rideshare', 'AirTrain + NJ Transit'];
+const comparison: { row: string; cells: Cell[] }[] = [
+  { row: 'Booked ahead for a set time', cells: ['yes', 'no', 'varies', 'no'] },
+  { row: 'Price agreed before you ride', cells: ['yes', 'varies', 'varies', 'yes'] },
+  { row: 'Adjusts to a late or early landing', cells: ['yes', 'no', 'no', 'no'] },
+  { row: 'No transfers with your luggage', cells: ['yes', 'yes', 'yes', 'no'] },
+  { row: 'Unaffected by AirTrain construction', cells: ['yes', 'yes', 'yes', 'no'] },
+  { row: 'Same booking for Princeton or Philadelphia', cells: ['yes', 'varies', 'varies', 'varies'] },
+];
+
+// Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts.
+const vehicles = [
+  { title: 'Business Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'Covers most Newark arrivals heading into Manhattan or across New Jersey.' },
+  { title: 'Business SUV', spec: 'Up to 6 passengers · 6 bags', body: 'For long-haul luggage, families back from Europe or a team landing on the same United flight.' },
+  { title: 'First Class', spec: 'Sedan or SUV · same capacity', body: 'For visiting clients and executives arriving on international flights into Terminal B or C.' },
+];
+
+const steps = [
+  { name: 'Enter the trip', text: 'Choose Airport and Newark, then add your address, date and time — and the flight number for an arrival.' },
+  { name: 'Choose the car', text: 'Sedan for most trips; SUV for more people or bags; First Class for clients.' },
+  { name: 'See the estimate', text: 'An estimate shows as you book, and we confirm the fare with you before the ride.' },
+  { name: 'Meet your driver', text: 'Your driver’s name, car and plate are texted to you ahead of pickup, with the meeting point.' },
+];
+
+// TODO(owner): confirm flight tracking, meeting point and the Jersey City/Hoboken answer.
 const faqs = [
   {
-    q: 'How much is a car service from EWR to Manhattan?',
-    a: 'All rates are flat and confirmed at booking — all tolls included, no hidden fees. Your price covers the NJ Turnpike, Lincoln Tunnel or Holland Tunnel, and airport fees. Get an instant quote at /book.',
+    q: 'How much is a car service from Manhattan to Newark Airport?',
+    a: 'It depends on where in Manhattan you start, the vehicle, tolls, the congestion charge below 60th Street and the time of day. The ride out to Newark avoids the inbound tunnel toll. Enter your trip on the booking page for an estimate; we confirm the fare before the ride.',
   },
   {
-    q: 'Are NJ Turnpike tolls included in the EWR car service rate?',
-    a: 'Yes. Every toll on the route — NJ Turnpike, Lincoln Tunnel, Holland Tunnel, and any bridge or tunnel — is included in your flat rate. What you see at booking is the final amount. Nothing is added at the end of your ride.',
+    q: 'How long does it take to get from Newark Airport to Manhattan?',
+    a: 'About 35 to 50 minutes to Midtown outside rush hour, and 60 to 90 minutes on weekday evenings when the Lincoln and Holland Tunnel approaches back up. Lower Manhattan is often a little quicker via the Holland Tunnel.',
   },
   {
-    q: 'Where does the driver meet me at Newark Airport?',
-    a: 'Your chauffeur meets you at the arrivals level of your terminal — Terminal A, B, or C — with a name sign. You receive a WhatsApp message confirming the exact meeting spot before you land. We know all EWR terminals and where each airline exits.',
+    q: 'Is Newark or JFK better if I live in Manhattan?',
+    a: 'From the West Side, Lower Manhattan, Jersey City and Hoboken, Newark is often the shorter drive. From the East Side, Brooklyn and Queens, JFK or LaGuardia usually wins. United flyers will mostly be at Newark either way.',
   },
   {
-    q: 'How long does Newark Airport to Manhattan take?',
-    a: 'Off-peak, expect 30 to 45 minutes from EWR to Midtown Manhattan. During heavy traffic — weekday mornings and late afternoons — allow 45 to 65 minutes. Your chauffeur monitors traffic and picks the fastest tunnel or bridge route.',
+    q: 'Is the AirTrain at Newark Airport running?',
+    a: 'The current AirTrain is being replaced by a new system due around 2030. Until then, parts of the line are swapped for shuttle buses on weekdays at set times, with pauses around busy travel seasons. Check the Port Authority’s AirTrain Newark page before you rely on it.',
   },
   {
-    q: 'Is EWR car service available late at night?',
-    a: 'Yes — Eagle Eye operates 24 hours a day, 7 days a week. Late-night arrivals, red-eye departures, and early morning flights are all fully covered. No minimum notice required for standard bookings.',
+    q: 'Which terminal is United at Newark?',
+    a: 'Most United flights use Terminal C, United’s hub. A few use Terminal A, which opened in 2023. American, JetBlue and Air Canada are in Terminal A, and most other international airlines are in Terminal B.',
   },
   {
-    q: 'Do you track flights for EWR arrivals?',
-    a: 'Yes. We monitor your EWR flight in real-time and update your driver automatically if there are delays, early arrivals, or gate changes. No extra charge, no phone calls needed. Your chauffeur is always timed to your actual landing.',
+    q: 'Where will my driver meet me at Newark Airport?',
+    a: 'We confirm the meeting point before you land: inside the arrivals area after baggage claim, or at the curb once you have your bags. Terminal A has its own roadway, so the terminal matters.',
   },
   {
-    q: 'Do you provide car service from New Jersey to JFK airport?',
-    a: 'Yes. Eagle Eye provides car service from New Jersey to JFK Airport — including from Newark, Hoboken, Jersey City, Princeton, and all NJ locations. Flat rate confirmed at booking, all tolls included (Lincoln Tunnel, Holland Tunnel, or Goethals Bridge). Book online or WhatsApp us with your NJ pickup address and JFK terminal.',
+    q: 'What happens if my Newark flight is delayed?',
+    a: 'Add your flight number when you book. We follow the flight and time the pickup to your actual landing, including long international delays.',
   },
   {
-    q: 'Can I book a car service from JFK to Newark Airport?',
-    a: 'Yes. We run direct JFK to Newark (EWR) transfers — a common route for travelers with connections at different airports. Flat rate, one pickup, door-to-door. JFK to Newark takes approximately 40–60 minutes depending on traffic and which terminals you are using.',
+    q: 'How early should I leave Manhattan for a Newark flight?',
+    a: 'Aim to be at the terminal two hours before a domestic flight and three before an international one, then add the drive and a 30-minute cushion. For a 7 pm international flight from Midtown on a weekday, a pickup around 2 pm is sensible.',
+  },
+  {
+    q: 'Can you drive from Newark Airport to Princeton or Philadelphia?',
+    a: 'Yes. Princeton is usually under an hour from Newark, and Philadelphia about an hour and a half outside rush hour. Both are door to door in one car.',
+  },
+  {
+    q: 'Do you pick up at Newark for Jersey City and Hoboken?',
+    a: 'Yes. Jersey City is often 15 to 25 minutes from Newark Airport and Hoboken about 20 to 30 — one of the shortest airport rides we do.',
   },
 ];
 
+const related = [
+  { href: '/services/airport/jfk', title: 'JFK car service', body: 'Most long-haul airlines and JetBlue’s home terminal.' },
+  { href: '/services/airport/lga', title: 'LaGuardia car service', body: 'The quickest airport from the East Side and the Bronx.' },
+  { href: '/services/airport', title: 'Compare NYC airports', body: 'Drive times and terminals for JFK, LGA and EWR.' },
+  { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'Newark to Princeton, Morristown, Short Hills and the Shore.' },
+  { href: '/services/routes/nyc-to-philadelphia', title: 'NYC to Philadelphia', body: 'Door to door, about two hours from Midtown.' },
+  { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
+];
 
-export default function EWRPage() {
+export default function NewarkAirportCarServicePage() {
+  const site = getSiteUrl();
   return (
     <>
-      <ServiceJsonLd
-        name="Newark Airport Black Car Service"
-        description="Premium Newark Liberty Airport car service to Manhattan, Brooklyn, Queens, and New Jersey. Flat rates, all tolls included, real-time flight tracking, meet & greet at Terminals A, B, and C."
-        areaServed="New York City, NY; Newark, NJ"
-        url={`${getSiteUrl()}/services/airport/ewr`}
-      />
-      <FaqJsonLd faqs={faqs} />
       <BreadcrumbJsonLd
         items={[
-          { name: 'Home', url: getSiteUrl() },
-          { name: 'Services', url: `${getSiteUrl()}/services` },
-          { name: 'Airport Transfers', url: `${getSiteUrl()}/services/airport` },
-          { name: 'Newark Airport', url: `${getSiteUrl()}/services/airport/ewr` },
+          { name: 'Home', url: site },
+          { name: 'Airport car service', url: `${site}/services/airport` },
+          { name: 'Newark airport car service', url: `${site}${path}` },
         ]}
       />
+      <AirportServiceJsonLd
+        name="Newark Airport Car Service"
+        description={description}
+        url={`${site}${path}`}
+        airportName="Newark Liberty International Airport"
+        airportWikidata="https://www.wikidata.org/wiki/Q16564"
+        iataCode="EWR"
+      />
+      <HowToJsonLd name="How to book a car service to or from Newark Airport" steps={steps} />
+      <FaqJsonLd faqs={faqs} />
+      <SpeakableJsonLd cssSelectors={['#ewr-title', '#ewr-answer']} />
 
-      {/* HERO */}
-      <section className="bg-brand-black py-20 lg:py-28">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-brand-silver text-xs font-medium tracking-widest uppercase mb-4">
-            Airport Service
-          </p>
-          <h1 className="font-serif text-4xl lg:text-6xl font-semibold text-brand-white mb-6 leading-tight">
-            Newark Car Service
-          </h1>
-          <p className="text-brand-silver text-lg lg:text-xl max-w-2xl mb-10 leading-relaxed">
-            Newark Liberty is one of NYC&apos;s three main airports — all tolls included in your
-            flat rate, real-time flight tracking, and meet &amp; greet at every terminal.
-          </p>
+      <AirportHero
+        airport={airport}
+        idPrefix="ewr"
+        h1="Newark Airport Car Service"
+        answer={`${SITE_NAME} drives you between Newark Liberty and Manhattan, Brooklyn and towns across New Jersey, as well as on to Princeton and Philadelphia. With the AirTrain under construction until about 2030, a booked car is the one way in or out that skips the transfers — Midtown is usually 35 to 90 minutes away.`}
+        ctaLabel="Get my Newark price"
+        phoneDisplay={CONTACT_PHONE_DISPLAY}
+        phoneE164={CONTACT_PHONE_E164}
+      />
 
-          {/* Stat bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-brand-charcoal mb-10">
-            {[
-              { label: 'Toll Coverage', value: 'All Tolls Included' },
-              { label: 'Airport Wait Time', value: '60-Min Free Wait' },
-              { label: 'Availability', value: '24/7' },
-              { label: 'Licensing', value: 'TLC Licensed' },
-            ].map((stat) => (
-              <div key={stat.label} className="bg-brand-black px-6 py-5">
-                <div className="text-brand-white font-semibold text-sm mb-1">{stat.value}</div>
-                <div className="text-brand-silver text-xs tracking-wide">{stat.label}</div>
-              </div>
-            ))}
+      {/* Cost */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="cost-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="cost-heading"
+            eyebrow="Pricing"
+            title="How much is a car service to Newark Airport?"
+            intro="Newark fares depend more on the river than on the miles. Here is what changes the price."
+          />
+          <FactorTable caption="What affects the price of a Newark Airport car service" rows={priceFactors} />
+          <p className="mt-6 max-w-3xl text-brand-muted leading-relaxed">
+            The quickest way to a real number is to{' '}
+            <Link href={bookHref} className="font-semibold text-brand-blue hover:underline">enter your trip</Link>. The
+            estimate updates as you go, and we confirm the fare before anything is booked.
+          </p>
+        </div>
+      </section>
+
+      {/* Comparison */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="compare-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="compare-heading"
+            eyebrow="Compare"
+            title="Newark airport car service vs AirTrain, NJ Transit and taxi"
+            intro="Newark is the one NYC airport with a train station — but between 2026 and 2028 the link to it is a construction site."
+          />
+          <ComparisonTable caption="How a booked black car compares with other ways to and from Newark Airport" columns={comparisonColumns} rows={comparison} />
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            <div>
+              <h3 className="text-lg text-brand-ink">AirTrain Newark during construction</h3>
+              <p className="mt-2 text-brand-muted leading-relaxed">
+                The monorail linking the terminals to the rail station is being replaced. On many weekdays, part of the
+                route runs on shuttle buses at set hours. It works, but it adds a change and some uncertainty.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg text-brand-ink">NJ Transit and Amtrak</h3>
+              <p className="mt-2 text-brand-muted leading-relaxed">
+                From the airport station, NJ Transit and Amtrak run to New York Penn Station and south toward Princeton and
+                Philadelphia. Good value when you travel light and your destination is near a station.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg text-brand-ink">Taxi and rideshare</h3>
+              <p className="mt-2 text-brand-muted leading-relaxed">
+                Newark taxis leave from dispatcher stands at each terminal; New York trips add tolls and surcharges.
+                Rideshare uses marked pickup zones and prices rise when big international arrivals land together.
+              </p>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link
-              href="/book"
-              className="inline-block py-3 px-8 bg-brand-white text-brand-black font-medium hover:bg-brand-silver transition-colors text-center"
-            >
-              Book Your EWR Transfer
+      {/* Terminals */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="terminals-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="terminals-heading"
+            eyebrow="Terminals"
+            title="Newark terminals and where your driver meets you"
+            intro="Newark has three terminals. A is the new building on its own roadway; B and C are next to each other on the main loop."
+          />
+          <div className="mb-10">
+            <TerminalFinder initialAirport="EWR" />
+          </div>
+          <TerminalCards
+            airport={airport}
+            fallbackTitle="United, but which terminal?"
+            fallbackBody="Most United flights use Terminal C, but some use A. Add your flight number when you book and we check the terminal before the car heads to the airport."
+          />
+        </div>
+      </section>
+
+      {/* Drive times */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="times-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="times-heading"
+            eyebrow="Drive times"
+            title="Newark Airport drive times by town and neighborhood"
+            intro="Typical door-to-door times by car. Trips into Manhattan depend on the tunnels; trips within New Jersey depend on the Turnpike and Route 78."
+          />
+          <DriveTimeTable airport={airport} />
+          <p className="mt-6 text-sm text-brand-muted">
+            Approximate road distances and times; live traffic decides on the day. Staying in New Jersey?{' '}
+            <Link href="/services/areas/new-jersey" className="font-semibold text-brand-blue hover:underline">
+              See our New Jersey car service
             </Link>
-            <Link
+            .
+          </p>
+        </div>
+      </section>
+
+      {/* Fleet */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="fleet-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="Newark black car fleet: vehicles and capacity" />
+          <InfoCards items={vehicles} />
+          <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-blue hover:underline">
+            See every vehicle →
+          </Link>
+        </div>
+      </section>
+
+      {/* Corporate */}
+      <section className="bg-brand-ink py-16 text-brand-white lg:py-24" aria-labelledby="corporate-heading">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div>
+            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-sky mb-3">Business travel</p>
+            <h2 id="corporate-heading" className="text-3xl lg:text-[2.5rem] leading-tight text-balance">
+              Corporate car service at Newark Airport
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-brand-silver">
+              Newark serves two business markets at once: Manhattan offices, and the corporate campuses along Route 78, Route
+              287 and the Route 1 corridor near Princeton. We drive both from the same booking.
+            </p>
+          </div>
+          <ul className="space-y-4 self-center">
+            {[
+              'International arrivals tracked through customs delays',
+              'Pickups for visitors heading to New Jersey offices',
+              'Bookings for colleagues without sharing logins',
+              'An invoice for every ride, payable by card',
+            ].map((item) => (
+              <li key={item} className="flex gap-3">
+                <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-sky" />
+                <span className="text-brand-tint">{item}</span>
+              </li>
+            ))}
+            <li className="pt-2">
+              <Link href="/contact" className="font-display font-bold text-brand-white underline-offset-4 hover:underline">
+                Talk to us about company travel →
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* When to book */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="when-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="when-heading" eyebrow="Planning" title="When to book your Newark car, and what is included" />
+          <div className="grid gap-8 md:grid-cols-3">
+            <div>
+              <h3 className="text-lg text-brand-ink">Booking ahead</h3>
+              <p className="mt-2 text-brand-muted leading-relaxed">
+                Online bookings need at least two hours’ notice. Evening transatlantic departures and early-morning
+                arrivals from Europe fill up first, so book those a day or more ahead.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg text-brand-ink">Leaving for a flight</h3>
+              <p className="mt-2 text-brand-muted leading-relaxed">
+                Plan on three hours at the airport for international flights and two for domestic. Leaving Manhattan after
+                3 pm on a weekday, give the tunnel approaches extra time — the planner below does this for you.
+              </p>
+            </div>
+            <div>
+              {/* TODO(owner): confirm what is included and the change/cancellation terms. */}
+              <h3 className="text-lg text-brand-ink">Included with every ride</h3>
+              <ul className="mt-2 space-y-1.5 text-brand-muted">
+                <li>Flight followed for arrivals</li>
+                <li>Help with your luggage</li>
+                <li>Tolls and fees listed on your invoice</li>
+                <li>Driver details sent before pickup</li>
+              </ul>
+              <p className="mt-3 text-sm text-brand-muted">Change of plans? Call or message us as soon as you know.</p>
+            </div>
+          </div>
+          <div className="mt-12 max-w-2xl">
+            <PickupPlanner airportCode="EWR" />
+          </div>
+        </div>
+      </section>
+
+      {/* How to book */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="how-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="how-heading" eyebrow="How it works" title="How to book Newark airport car service" />
+          <StepsList steps={steps} />
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <Link href={bookHref} className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
+              Book your Newark car
+            </Link>
+            <a
               href={WHATSAPP_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block py-3 px-8 border border-brand-silver text-brand-white font-medium hover:border-brand-white transition-colors text-center"
+              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
             >
-              WhatsApp Us
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="bg-brand-offwhite py-16 lg:py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black mb-3">
-            How EWR Car Service Works
-          </h2>
-          <p className="text-brand-grey mb-12 max-w-xl">
-            Every step is handled — from a toll-inclusive quote to your chauffeur waiting
-            at arrivals. Here is what happens when you book.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                step: '01',
-                title: 'Book Online — Tolls Included Upfront',
-                body: 'Enter your EWR flight and destination at /book. Your flat rate is confirmed instantly — NJ Turnpike, Lincoln Tunnel, and all other tolls are built in. No add-ons at the end.',
-              },
-              {
-                step: '02',
-                title: 'Driver Monitors Your EWR Flight',
-                body: 'We track your Newark flight live from departure. Delays, early arrivals, and gate changes are handled automatically — your chauffeur is always timed to your actual landing.',
-              },
-              {
-                step: '03',
-                title: 'Meet & Greet at Arrivals',
-                body: 'Your driver waits at the arrivals level of your terminal with a name sign — inside Terminal A, B, or C. A WhatsApp message confirms the exact meeting spot before you land.',
-              },
-              {
-                step: '04',
-                title: 'Door-to-Door — No Toll Surprises',
-                body: 'Bags loaded, you head straight to your destination. No tunnel toll added at the end, no surge, no meter. The price you saw at booking is the price you pay.',
-              },
-            ].map((s) => (
-              <div key={s.step} className="flex flex-col">
-                <div className="font-serif text-4xl font-semibold text-brand-black opacity-20 mb-4 leading-none">
-                  {s.step}
-                </div>
-                <h3 className="font-semibold text-brand-black mb-2">{s.title}</h3>
-                <p className="text-brand-grey text-sm leading-relaxed">{s.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* TERMINAL GUIDE */}
-      <section className="bg-brand-white py-16 lg:py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black mb-3">
-            EWR Terminal Guide
-          </h2>
-          <p className="text-brand-grey mb-10 max-w-2xl">
-            Newark Liberty has three active terminals connected by the AirTrain. Your chauffeur
-            knows exactly where to wait in each one — so you walk straight to your car.
-          </p>
-          <div className="grid lg:grid-cols-3 gap-6 mb-10">
-            {[
-              {
-                terminal: 'Terminal A',
-                airlines: 'United Airlines (domestic) · Some international',
-                detail:
-                  'Terminal A handles United Airlines domestic routes and select international flights. Arrivals exit onto the ground floor — your chauffeur waits past baggage claim with your name sign. Terminal A is the nearest to the AirTrain station, but your driver handles the whole journey.',
-                note: 'United domestic and some United Express routes arrive here.',
-              },
-              {
-                terminal: 'Terminal B',
-                airlines: 'United Airlines (international) · British Airways · Lufthansa · Air Canada',
-                detail:
-                  'Terminal B is United\'s international terminal at EWR and also handles major international carriers. Customs and baggage claim exit onto the arrivals hall — your chauffeur is waiting with a name sign. A WhatsApp message confirms the meeting point before you clear customs.',
-                note: 'International arrivals — allow extra time for customs clearance.',
-              },
-              {
-                terminal: 'Terminal C',
-                airlines: 'United Express · Regional carriers · Some international',
-                detail:
-                  'Terminal C serves United Express regional routes and additional international flights. Ground level arrivals are well-signed — your driver waits at the exit from baggage claim. If your flight is on a regional jet through Newark, it likely arrives at Terminal C.',
-                note: 'United Express and regional connections use Terminal C.',
-              },
-            ].map((t) => (
-              <div key={t.terminal} className="border border-brand-light p-6">
-                <h3 className="font-serif text-xl font-semibold text-brand-black mb-1">
-                  {t.terminal}
-                </h3>
-                <p className="text-sm text-brand-silver mb-4">{t.airlines}</p>
-                <p className="text-brand-grey text-sm leading-relaxed mb-3">{t.detail}</p>
-                <p className="text-xs text-brand-silver border-t border-brand-light pt-3">
-                  {t.note}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="bg-brand-offwhite border border-brand-light p-6">
-            <h3 className="font-semibold text-brand-black mb-2">Toll Routes from EWR</h3>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm text-brand-grey">
-              <div>
-                <span className="font-medium text-brand-black">To Midtown &amp; Upper Manhattan:</span>{' '}
-                NJ Turnpike → Lincoln Tunnel. All tolls included in your flat rate.
-              </div>
-              <div>
-                <span className="font-medium text-brand-black">To Lower Manhattan &amp; Brooklyn:</span>{' '}
-                NJ Turnpike → Holland Tunnel or Goethals Bridge. All tolls included.
-              </div>
-            </div>
-            <p className="text-xs text-brand-silver mt-4">
-              Route may vary based on real-time traffic. All toll options are covered — your quoted
-              price does not change based on which route your driver takes.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* POPULAR ROUTES */}
-      <section className="bg-brand-offwhite py-16 lg:py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black mb-3">
-            Popular EWR Routes
-          </h2>
-          <p className="text-brand-grey mb-10 max-w-xl">
-            We run these routes every day. Flat rates with all NJ Turnpike and tunnel
-            tolls already included.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              {
-                label: 'EWR to Manhattan',
-                time: '30–45 min',
-                href: '/services/routes/ewr-to-manhattan-black-car-service',
-              },
-              {
-                label: 'Manhattan to EWR',
-                time: '30–45 min',
-                href: '/services/routes/manhattan-to-ewr-black-car-service',
-              },
-              {
-                label: 'EWR to Brooklyn',
-                time: '40–55 min',
-                href: '/services/routes/ewr-to-brooklyn-black-car-service',
-              },
-              {
-                label: 'EWR to Queens',
-                time: '40–55 min',
-                href: '/book',
-              },
-              {
-                label: 'EWR to Westchester',
-                time: '50–70 min',
-                href: '/book',
-              },
-              {
-                label: 'EWR to Long Island',
-                time: '50–70 min',
-                href: '/book',
-              },
-              {
-                label: 'EWR to Upper East Side',
-                time: '35–50 min',
-                href: '/book',
-              },
-              {
-                label: 'EWR to Midtown',
-                time: '30–45 min',
-                href: '/book',
-              },
-            ].map((route) => (
-              <Link
-                key={route.label}
-                href={route.href}
-                className="group bg-brand-white border border-brand-light p-5 hover:border-brand-dark transition-colors"
-              >
-                <div className="font-semibold text-brand-black text-sm mb-2 group-hover:underline">
-                  {route.label}
-                </div>
-                <div className="text-brand-grey text-xs">{route.time} off-peak</div>
-              </Link>
-            ))}
-          </div>
-          <p className="text-xs text-brand-silver mt-6">
-            Travel times are estimates and vary with traffic. All tolls are included in your flat
-            rate regardless of route.{' '}
-            <Link href="/book" className="underline">
-              Get your quote →
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      {/* WHY EAGLE EYE */}
-      <section className="bg-brand-white py-16 lg:py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black mb-3">
-            Why Eagle Eye Black Car at EWR
-          </h2>
-          <p className="text-brand-grey mb-10 max-w-xl">
-            Professional black car service from Newark means every toll is included, your rate
-            is locked at booking, and your chauffeur is confirmed before you travel.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { title: 'All Tolls Included', body: 'NJ Turnpike, Lincoln Tunnel, Holland Tunnel — every toll on the route is built into your flat rate. Nothing is added at the end.' },
-              { title: 'Flat Rate — Locked at Booking', body: 'Your price is confirmed the moment you book and never changes — regardless of traffic, time of day, or conditions.' },
-              { title: 'Meet & Greet at Terminals A, B & C', body: 'Your chauffeur waits at the arrivals level of your terminal with a name sign. All three EWR terminals covered.' },
-              { title: 'Real-Time Flight Tracking', body: 'We monitor your EWR flight and update your driver automatically for delays or early arrivals — no calls needed.' },
-              { title: 'Luggage Assistance', body: 'Your chauffeur loads and unloads all bags — no carrying luggage through a train platform or loading it yourself.' },
-              { title: 'TLC Licensed & Insured', body: 'Every Eagle Eye driver holds a NYC TLC license and operates under commercial insurance on every booking.' },
-            ].map((item) => (
-              <div key={item.title} className="bg-brand-offwhite border border-brand-light p-5">
-                <div className="flex items-start gap-3 mb-2">
-                  <span className="text-brand-black font-bold mt-0.5">✓</span>
-                  <h3 className="font-semibold text-brand-black text-sm">{item.title}</h3>
-                </div>
-                <p className="text-brand-grey text-sm pl-6">{item.body}</p>
-              </div>
-            ))}
-          </div>
-          <p className="text-xs text-brand-silver mt-6">
-            Visit{' '}
-            <Link href="/book" className="underline">
-              /book
-            </Link>{' '}
-            for your confirmed flat rate with all tolls included.
-          </p>
-        </div>
-      </section>
-
-      {/* WHAT'S INCLUDED */}
-      <section className="bg-brand-offwhite py-16 lg:py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black mb-3">
-            What&apos;s Included with Every EWR Transfer
-          </h2>
-          <p className="text-brand-grey mb-10 max-w-xl">
-            Every item below is covered in your flat rate. No hidden charges, no toll surprises,
-            no tip not included.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              {
-                title: 'Real-Time Flight Tracking',
-                body: 'We monitor your EWR flight from departure. Delays and early arrivals trigger automatic driver adjustments — no calls needed from you.',
-              },
-              {
-                title: 'Meet & Greet at Terminals A, B & C',
-                body: 'Your chauffeur waits inside your terminal at the arrivals level with a name sign. All three EWR terminals are covered.',
-              },
-              {
-                title: 'Luggage Assistance',
-                body: 'Your driver handles bags at pickup and drop-off. No carrying heavy luggage to a train platform or loading it yourself.',
-              },
-              {
-                title: 'All Bridge & Tunnel Tolls Included',
-                body: 'NJ Turnpike, Lincoln Tunnel, Holland Tunnel — every toll on the route to your destination is already built into your flat rate.',
-              },
-              {
-                title: 'Luxury Sedan or SUV',
-                body: 'You travel in a premium black car, not whatever happens to be available nearby. All vehicles are clean, late-model, and TLC inspected.',
-              },
-              {
-                title: '24/7 Availability',
-                body: 'Newark has early departures, red-eye arrivals, and overnight international landings. Eagle Eye is available every hour of every day, including holidays.',
-              },
-              {
-                title: 'TLC Licensed & Fully Insured',
-                body: 'Every Eagle Eye driver holds a NYC TLC license and operates under commercial insurance — not a personal auto policy.',
-              },
-            ].map((item) => (
-              <div key={item.title} className="bg-brand-white border border-brand-light p-6">
-                <div className="flex items-start gap-3 mb-3">
-                  <span className="mt-0.5 text-brand-black" aria-hidden="true">
-                    ✓
-                  </span>
-                  <h3 className="font-semibold text-brand-black text-sm">{item.title}</h3>
-                </div>
-                <p className="text-brand-grey text-sm leading-relaxed pl-6">{item.body}</p>
-              </div>
-            ))}
+              Book on WhatsApp
+            </a>
           </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="bg-brand-white py-16 lg:py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black mb-3">
-            EWR Car Service — Frequently Asked Questions
-          </h2>
-          <p className="text-brand-grey mb-10 max-w-xl">
-            Common questions about booking Newark Airport transfers with Eagle Eye.
-          </p>
-          <div className="space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq.q} className="border border-brand-light p-6">
-                <h3 className="font-semibold text-brand-black mb-3">{faq.q}</h3>
-                <p className="text-brand-grey text-sm leading-relaxed">{faq.a}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <p className="text-brand-grey text-sm mb-4">
-              Have a question not answered here? Contact us directly.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <a
-                href={`tel:${CONTACT_PHONE_E164}`}
-                className="inline-block py-2 px-6 border border-brand-light text-brand-black text-sm hover:border-brand-dark transition-colors"
-              >
-                Call {CONTACT_PHONE_DISPLAY}
-              </a>
-              <a
-                href={`mailto:${CONTACT_EMAIL_BOOKINGS}`}
-                className="inline-block py-2 px-6 border border-brand-light text-brand-black text-sm hover:border-brand-dark transition-colors"
-              >
-                Email Us
-              </a>
-            </div>
-          </div>
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="faq-heading">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="faq-heading" eyebrow="FAQ" title="Newark airport car service FAQs" />
+          <FaqList faqs={faqs} />
         </div>
       </section>
 
-      {/* RELATED AIRPORTS */}
-      <section className="bg-brand-offwhite py-16 lg:py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black mb-3">
-            Other NYC Area Airports
-          </h2>
-          <p className="text-brand-grey mb-10 max-w-xl">
-            Flying through a different airport? Eagle Eye covers all three major NYC airports
-            plus Westchester.
-          </p>
-          <div className="grid sm:grid-cols-3 gap-6">
-            {[
-              {
-                code: 'JFK',
-                name: 'John F. Kennedy International',
-                detail:
-                  'NYC\'s largest international airport — 4 active terminals. All major international carriers plus JetBlue\'s domestic hub. Flat-rate service from all terminals.',
-                href: '/services/airport/jfk',
-              },
-              {
-                code: 'LGA',
-                name: 'LaGuardia Airport',
-                detail:
-                  'NYC\'s most-used domestic airport — newly rebuilt Terminal B and Terminal C. Just 9 miles from Midtown, ideal for American, United, Delta, and Southwest.',
-                href: '/services/airport/lga',
-              },
-              {
-                code: 'HPN',
-                name: 'Westchester County Airport',
-                detail:
-                  'Smaller regional airport north of the city with shorter security lines — popular with business travelers heading to Westchester, Connecticut, or Hudson Valley.',
-                href: '/services/airport/hpn',
-              },
-            ].map((airport) => (
-              <Link
-                key={airport.code}
-                href={airport.href}
-                className="group bg-brand-white border border-brand-light p-6 hover:border-brand-dark transition-colors"
-              >
-                <div className="font-serif text-2xl font-semibold text-brand-black mb-1 group-hover:underline">
-                  {airport.code}
-                </div>
-                <div className="text-sm font-medium text-brand-black mb-3">{airport.name}</div>
-                <p className="text-brand-grey text-xs leading-relaxed">{airport.detail}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Related Blog Articles */}
-      <section className="bg-brand-offwhite py-12 border-t border-brand-light">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-xl font-semibold text-brand-black mb-6">Newark Airport Guides</h2>
-          <div className="grid sm:grid-cols-3 gap-4">
-            {[
-              { href: '/blog/newark-airport-car-service-ewr-to-manhattan', title: 'Newark Airport Car Service: EWR to Manhattan' },
-              { href: '/blog/ewr-newark-airport-guide-car-service', title: 'Newark Airport (EWR) Complete Guide' },
-              { href: '/blog/jfk-to-newark-airport-transfer-options', title: 'JFK to Newark Airport Transfer Options' },
-              { href: '/blog/laguardia-to-newark-airport-transfer-guide', title: 'LGA to Newark Airport Transfer' },
-              { href: '/blog/best-airport-to-fly-into-nyc-jfk-lga-ewr-guide', title: 'JFK vs LGA vs EWR: Which to Choose?' },
-              { href: '/blog/black-car-service-vs-taxi-nyc-which-is-better', title: 'Black Car vs Taxi NYC: Which Wins?' },
-            ].map((l) => (
-              <Link key={l.href} href={l.href} className="group bg-brand-white border border-brand-light hover:border-brand-black transition-colors p-4 text-sm font-medium text-brand-black">
-                {l.title} →
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-brand-black py-20 lg:py-28">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-serif text-3xl lg:text-5xl font-semibold text-brand-white mb-6 leading-tight">
-            Book Your EWR Transfer Today
-          </h2>
-          <p className="text-brand-silver text-lg mb-10 max-w-xl mx-auto">
-            Flat rate confirmed at booking — all NJ Turnpike and tunnel tolls included.
-            Your chauffeur waiting at arrivals in your terminal, name sign at ready.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link
-              href="/book"
-              className="inline-block py-4 px-10 bg-brand-white text-brand-black font-medium hover:bg-brand-silver transition-colors"
-            >
-              Get an Instant Quote
-            </Link>
-            <Link
-              href={WHATSAPP_BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block py-4 px-10 border border-brand-silver text-brand-white font-medium hover:border-brand-white transition-colors"
-            >
-              WhatsApp a Booking
-            </Link>
-          </div>
-          <p className="text-brand-silver text-sm mt-8">
-            Or call us at{' '}
-            <a href={`tel:${CONTACT_PHONE_E164}`} className="underline">
-              {CONTACT_PHONE_DISPLAY}
-            </a>{' '}
-            — available 24/7.
-          </p>
+      {/* Related */}
+      <section className="bg-brand-tint py-16 lg:py-20" aria-labelledby="related-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="related-heading" eyebrow="Keep planning" title="Related NYC airports and routes" />
+          <RelatedLinks links={related} />
         </div>
       </section>
     </>
