@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import { SITE_NAME } from '@/lib/site';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164 } from '@/lib/contact';
 import {
   Elements,
   PaymentElement,
@@ -202,7 +204,7 @@ export default function InvoicePage({ params }: { params: { token: string } }) {
           <p className="text-brand-grey text-sm">
             A receipt has been sent to your email. We look forward to your next ride.
           </p>
-          <p className="mt-6 text-sm text-brand-grey">— Eagle Eye Chauffeur</p>
+          <p className="mt-6 text-sm text-brand-grey">— {SITE_NAME}</p>
         </div>
       </div>
     );
@@ -213,7 +215,7 @@ export default function InvoicePage({ params }: { params: { token: string } }) {
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <p className="text-brand-grey text-sm uppercase tracking-widest mb-1">Eagle Eye Chauffeur</p>
+          <p className="text-brand-grey text-sm uppercase tracking-widest mb-1">{SITE_NAME}</p>
           <h1 className="font-serif text-3xl font-semibold text-brand-black">Your Invoice</h1>
           {invoice.rideDate && (
             <p className="text-brand-grey mt-1 text-sm">{invoice.rideDate}</p>
@@ -369,8 +371,8 @@ export default function InvoicePage({ params }: { params: { token: string } }) {
 
         <p className="text-center text-xs text-brand-grey mt-4">
           Payments processed securely by Stripe. Questions? Call{' '}
-          <a href="tel:+19299196499" className="underline">
-            (929) 919-6499
+          <a href={`tel:${CONTACT_PHONE_E164}`} className="underline">
+            {CONTACT_PHONE_DISPLAY}
           </a>
         </p>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { SITE_NAME } from '@/lib/site';
 
 type Booking = {
   id: string;
@@ -71,7 +72,7 @@ function mapsUrl(pickup: string, dest: string) {
 /** Plain-text trip sheet a driver can read on their phone. */
 function tripMessage(b: Booking, dest: string) {
   const lines = [
-    'New trip — Eagle Eye Chauffeur',
+    `New trip — ${SITE_NAME}`,
     (b.date || b.time) ? `Pick-up: ${[b.date, b.time].filter(Boolean).join(' ')}` : '',
     b.pickup ? `From: ${b.pickup}` : '',
     dest ? `To: ${dest}` : '',
