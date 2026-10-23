@@ -1,182 +1,248 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getSiteUrl } from '@/lib/site';
-import { ServiceJsonLd, FaqJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
+import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164, WHATSAPP_BOOKING_URL } from '@/lib/contact';
+import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd, SpeakableJsonLd } from '@/components/JsonLd';
+import { SectionHeading } from '@/components/SectionHeading';
+import { ComparisonTable, type Cell } from '@/components/ComparisonTable';
+import { PageHero, TextTable } from '@/components/PageHero';
+import { FactorTable, FaqList, InfoCards, RelatedLinks } from '@/components/AirportSections';
 import { ogDefaults } from '@/lib/og';
 
+const path = '/services/routes/nyc-to-washington-dc';
+const title = 'NYC to Washington DC Car Service | Black Car Service';
+const description =
+  'Private car service from New York City to Washington, DC: about 4 to 4.5 hours door to door to Capitol Hill, Downtown, Georgetown or Arlington.';
+const bookHref = `/book?service=point-to-point&dropoff=${encodeURIComponent('Washington, DC')}`;
+
 export const metadata: Metadata = {
-  title: 'NYC to Washington DC Car Service | Private Chauffeur',
-  description:
-    'NYC to Washington DC car service — flat-rate private chauffeur from Manhattan, Brooklyn, JFK, LGA, or EWR to Washington DC. ~4–5 hours.',
-  alternates: {
-    canonical: `${getSiteUrl()}/services/routes/nyc-to-washington-dc`,
-  },
-  openGraph: {
-    ...ogDefaults,
-    title: 'NYC to Washington DC Car Service | Eagle Eye',
-    description: 'Flat-rate private chauffeur from NYC to Washington DC. All tolls included, no surge pricing, door-to-door. 24/7.',
-    url: `${getSiteUrl()}/services/routes/nyc-to-washington-dc`,
-  },
+  title: { absolute: title },
+  description,
+  alternates: { canonical: `${getSiteUrl()}${path}` },
+  openGraph: { ...ogDefaults, url: `${getSiteUrl()}${path}`, title, description },
+  twitter: { card: 'summary_large_image', title, description },
 };
 
+// To downtown Washington. Rounded public-map estimates.
+const driveTimes: string[][] = [
+  ['Midtown Manhattan', '225 mi', '4 h – 4 h 30 min', '5 h – 6 h'],
+  ['Lower Manhattan', '225 mi', '4 h – 4 h 30 min', '5 h – 6 h'],
+  ['Downtown Brooklyn', '230 mi', '4 h 10 min – 4 h 40 min', '5 h 15 min – 6 h 15 min'],
+  ['JFK Airport', '240 mi', '4 h 15 min – 4 h 45 min', '5 h 15 min – 6 h 30 min'],
+  ['Newark Airport', '215 mi', '3 h 45 min – 4 h 15 min', '4 h 45 min – 5 h 45 min'],
+  ['Princeton, NJ (on the way)', '170 mi', '3 h – 3 h 20 min', '3 h 45 min – 4 h 30 min'],
+];
+
+const priceFactors = [
+  { factor: 'Distance and time', detail: 'At around 225 miles each way, this is our longest regular route. Most of the fare is the driver’s time and mileage.' },
+  { factor: 'Tolls', detail: 'The New Jersey Turnpike, the Delaware Memorial Bridge, Delaware’s I-95 toll and the Baltimore tunnels all add to the trip. They are listed on your invoice.' },
+  { factor: 'One way, round trip or overnight', detail: 'One way includes the driver’s return. A same-day round trip or a next-day return is quoted separately — ask us when you book.' },
+  { factor: 'Vehicle', detail: 'For four hours or more, many riders choose an SUV or First Class car for the extra room.' },
+  { factor: 'Stops', detail: 'Rest breaks are part of the trip. A planned stop — a pickup in Philadelphia, a meeting in Baltimore — should be in the quote.' },
+];
+
+const comparison: { row: string; cells: Cell[] }[] = [
+  { row: 'Door to door, no station or terminal', cells: ['yes', 'no', 'no', 'no'] },
+  { row: 'No security line or boarding time', cells: ['yes', 'yes', 'no', 'yes'] },
+  { row: 'Leave exactly when you choose', cells: ['yes', 'no', 'no', 'no'] },
+  { row: 'Stops along the way', cells: ['yes', 'no', 'no', 'no'] },
+  { row: 'Private — just your group', cells: ['yes', 'no', 'no', 'no'] },
+  { row: 'Quickest city center to city center', cells: ['no', 'yes', 'varies', 'no'] },
+];
+
+const dropoffs = [
+  { title: 'Capitol Hill and Downtown', body: 'The Capitol, House and Senate office buildings, K Street and the hotels around the White House.' },
+  { title: 'Georgetown and Foggy Bottom', body: 'Georgetown University, the State Department area and George Washington University.' },
+  { title: 'Arlington and Alexandria, VA', body: 'Rosslyn, Crystal City, the Pentagon area and Old Town Alexandria.' },
+  { title: 'Bethesda and Chevy Chase, MD', body: 'NIH, Walter Reed and the offices along Wisconsin Avenue.' },
+  { title: 'DC airports', body: 'Reagan National (DCA), Dulles (IAD) and Baltimore/Washington (BWI) — for flights you would rather take from Washington.' },
+  { title: 'Stops on the way', body: 'Philadelphia, Wilmington or Baltimore — pick up a colleague or fit in a meeting without a second booking.' },
+];
+
+const breaks = [
+  { title: 'New Jersey Turnpike service areas', body: 'Regular stops all the way down the Turnpike for coffee, food and restrooms.' },
+  { title: 'Delaware welcome center', body: 'A large rest area on I-95 near the Delaware–Maryland line, roughly halfway.' },
+  { title: 'Maryland House', body: 'A well-known I-95 service plaza northeast of Baltimore, a little over an hour from DC.' },
+];
+
+// TODO(owner): confirm the overnight / next-day return answer.
 const faqs = [
   {
-    q: 'How far is NYC from Washington DC, and how long does the drive take?',
-    a: 'New York City to Washington DC is about 225 miles down I-95 through New Jersey, Delaware, and Maryland. Door to door it is typically a 4–5 hour drive; traffic through the Baltimore-Washington corridor can add 30–90 minutes during peak hours. Early morning departures (before 7 AM) typically have the smoothest run.',
+    q: 'How long is the drive from New York City to Washington, DC?',
+    a: 'About 4 to 4.5 hours from Midtown to downtown Washington outside rush hour, and 5 to 6 hours on Friday afternoons, holiday weekends or when leaving during the evening peak.',
   },
   {
-    q: 'How much does car service from NYC to Washington DC cost?',
-    a: 'Eagle Eye Chauffeur uses flat-rate pricing for all long-distance routes — NYC to Washington DC included. Tolls on the New Jersey Turnpike, Delaware Turnpike, and I-95 Maryland are all included in your quoted price. Get an instant quote on our booking page.',
+    q: 'How much is a car service from NYC to DC?',
+    a: 'It depends on your exact pickup and drop-off, the vehicle, tolls, and whether it is one way, a same-day round trip or a next-day return. Enter your trip on the booking page for an estimate; we confirm the fare before the ride.',
   },
   {
-    q: 'Is it better to fly, take Amtrak, or use a car service from NYC to DC?',
-    a: 'Flying from LGA or DCA takes about 1 hour in the air but 3–4 hours door-to-door when you account for airport time. Amtrak Acela takes about 2h 45min from Penn Station to Union Station and costs $150–$350+. For executives, private car service offers full door-to-door convenience, complete privacy, no airport security, no bag limits, and competitive pricing when two or more passengers are sharing.',
+    q: 'Is a car faster than the Acela from New York to DC?',
+    a: 'No — the Acela takes about 3 hours between Penn Station and Union Station. A car takes longer on the road but starts at your door and ends at your destination, with no station transfers, which can even it out door to door.',
   },
   {
-    q: 'What areas of DC do you serve?',
-    a: 'We serve all Washington DC destinations — Capitol Hill, Georgetown, Dupont Circle, Foggy Bottom, K Street corridor, Ronald Reagan DCA Airport, Dulles International (IAD), and northern Virginia suburbs including Arlington, McLean, and Tysons Corner.',
+    q: 'Is it better to drive or fly from New York to Washington?',
+    a: 'The flight itself is about an hour, but getting to the airport, security and the trip in from DCA or Dulles often adds two to three hours. For groups, families and anyone with luggage, a car is often simpler.',
   },
   {
-    q: 'Can you pick up at JFK, LGA, or EWR for the DC run?',
-    a: 'Yes. Direct airport-to-DC transfers are available. We meet you at arrivals at any NYC-area airport and drive you directly to your Washington DC destination — no connections.',
+    q: 'Can we stop in Philadelphia or Baltimore on the way?',
+    a: 'Yes. Add the stop when you book so it is part of the quote. Rest breaks along the way are always fine.',
   },
   {
-    q: 'Do you offer round trips from NYC to DC?',
-    a: 'Yes. Both the outbound and return legs are flat-rate and confirmed at booking. Many corporate clients book a same-day round trip — morning departure from NYC, evening return — for a full day of meetings in DC without overnight hotel costs.',
+    q: 'Can you drive me to Dulles, Reagan National or BWI?',
+    a: 'Yes. We drive from New York to all three Washington-area airports. BWI is the closest of the three from the north.',
   },
   {
-    q: 'Is the NYC to DC car service available for same-day round trips?',
-    a: 'Yes. Same-day round trips are one of our most popular bookings for the NYC–DC corridor — executives attending Capitol Hill meetings, lobbying appointments, or law firm visits and returning the same evening. Your driver waits in DC during the day or returns to NYC and comes back for the evening pickup, depending on your preference.',
+    q: 'Can the driver wait and bring me back to New York?',
+    a: 'Yes, as a same-day round trip or a next-day return. Tell us your plans when you book and we will quote the full trip.',
+  },
+  {
+    q: 'Do you drive from Washington, DC back to New York?',
+    a: 'Yes. Book with your Washington pickup address and your New York destination, including JFK, LaGuardia or Newark.',
   },
 ];
 
-export default function NYCToWashingtonDCPage() {
-  const siteUrl = getSiteUrl();
+const related = [
+  { href: '/services/long-distance', title: 'Long-distance car service', body: 'All our routes out of New York.' },
+  { href: '/services/routes/nyc-to-philadelphia', title: 'NYC to Philadelphia', body: 'The halfway city — about two hours.' },
+  { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'Princeton and the Turnpike towns.' },
+  { href: '/services/airport/ewr', title: 'Newark airport car service', body: 'The closest NYC airport heading south.' },
+  { href: '/fleet', title: 'Our vehicles', body: 'Sedans, SUVs and First Class cars.' },
+  { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
+];
+
+export default function NycToWashingtonDcPage() {
+  const site = getSiteUrl();
   return (
     <>
-      <ServiceJsonLd
-        name="NYC to Washington DC Car Service"
-        description="Flat-rate private chauffeur from New York City to Washington DC. Door-to-door, all tolls included, no surge pricing. ~4–5 hours. Business and First Class vehicles."
-        areaServed="New York City, NY"
-        url={`${siteUrl}/services/routes/nyc-to-washington-dc`}
-      />
-      <FaqJsonLd faqs={faqs} />
       <BreadcrumbJsonLd
         items={[
-          { name: 'Home', url: siteUrl },
-          { name: 'Routes', url: `${siteUrl}/services/routes` },
-          { name: 'NYC to Washington DC', url: `${siteUrl}/services/routes/nyc-to-washington-dc` },
+          { name: 'Home', url: site },
+          { name: 'Long-distance car service', url: `${site}/services/long-distance` },
+          { name: 'NYC to Washington, DC', url: `${site}${path}` },
         ]}
       />
+      <ServiceJsonLd
+        name="New York City to Washington, DC Car Service"
+        description={description}
+        url={`${site}${path}`}
+        serviceType="Long-distance car service"
+        areaServed={[
+          { type: 'City', name: 'New York City', sameAs: 'https://www.wikidata.org/wiki/Q60' },
+          { type: 'City', name: 'Washington, D.C.', sameAs: 'https://www.wikidata.org/wiki/Q61' },
+        ]}
+      />
+      <FaqJsonLd faqs={faqs} />
+      <SpeakableJsonLd cssSelectors={['#dc-title', '#dc-answer']} />
 
-      <section className="bg-brand-black text-brand-white py-20 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-brand-silver text-xs tracking-widest uppercase font-medium mb-4">Long-Distance Route · Door-to-Door · All Tolls Included</p>
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight max-w-4xl mb-5">
-            NYC to Washington DC Car Service
-          </h1>
-          <p className="text-brand-silver text-lg max-w-2xl leading-relaxed mb-4">
-            Flat-rate private chauffeur from New York City to Washington DC. Pickup at any NYC address or direct from JFK, LGA, or EWR — door-to-door to the Capitol, K Street, Georgetown, or Reagan National.
-          </p>
-          <div className="flex flex-wrap gap-6 text-sm text-brand-silver mb-10">
-            <span>📍 ~225 miles</span>
-            <span>⏱ ~4–5 hours</span>
-            <span>🛣 All tolls included (NJ, DE, MD)</span>
-            <span>💰 Flat rate — no surge</span>
-            <span>🚪 Door-to-door</span>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/book" className="inline-block bg-brand-white text-brand-black font-semibold px-8 py-4 text-sm hover:bg-brand-offwhite transition-colors text-center">Get Instant Quote</Link>
-            <a href={`tel:${CONTACT_PHONE_E164}`} className="inline-block border border-brand-silver text-brand-white font-semibold px-8 py-4 text-sm hover:border-brand-white transition-colors text-center">Call {CONTACT_PHONE_DISPLAY}</a>
-          </div>
+      <PageHero
+        crumbs={[{ name: 'Home', href: '/' }, { name: 'Long distance', href: '/services/long-distance' }, { name: 'NYC to Washington, DC' }]}
+        eyebrow="New York → Washington, DC"
+        idPrefix="dc"
+        h1="NYC to Washington DC Car Service"
+        answer={`${SITE_NAME} drives you from New York City to Washington, DC in one private car — about four to four and a half hours door to door, with breaks when you want them and no airport or station at either end.`}
+        ctaHref={bookHref}
+        ctaLabel="Get my DC price"
+        phoneDisplay={CONTACT_PHONE_DISPLAY}
+        phoneE164={CONTACT_PHONE_E164}
+      />
+
+      {/* Drive time */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="time-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="time-heading"
+            eyebrow="Drive time"
+            title="How long is the drive from New York to Washington, DC?"
+            intro="Times to downtown Washington via the New Jersey Turnpike and I-95. Leaving New York before 7 am or around midday avoids the worst of it."
+          />
+          <TextTable caption="Drive times from New York to downtown Washington, DC" head={['From', 'Distance', 'Off-peak', 'Rush hour / Fridays']} rows={driveTimes} />
+          <p className="mt-6 text-sm text-brand-muted">Approximate road distances and times; live traffic decides on the day.</p>
         </div>
       </section>
 
-      <section className="bg-brand-white py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl font-semibold text-brand-black mb-10 text-center">NYC to DC — Why Private Car Wins for Executives</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { title: 'Work the Entire Ride', body: 'No TSA, no boarding, no middle seat. The 4–5 hour NYC to DC drive is productive time — calls, prep, rest. A private cabin beats every other option.' },
-              { title: 'All Tolls Included', body: 'NJ Turnpike, Delaware Memorial Bridge, Maryland tolls — all included in your flat rate. The price you see is the price you pay.' },
-              { title: 'Same-Day Round Trip', body: 'One of the most requested routes: leave NYC at 7 AM, full day of DC meetings, return evening. Your driver handles the entire day, no re-booking.' },
-            ].map((i) => (
-              <div key={i.title} className="border border-brand-light bg-brand-offwhite p-6">
-                <h3 className="font-semibold text-brand-black mb-2">{i.title}</h3>
-                <p className="text-brand-grey text-sm leading-relaxed">{i.body}</p>
-              </div>
-            ))}
+      {/* Cost */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="cost-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="cost-heading" eyebrow="Pricing" title="What does a car service from NYC to DC cost?" />
+          <div className="rounded-2xl bg-brand-white">
+            <FactorTable caption="What affects the price of a New York to Washington, DC car service" rows={priceFactors} />
           </div>
-        </div>
-      </section>
-
-      <section className="bg-brand-offwhite py-16">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-2xl lg:text-3xl font-semibold text-brand-black mb-4">
-            The NYC to DC Drive: What to Expect
-          </h2>
-          <p className="text-brand-grey leading-relaxed mb-4">
-            New York City to Washington DC is about 225 miles, running down I-95 through New Jersey, Delaware, and
-            Maryland. Door to door it is typically a 4 to 5 hour drive; the biggest variable is the Baltimore-Washington
-            corridor, where I-95 and the Beltway can add 30 to 90 minutes during peak hours. Your chauffeur monitors
-            traffic live and can take the I-95 Express Lanes or reroute to keep you on schedule.
-          </p>
-          <p className="text-brand-grey leading-relaxed mb-4">
-            This is one of the most popular corporate routes we run, especially as a same-day round trip — leave
-            Manhattan before 7 AM, spend the day in DC meetings, and return the same evening without an overnight hotel.
-            Unlike the Acela or a flight, you work privately the entire way, carry whatever you need, and skip station
-            transfers and airport security at both ends.
-          </p>
-          <p className="text-brand-grey leading-relaxed">
-            We pick up from any NYC address or directly from JFK, LGA, or EWR, and drop anywhere in the DC area — Capitol
-            Hill, the K Street corridor, Georgetown, Dupont Circle, Reagan National (DCA) or Dulles (IAD), and the
-            northern Virginia suburbs (Arlington, McLean, Tysons Corner). First Class SUVs are recommended for the
-            distance; Sprinter vans are available for delegations.
+          <p className="mt-6 max-w-3xl text-brand-muted leading-relaxed">
+            <Link href={bookHref} className="font-semibold text-brand-blue hover:underline">Enter your trip</Link> for an
+            estimate, or message us for a round trip or next-day return. We confirm the fare before the ride.
           </p>
         </div>
       </section>
 
-      <section className="bg-brand-white py-14">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-2xl font-semibold text-brand-black mb-8">NYC to Washington DC FAQ</h2>
-          <div className="space-y-6">
-            {faqs.map((f) => (
-              <div key={f.q} className="border-b border-brand-light pb-6">
-                <h3 className="font-semibold text-brand-black mb-2">{f.q}</h3>
-                <p className="text-brand-grey text-sm leading-relaxed">{f.a}</p>
-              </div>
-            ))}
+      {/* Comparison */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="compare-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="compare-heading"
+            eyebrow="Compare"
+            title="Car service vs Acela, the air shuttle and the bus to DC"
+            intro="Between city centers, the Acela is quickest. The question is how much of the day goes on getting to and from the station or airport."
+          />
+          <ComparisonTable
+            caption="How a car service compares with train, flying and bus between New York and Washington"
+            columns={['Car service', 'Acela / Amtrak', 'Flying', 'Bus']}
+            rows={comparison}
+          />
+        </div>
+      </section>
+
+      {/* Drop-offs */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="where-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="where-heading"
+            eyebrow="Destinations"
+            title="Where we drop off in Washington, Virginia and Maryland"
+            intro="Any address in the DC area works. These are the ones New York riders book most."
+          />
+          <InfoCards items={dropoffs} tone="tint" />
+        </div>
+      </section>
+
+      {/* Breaks */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="breaks-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="breaks-heading"
+            eyebrow="On the road"
+            title="Breaking up a four-hour drive"
+            intro="Four hours is long enough to want a stretch. Say the word and we stop at the next good place."
+          />
+          <InfoCards items={breaks} />
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <Link href={bookHref} className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
+              Book NYC to DC
+            </Link>
+            <a
+              href={WHATSAPP_BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
+            >
+              Ask about a round trip
+            </a>
           </div>
         </div>
       </section>
 
-      <section className="bg-brand-offwhite py-8 border-t border-brand-light">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-sm text-brand-grey mb-4">Other long-distance routes:</p>
-          <div className="flex flex-wrap gap-3">
-            {[
-              { label: 'NYC to Boston', href: '/services/routes/nyc-to-boston' },
-              { label: 'NYC to Philadelphia', href: '/services/routes/nyc-to-philadelphia' },
-              { label: 'Manhattan to Connecticut', href: '/services/routes/manhattan-to-connecticut-car-service' },
-              { label: 'NYC to Westchester', href: '/services/routes/nyc-to-westchester-car-service' },
-            ].map((l) => (
-              <Link key={l.href} href={l.href} className="text-sm border border-brand-light bg-brand-white px-4 py-2 text-brand-black hover:border-brand-dark transition-colors">
-                {l.label} →
-              </Link>
-            ))}
-          </div>
+      {/* FAQ */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="faq-heading">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="faq-heading" eyebrow="FAQ" title="NYC to Washington, DC car service FAQs" />
+          <FaqList faqs={faqs} />
         </div>
       </section>
 
-      <section className="bg-brand-black text-brand-white py-14">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-serif text-3xl font-semibold mb-4">Book NYC to Washington DC Now</h2>
-          <p className="text-brand-silver mb-8">Flat rate · All tolls included · Door-to-door · No surge · Same-day round trips</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/book" className="inline-block bg-brand-white text-brand-black font-semibold px-8 py-4 text-sm hover:bg-brand-offwhite transition-colors">Get Quote</Link>
-            <a href={WHATSAPP_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="inline-block border border-brand-silver text-brand-white font-semibold px-8 py-4 text-sm hover:border-brand-white transition-colors">WhatsApp</a>
-          </div>
+      {/* Related */}
+      <section className="bg-brand-white py-16 lg:py-20" aria-labelledby="related-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="related-heading" eyebrow="Keep planning" title="Related routes and airports" />
+          <RelatedLinks links={related} />
         </div>
       </section>
     </>

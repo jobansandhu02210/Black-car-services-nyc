@@ -154,16 +154,24 @@ export function BreadcrumbJsonLd({ items }: { items: { name: string; url: string
   );
 }
 
+export type SchemaPlace = { type: 'City' | 'State' | 'AdministrativeArea' | 'Airport'; name: string; sameAs?: string };
+
+/**
+ * Service linked to the sitewide LocalBusiness by @id. `areaServed` takes a city name
+ * (legacy) or a list of typed places.
+ */
 export function ServiceJsonLd({
   name,
   description,
   areaServed = 'New York, NY',
   url,
+  serviceType = 'Black Car Service',
 }: {
   name: string;
   description: string;
-  areaServed?: string;
+  areaServed?: string | SchemaPlace[];
   url?: string;
+  serviceType?: string;
 }) {
   const site = getSiteUrl();
   const schema = {
@@ -172,17 +180,12 @@ export function ServiceJsonLd({
     name,
     description,
     ...(url ? { url } : {}),
-    serviceType: 'Black Car Service',
-    provider: {
-      '@type': ['LocalBusiness', 'TaxiService'],
-      name: SITE_NAME,
-      telephone: CONTACT_PHONE_E164,
-      url: site,
-    },
-    areaServed: {
-      '@type': 'City',
-      name: areaServed,
-    },
+    serviceType,
+    provider: { '@id': `${site}/#business` },
+    areaServed:
+      typeof areaServed === 'string'
+        ? { '@type': 'City', name: areaServed }
+        : areaServed.map((p) => ({ '@type': p.type, name: p.name, ...(p.sameAs ? { sameAs: p.sameAs } : {}) })),
   };
 
   return (

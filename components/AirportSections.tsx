@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { SkylineArt } from '@/components/SkylineArt';
+import { PageHero } from '@/components/PageHero';
 import { formatRange, type Airport } from '@/lib/airports';
 
 /**
@@ -29,41 +29,17 @@ export function AirportHero({
   phoneE164: string;
 }) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-brand-tint to-brand-sky/60">
-      <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-32 w-full text-brand-blue/20 lg:h-44" />
-      <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8 lg:pb-28 lg:pt-12">
-        <nav aria-label="Breadcrumb" className="mb-8 text-sm text-brand-muted">
-          <ol className="flex flex-wrap items-center gap-2">
-            <li><Link href="/" className="hover:text-brand-blue">Home</Link></li>
-            <li aria-hidden="true">/</li>
-            <li><Link href="/services/airport" className="hover:text-brand-blue">Airports</Link></li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page" className="font-semibold text-brand-ink">{airport.code}</li>
-          </ol>
-        </nav>
-        <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-4">{airport.name}</p>
-        <h1 id={`${idPrefix}-title`} className="max-w-3xl text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-brand-ink text-balance">
-          {h1}
-        </h1>
-        <p id={`${idPrefix}-answer`} className="mt-6 max-w-2xl text-lg leading-relaxed text-brand-muted">
-          {answer}
-        </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Link
-            href={airportBookHref(airport)}
-            className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display font-bold text-brand-white hover:bg-brand-blue-hover"
-          >
-            {ctaLabel}
-          </Link>
-          <a
-            href={`tel:${phoneE164}`}
-            className="rounded-lg bg-brand-white px-6 py-3 text-center font-display font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
-          >
-            Call {phoneDisplay}
-          </a>
-        </div>
-      </div>
-    </section>
+    <PageHero
+      crumbs={[{ name: 'Home', href: '/' }, { name: 'Airports', href: '/services/airport' }, { name: airport.code }]}
+      eyebrow={airport.name}
+      idPrefix={idPrefix}
+      h1={h1}
+      answer={answer}
+      ctaHref={airportBookHref(airport)}
+      ctaLabel={ctaLabel}
+      phoneDisplay={phoneDisplay}
+      phoneE164={phoneE164}
+    />
   );
 }
 
