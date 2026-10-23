@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GooglePlacesAutocomplete } from '@/components/GooglePlacesAutocomplete';
+import { VehicleArt } from '@/components/VehicleArt';
 import {
   CONTACT_EMAIL_BOOKINGS,
   CONTACT_PHONE_DISPLAY,
@@ -14,22 +15,24 @@ type VehicleType = 'business-sedan' | 'business-suv' | 'first-suv' | 'first-seda
 
 const SERVICE_LABELS: Record<ServiceType, string> = {
   'point-to-point': 'Point-to-Point',
-  hourly: 'Hourly Chauffeur',
+  hourly: 'By the hour',
   airport: 'Airport Transfer',
 };
 
 const VEHICLE_LABELS: Record<VehicleType, string> = {
-  'business-sedan': 'Business Class Sedan',
-  'business-suv': 'Business Class SUV',
+  'business-sedan': 'Business Sedan',
+  'business-suv': 'Business SUV',
   'first-suv': 'First Class SUV',
   'first-sedan': 'First Class Sedan',
 };
 
-const VEHICLE_META: Record<VehicleType, { image: string; passengers: number; luggage: number; description: string; hourlyRate: number }> = {
-  'business-sedan': { image: '/fleet-business-sedan.png', passengers: 3, luggage: 3, description: 'Perfect for solo & executive travel', hourlyRate: 110 },
-  'business-suv':   { image: '/fleet-business-suv.jpg',  passengers: 6, luggage: 6, description: 'Extra room for groups & luggage',    hourlyRate: 120 },
-  'first-suv':      { image: '/fleet-first-suv.png',     passengers: 6, luggage: 6, description: 'Top-tier luxury for VIP travel',      hourlyRate: 130 },
-  'first-sedan':    { image: '/fleet-first-sedan.png',   passengers: 3, luggage: 3, description: 'Premium comfort with elegant style',  hourlyRate: 210 },
+// Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts and /fleet.
+// No hard-coded hourly rates: pricing is still to be set by the owner (TODO(owner)).
+const VEHICLE_META: Record<VehicleType, { kind: 'sedan' | 'suv'; passengers: number; luggage: number; description: string }> = {
+  'business-sedan': { kind: 'sedan', passengers: 3, luggage: 3, description: 'The everyday choice for one or two travelers' },
+  'business-suv':   { kind: 'suv',   passengers: 6, luggage: 6, description: 'Room for a family, a team or a lot of luggage' },
+  'first-suv':      { kind: 'suv',   passengers: 6, luggage: 6, description: 'Our most spacious car, newer and top-trim' },
+  'first-sedan':    { kind: 'sedan', passengers: 3, luggage: 3, description: 'Newer, quieter, more legroom — for clients' },
 };
 
 const AIRPORTS = ['JFK - John F. Kennedy', 'LGA - LaGuardia', 'EWR - Newark Liberty'];
@@ -355,11 +358,11 @@ export default function BookPage() {
     <div className="bg-brand-offwhite min-h-screen py-12 lg:py-20">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-10">
-          <h1 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black">
-            Book NYC Black Car Service | Eagle Eye Chauffeur
-          </h1>
-          <p className="mt-2 text-brand-grey">
-            Enter your trip details and submit — we confirm by email and send a formal invoice with your final price.
+          <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-3">Book a ride</p>
+          <h1 className="text-3xl lg:text-4xl text-brand-ink">Book Your Black Car</h1>
+          <p className="mt-3 text-brand-muted leading-relaxed">
+            Airport or city to city, five short steps. You see an estimate as you go; we confirm the fare by email before
+            the ride. No account needed.
           </p>
         </div>
 
@@ -515,9 +518,9 @@ export default function BookPage() {
                   Choose your vehicle
                 </label>
                 {service === 'hourly' ? (
-                  <p className="text-xs text-brand-silver mb-4">Flat hourly rate — minimum 2 hours</p>
+                  <p className="text-xs text-brand-grey mb-4">Hourly bookings have a 2-hour minimum</p>
                 ) : (
-                  <p className="text-xs text-brand-silver mb-4">Prices calculated automatically for your route</p>
+                  <p className="text-xs text-brand-grey mb-4">Estimates update for your route and car</p>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {(Object.keys(VEHICLE_LABELS) as VehicleType[]).map((v) => {
@@ -529,28 +532,23 @@ export default function BookPage() {
                         key={v}
                         type="button"
                         onClick={() => setVehicle(v)}
-                        className={`text-left border transition-all overflow-hidden ${
+                        className={`text-left rounded-xl border transition-all overflow-hidden ${
                           isSelected
-                            ? 'border-brand-black ring-2 ring-brand-black'
-                            : 'border-brand-light hover:border-brand-dark'
+                            ? 'border-brand-blue ring-2 ring-brand-blue'
+                            : 'border-brand-line hover:border-brand-blue'
                         }`}
                       >
                         {/* Vehicle image */}
-                        <div className="relative aspect-[16/9] bg-brand-offwhite overflow-hidden">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={meta.image}
-                            alt={VEHICLE_LABELS[v]}
-                            className="w-full h-full object-cover"
-                          />
+                        <div className="relative overflow-hidden">
+                          <VehicleArt kind={meta.kind} className="h-24 rounded-none" />
                           {isSelected && (
-                            <div className="absolute top-2 right-2 bg-brand-black text-brand-white text-xs px-2 py-1 font-medium">
+                            <div className="absolute top-2 right-2 rounded-md bg-brand-blue text-brand-white text-xs px-2 py-1 font-semibold">
                               ✓ Selected
                             </div>
                           )}
                         </div>
                         {/* Vehicle info + price */}
-                        <div className={`p-4 ${ isSelected ? 'bg-brand-black' : 'bg-brand-white' }`}>
+                        <div className={`p-4 ${ isSelected ? 'bg-brand-blue' : 'bg-brand-white' }`}>
                           <p className={`font-serif text-base font-semibold ${ isSelected ? 'text-brand-white' : 'text-brand-black' }`}>
                             {VEHICLE_LABELS[v]}
                           </p>
@@ -563,14 +561,9 @@ export default function BookPage() {
                           {/* Price display */}
                           <div className={`mt-3 pt-3 border-t ${ isSelected ? 'border-white/20' : 'border-brand-light' }`}>
                             {service === 'hourly' ? (
-                              <div className="flex items-baseline gap-1">
-                                <span className={`text-2xl font-semibold tabular-nums ${ isSelected ? 'text-brand-white' : 'text-brand-black' }`}>
-                                  ${meta.hourlyRate}
-                                </span>
-                                <span className={`text-xs ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
-                                  / hr
-                                </span>
-                              </div>
+                              <p className={`text-sm ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
+                                Hourly rate confirmed with your quote
+                              </p>
                             ) : !hasRequiredLocations ? (
                               <p className={`text-sm ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
                                 Enter your route to see estimate

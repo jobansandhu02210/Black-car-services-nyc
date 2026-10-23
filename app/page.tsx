@@ -5,6 +5,7 @@ import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { FaqJsonLd, SpeakableJsonLd } from '@/components/JsonLd';
 import { HeroBookingCard } from '@/components/HeroBookingCard';
 import { SkylineArt } from '@/components/SkylineArt';
+import { VehicleArt } from '@/components/VehicleArt';
 import { SectionHeading } from '@/components/SectionHeading';
 import { ComparisonTable, type Cell } from '@/components/ComparisonTable';
 import { ogDefaults } from '@/lib/og';
@@ -264,13 +265,7 @@ export default function HomePage() {
             {vehicles.map((v) => (
               <div key={v.name} className="rounded-2xl bg-brand-white p-6 ring-1 ring-brand-line">
                 {/* TODO(owner): replace with a real photo of your own vehicle */}
-                <div aria-hidden="true" className="mb-5 flex h-28 items-end rounded-xl bg-gradient-to-br from-brand-sky to-brand-tint px-4 pb-3">
-                  <svg viewBox="0 0 120 40" className="h-12 w-auto text-brand-blue" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-                    <path d="M4 30h112v-6l-14-4-14-10H40L26 20 8 23z" />
-                    <circle cx="30" cy="31" r="6" fill="white" />
-                    <circle cx="92" cy="31" r="6" fill="white" />
-                  </svg>
-                </div>
+                <VehicleArt kind={v.name === 'Business SUV' ? 'suv' : 'sedan'} className="mb-5 h-28" />
                 <h3 className="text-xl text-brand-ink">{v.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-brand-blue">
                   {v.seats} · {v.bags}

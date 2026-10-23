@@ -1,117 +1,90 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getSiteUrl } from '@/lib/site';
-import { FaqJsonLd } from '@/components/JsonLd';
+import { BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
+import { SectionHeading } from '@/components/SectionHeading';
+import { FaqList, StepsList } from '@/components/AirportSections';
 import { ogDefaults } from '@/lib/og';
 
+const path = '/book';
+const title = 'Book a Black Car Online | Black Car Service';
+const description =
+  'Book a private car to JFK, LaGuardia or Newark, or a long-distance ride from NYC, in five short steps. See an estimate as you go; no account needed.';
+
 export const metadata: Metadata = {
-  title: 'Book NYC Black Car Service | Instant Quote',
-  description:
-    'Book your NYC black car service online — flat-rate airport transfers to JFK, LGA & EWR. Instant quote, no surge pricing. Eagle Eye Chauffeur 24/7.',
-  alternates: { canonical: `${getSiteUrl()}/book` },
-  openGraph: { ...ogDefaults, url: `${getSiteUrl()}/book` },
-  robots: { index: true, follow: true },
+  title: { absolute: title },
+  description,
+  alternates: { canonical: `${getSiteUrl()}${path}` },
+  openGraph: { ...ogDefaults, url: `${getSiteUrl()}${path}`, title, description },
+  twitter: { card: 'summary_large_image', title, description },
 };
 
 const steps = [
-  { n: '1', t: 'Enter your trip', d: 'Choose your service — airport transfer, point-to-point, or hourly — and add your pickup, drop-off, date, and time.' },
-  { n: '2', t: 'Get an instant flat rate', d: 'See a flat-rate quote based on your route and vehicle. No surge pricing, no meter — tolls included.' },
-  { n: '3', t: 'Confirm & ride', d: 'Submit your booking and we confirm by email. Your professional chauffeur arrives on time, every time.' },
+  { name: 'Trip', text: 'Airport, city to city or by the hour — then your pickup and destination.' },
+  { name: 'Date and time', text: 'When you want to be picked up. Online bookings need two hours’ notice.' },
+  { name: 'Car and guests', text: 'Choose the car and tell us how many people and bags.' },
+  { name: 'Your details', text: 'Name, phone, email and anything we should know. We confirm the fare by email.' },
 ];
 
-const reasons = [
-  { t: 'Flat rates, no surge', d: 'Your price is confirmed at booking and never changes — no peak-hour surprises.' },
-  { t: 'Flight tracking', d: 'For JFK, LGA, and EWR pickups we track your flight and adjust for delays automatically.' },
-  { t: 'TLC-licensed chauffeurs', d: 'Professional, background-checked, uniformed drivers in immaculate late-model vehicles.' },
-  { t: '24/7 availability', d: 'Book any time — early-morning flights, red-eyes, and last-minute rides included.' },
-];
-
+// TODO(owner): confirm the cancellation/changes answer once your policy is set.
 const faqs = [
   {
-    q: 'How do I book a black car service in NYC?',
-    a: 'Use the booking form above: select your service, enter your pickup and drop-off, choose your date, time, and vehicle, and you’ll get an instant flat-rate quote. Submit the request and we confirm your ride by email. You can also call or WhatsApp us to book directly.',
+    q: 'Is the estimate the final price?',
+    a: 'The estimate is calculated for your route and car as you book. We confirm the final fare with you by email before the ride, with tolls and fees listed on the invoice.',
   },
   {
-    q: 'How far in advance should I book?',
-    a: 'For airport transfers and standard rides, a few hours’ notice is usually enough, and we accept last-minute and same-day bookings 24/7. For weddings, corporate travel, and events, we recommend booking a few days ahead to guarantee your preferred vehicle class.',
+    q: 'How late can I book?',
+    a: 'Online bookings need at least two hours’ notice. For anything sooner, call or WhatsApp us and we will tell you straight away whether a car is available.',
   },
   {
-    q: 'Is the quoted price the final price?',
-    a: 'Yes — we use flat-rate pricing with no surge and tolls included. The only time the price changes is if you add stops, extra hours, or change the route, which we confirm with you first.',
+    q: 'Do I need an account?',
+    a: 'No. You only need a name, a phone number and an email address so we can confirm the booking and send the driver’s details.',
   },
   {
-    q: 'Which airports do you cover?',
-    a: 'We cover JFK, LaGuardia (LGA), Newark (EWR), Westchester (HPN), and Teterboro (TEB), with meet-and-greet service and real-time flight tracking on airport pickups.',
+    q: 'Which airports can I book?',
+    a: 'JFK, LaGuardia and Newark, in either direction. For an arrival, add the flight number in the details step.',
   },
   {
-    q: 'What vehicles are available?',
-    a: 'Our fleet includes an Executive Sedan (up to 3 passengers), First Class SUV (up to 6), First Class Sedan, and Sprinter vans for groups (executive, limo, and jet cabins seating up to roughly 14–18). You choose your vehicle class during booking, with room for luggage in every class.',
+    q: 'Can I book a long-distance ride here?',
+    a: 'Yes. Choose City to city and enter your destination — Philadelphia, Washington, DC, or anywhere in New Jersey or Connecticut.',
   },
   {
-    q: 'How much does a car service cost in NYC?',
-    a: 'Airport transfers and point-to-point rides are flat-rate, confirmed at booking with tolls included and no surge. Hourly bookings typically range from about $110 per hour for an executive sedan up to roughly $200 per hour for a luxury SUV or Sprinter van, with a short minimum. Enter your trip above for an exact instant quote.',
-  },
-  {
-    q: 'What areas do you serve?',
-    a: 'Eagle Eye Chauffeur serves all five NYC boroughs — Manhattan, Brooklyn, Queens, the Bronx, and Staten Island — plus Long Island, Westchester, the Hamptons, New Jersey, Connecticut, and upstate New York, along with all major airports (JFK, LGA, EWR, HPN, TEB).',
+    q: 'How do I change or cancel a booking?',
+    a: 'Call or message us with your name and trip date as early as you can, and we will update it.',
   },
 ];
 
 export default function BookLayout({ children }: { children: React.ReactNode }) {
+  const site = getSiteUrl();
   return (
     <>
-      {children}
-
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', url: site },
+          { name: 'Book', url: `${site}${path}` },
+        ]}
+      />
       <FaqJsonLd faqs={faqs} />
 
-      <section className="bg-brand-white py-16 lg:py-20 border-t border-brand-light">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl font-semibold text-brand-black mb-10 text-center">
-            How Booking Works
-          </h2>
-          <div className="grid sm:grid-cols-3 gap-8">
-            {steps.map((s) => (
-              <div key={s.n} className="text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-brand-black text-brand-white flex items-center justify-center font-serif text-xl">{s.n}</div>
-                <h3 className="font-semibold text-brand-black mb-2">{s.t}</h3>
-                <p className="text-sm text-brand-grey leading-relaxed">{s.d}</p>
-              </div>
-            ))}
-          </div>
+      {children}
+
+      <section className="border-t border-brand-line bg-brand-white py-16 lg:py-20" aria-labelledby="book-how-heading">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="book-how-heading" eyebrow="How it works" title="How online booking works" />
+          <StepsList steps={steps} />
         </div>
       </section>
 
-      <section className="bg-brand-offwhite py-16 lg:py-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl font-semibold text-brand-black mb-10 text-center">
-            Why Book With Eagle Eye Chauffeur
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-6">
-            {reasons.map((r) => (
-              <div key={r.t} className="bg-brand-white border border-brand-light p-6">
-                <h3 className="font-semibold text-brand-black mb-2">{r.t}</h3>
-                <p className="text-sm text-brand-grey leading-relaxed">{r.d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-brand-white py-16 lg:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl font-semibold text-brand-black mb-8 text-center">
-            Booking FAQ
-          </h2>
-          <div className="space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq.q} className="bg-brand-offwhite border border-brand-light p-5">
-                <h3 className="font-medium text-brand-black mb-2">{faq.q}</h3>
-                <p className="text-sm text-brand-grey leading-relaxed">{faq.a}</p>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-sm text-brand-grey mt-8">
-            Prefer to talk to us? <Link href="/contact" className="text-brand-black underline">Contact Eagle Eye Chauffeur →</Link>
+      <section className="bg-brand-tint py-16 lg:py-20" aria-labelledby="book-faq-heading">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="book-faq-heading" eyebrow="FAQ" title="Booking questions" />
+          <FaqList faqs={faqs} />
+          <p className="mt-8 text-sm text-brand-muted">
+            Rather talk to someone?{' '}
+            <Link href="/contact" className="font-semibold text-brand-blue hover:underline">
+              Contact us
+            </Link>{' '}
+            — phone and WhatsApp are answered 24/7.
           </p>
         </div>
       </section>

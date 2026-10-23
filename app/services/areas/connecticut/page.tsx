@@ -1,329 +1,238 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getSiteUrl } from '@/lib/site';
-import { ServiceJsonLd, FaqJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
-import { WHATSAPP_BOOKING_URL } from '@/lib/contact';
+import { getSiteUrl, SITE_NAME } from '@/lib/site';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164, WHATSAPP_BOOKING_URL } from '@/lib/contact';
+import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd, SpeakableJsonLd } from '@/components/JsonLd';
+import { SectionHeading } from '@/components/SectionHeading';
+import { ComparisonTable, type Cell } from '@/components/ComparisonTable';
+import { PageHero, TextTable } from '@/components/PageHero';
+import { FactorTable, FaqList, InfoCards, RelatedLinks } from '@/components/AirportSections';
 import { ogDefaults } from '@/lib/og';
 
+const path = '/services/areas/connecticut';
+const title = 'Connecticut Car Service to & from NYC | Black Car Service';
+const description =
+  'Private car service between New York City and Connecticut: Greenwich, Stamford, Westport, New Haven and Hartford, plus LaGuardia and JFK. Book 24/7.';
+const bookHref = '/book?service=point-to-point';
+
 export const metadata: Metadata = {
-  title: 'Connecticut Black Car Service | NYC Airport Transfers',
-  description:
-    'Connecticut black car service — NYC airport transfers from Greenwich, Stamford, Westport, Fairfield, New Haven, Hartford. Flat rates. Professional.',
-  alternates: { canonical: `${getSiteUrl()}/services/areas/connecticut` },
-  openGraph: { ...ogDefaults, url: `${getSiteUrl()}/services/areas/connecticut` },
+  title: { absolute: title },
+  description,
+  alternates: { canonical: `${getSiteUrl()}${path}` },
+  openGraph: { ...ogDefaults, url: `${getSiteUrl()}${path}`, title, description },
+  twitter: { card: 'summary_large_image', title, description },
 };
 
+const regions = [
+  { title: 'Greenwich and Stamford', spec: 'Old Greenwich · Riverside · Downtown Stamford', body: 'The closest of Connecticut to the city: hedge-fund offices, Stamford’s corporate towers and the train-station hotels.' },
+  { title: 'Darien, New Canaan and Norwalk', spec: 'Fairfield County', body: 'Quiet commuter towns and SoNo’s restaurants, about an hour from Midtown when the roads are clear.' },
+  { title: 'Westport and Fairfield', spec: 'Fairfield County shoreline', body: 'Beach houses, Saugatuck and the Fairfield University area, a little further up I-95.' },
+  { title: 'New Haven', spec: 'Yale · the hospital campus · Wooster Square', body: 'University visits, hospital appointments and the downtown hotels, around an hour and a half away.' },
+  { title: 'Hartford', spec: 'Downtown · West Hartford', body: 'Insurance offices and the state capital, about two hours from Manhattan.' },
+  { title: 'Your address', spec: 'Anywhere in the state', body: 'If it is not listed, it is still on the map. Enter any Connecticut address when you book.' },
+];
+
+// From Midtown Manhattan. Rounded public-map estimates.
+const driveTimes: string[][] = [
+  ['Greenwich', '30 mi', '45–60 min', '70–100 min'],
+  ['Stamford', '38 mi', '55–70 min', '80–110 min'],
+  ['Darien / New Canaan', '42 mi', '60–75 min', '85–120 min'],
+  ['Norwalk', '44 mi', '60–75 min', '85–120 min'],
+  ['Westport', '48 mi', '65–80 min', '90–125 min'],
+  ['New Haven', '80 mi', '90–105 min', '2–2.5 h'],
+  ['Hartford', '115 mi', '2–2.5 h', '2.5–3.5 h'],
+];
+
+const priceFactors = [
+  { factor: 'Distance up the coast', detail: 'Greenwich and Hartford are very different trips. We price your exact pickup and drop-off.' },
+  { factor: 'Getting out of the city', detail: 'Connecticut’s highways have no tolls, so most toll cost is in New York — a bridge out of Manhattan or Queens, depending on the route.' },
+  { factor: 'Congestion charge', detail: 'Rides that begin or end in Manhattan south of 60th Street include the congestion pricing charge for for-hire vehicles.' },
+  { factor: 'Time of day', detail: 'I-95 through the Bronx and lower Fairfield County is slowest on weekday evenings and Friday afternoons in summer.' },
+  { factor: 'Vehicle and stops', detail: 'Sedan or SUV, and any planned stop on the way — a second pickup in Greenwich, for example — should be in the quote.' },
+];
+
+const comparison: { row: string; cells: Cell[] }[] = [
+  { row: 'Door to door', cells: ['yes', 'no', 'yes'] },
+  { row: 'No change of train or taxi at the station', cells: ['yes', 'no', 'yes'] },
+  { row: 'Booked for a set time, any hour', cells: ['yes', 'varies', 'yes'] },
+  { row: 'Easy with luggage, kids or a group', cells: ['yes', 'varies', 'yes'] },
+  { row: 'Work or rest on the way', cells: ['yes', 'yes', 'no'] },
+];
+
+const airports = [
+  { title: 'LaGuardia', body: 'Usually the closest NYC airport from Greenwich and Stamford — often under an hour outside rush hour.' },
+  { title: 'JFK', body: 'For long-haul international flights. Add roughly half an hour compared with LaGuardia.' },
+  { title: 'Newark', body: 'For United flights and routes only offered there. Allow extra time to cross Manhattan or go around it.' },
+];
+
+// TODO(owner): confirm Hartford coverage and the Metro-North comparison wording.
 const faqs = [
   {
-    q: 'Do you provide black car service from Connecticut to NYC airports?',
-    a: 'Yes. We serve all Fairfield County and New Haven County communities for airport transfers to JFK, LGA, and EWR. All rates are flat and confirmed at booking — no surprises.',
+    q: 'Do you provide car service from New York City to Connecticut?',
+    a: 'Yes. We drive between any address in New York City and towns across Connecticut, from Greenwich and Stamford to New Haven and Hartford.',
   },
   {
-    q: 'How far in advance should I book a CT to JFK transfer?',
-    a: 'We recommend booking at least 48 hours ahead for Connecticut trips. For early morning departures or group travel, the earlier the better. Your driver is confirmed the evening before your scheduled pickup.',
+    q: 'How much is a car service from Manhattan to Greenwich or Stamford?',
+    a: 'It depends on your exact addresses, the vehicle, any tolls on the New York side, the congestion charge below 60th Street and the time of day. Enter your trip on the booking page for an estimate; we confirm the fare before the ride.',
   },
   {
-    q: 'Are there any highway tolls extra for Connecticut rides?',
-    a: 'No. All applicable tolls — including any CT highway tolls and NYC bridge and tunnel tolls — are included in your flat rate. You pay exactly what was quoted at booking, nothing more.',
+    q: 'How long does it take to drive from Manhattan to Stamford?',
+    a: 'About 55 to 70 minutes from Midtown outside rush hour, and 80 to 110 minutes on weekday evenings.',
   },
   {
-    q: 'How long is the drive from Greenwich to JFK Airport?',
-    a: 'Approximately 60–80 minutes under normal conditions. During peak I-95 congestion, allow up to 90 minutes. We build appropriate buffer time into all scheduling and monitor live traffic.',
+    q: 'Is Metro-North faster than a car to Connecticut?',
+    a: 'From Grand Central at rush hour, an express train to Stamford is often quicker. A car wins when you start or finish away from a station, travel late at night, or have luggage or a group.',
   },
   {
-    q: 'Can you pick up from home in Connecticut and go directly to JFK?',
-    a: 'Yes. Door-to-door service from any Connecticut address directly to JFK, LGA, or EWR. No shuttle, no intermediate stop — your chauffeur picks you up at your door and delivers you to your terminal.',
+    q: 'Which airport is closest to Greenwich and Stamford?',
+    a: 'LaGuardia is usually the closest of the three NYC airports. We also drive Connecticut travelers to JFK and Newark.',
+  },
+  {
+    q: 'Do you drive to New Haven and Yale?',
+    a: 'Yes. New Haven is about an hour and a half from Midtown outside rush hour — popular for university visits, move-in days and hospital appointments.',
+  },
+  {
+    q: 'Can you pick me up in Connecticut and drive me into the city?',
+    a: 'Yes. We drive both directions. Book with your Connecticut pickup address and your New York destination.',
   },
 ];
 
-const eaglEyeBenefits = [
-  { title: 'Flat rate locked at booking', desc: 'Your price is confirmed before you book — no changes for traffic, time of day, or demand.' },
-  { title: 'TLC-licensed professional chauffeur', desc: 'Every driver is background-checked, licensed, and trained to a professional service standard.' },
-  { title: 'Luxury sedan or SUV', desc: 'Clean, late-model vehicles in the class you booked — confirmed before your trip.' },
-  { title: 'Exact door pickup', desc: 'Your chauffeur meets you at your building entrance, home, or hotel — not a nearby corner.' },
-  { title: 'Driver confirmed the night before', desc: 'You receive your driver\'s details in advance, not a last-minute assignment.' },
-  { title: '24/7 phone & WhatsApp support', desc: 'Reach us any time — including early morning airport departures and last-minute bookings.' },
+const related = [
+  { href: '/services/airport/lga', title: 'LaGuardia car service', body: 'The nearest NYC airport to Fairfield County.' },
+  { href: '/services/long-distance', title: 'Long-distance car service', body: 'All our routes out of New York.' },
+  { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'The other side of the Hudson.' },
+  { href: '/services/airport/jfk', title: 'JFK car service', body: 'For long-haul flights from Connecticut.' },
+  { href: '/fleet', title: 'Our vehicles', body: 'Sedans, SUVs and First Class cars.' },
+  { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];
 
-const ctCities = [
-  'Greenwich', 'Stamford', 'Norwalk', 'Westport', 'Fairfield',
-  'Bridgeport', 'Darien', 'New Canaan', 'Wilton', 'Ridgefield',
-  'Southport', 'Trumbull', 'Shelton', 'Stratford', 'Milford',
-  'New Haven', 'Hartford', 'Westport', 'Glastonbury', 'West Hartford',
-];
-
-const routes = [
-  { from: 'Greenwich → JFK Airport', time: '60–80 min' },
-  { from: 'Stamford → JFK Airport', time: '70–90 min' },
-  { from: 'Westport → JFK Airport', time: '75–95 min' },
-  { from: 'Greenwich → Manhattan (Midtown)', time: '45–65 min' },
-  { from: 'Stamford → LGA Airport', time: '65–85 min' },
-  { from: 'New Haven → JFK Airport', time: '90–110 min' },
-  { from: 'Greenwich → EWR Airport', time: '50–70 min' },
-  { from: 'Fairfield → JFK Airport', time: '80–100 min' },
-];
-
-const included = [
-  'Flat-rate pricing locked at booking — no surge, no hidden fees',
-  'TLC-licensed professional chauffeur',
-  'Door-to-door pickup at your exact address',
-  'Luxury sedan or SUV, always clean',
-  'Driver confirmed the evening before your trip',
-  'Luggage assistance at pickup and drop-off',
-  '24/7 support via phone or WhatsApp',
-];
-
-export default function ConnecticutPage() {
-  const siteUrl = getSiteUrl();
+export default function ConnecticutCarServicePage() {
+  const site = getSiteUrl();
   return (
     <>
-      <FaqJsonLd faqs={faqs} />
       <BreadcrumbJsonLd
         items={[
-          { name: 'Home', url: siteUrl },
-          { name: 'Services', url: `${siteUrl}/services` },
-          { name: 'Service Areas', url: `${siteUrl}/services/areas` },
-          { name: 'Connecticut', url: `${siteUrl}/services/areas/connecticut` },
+          { name: 'Home', url: site },
+          { name: 'Long-distance car service', url: `${site}/services/long-distance` },
+          { name: 'Connecticut car service', url: `${site}${path}` },
         ]}
       />
       <ServiceJsonLd
-        name="Connecticut Black Car Service"
-        description="Premium black car and chauffeur service throughout Connecticut. NYC airport transfers to JFK, LGA, and EWR from Greenwich, Stamford, Westport, Fairfield, New Haven, Hartford and all CT communities. Flat rates, tolls included, 24/7."
-        areaServed="Connecticut, CT"
-        url={`${siteUrl}/services/areas/connecticut`}
+        name="Connecticut Car Service"
+        description={description}
+        url={`${site}${path}`}
+        areaServed={[
+          { type: 'State', name: 'Connecticut', sameAs: 'https://www.wikidata.org/wiki/Q779' },
+          { type: 'City', name: 'New York City', sameAs: 'https://www.wikidata.org/wiki/Q60' },
+        ]}
+      />
+      <FaqJsonLd faqs={faqs} />
+      <SpeakableJsonLd cssSelectors={['#ct-title', '#ct-answer']} />
+
+      <PageHero
+        crumbs={[{ name: 'Home', href: '/' }, { name: 'Long distance', href: '/services/long-distance' }, { name: 'Connecticut' }]}
+        eyebrow="New York ↔ Connecticut"
+        idPrefix="ct"
+        h1="Connecticut Car Service"
+        answer={`${SITE_NAME} drives between New York City and Connecticut in both directions — Greenwich in under an hour, Stamford in about an hour, New Haven in an hour and a half — plus LaGuardia and JFK, in one private car from door to door.`}
+        ctaHref={bookHref}
+        ctaLabel="Get my Connecticut price"
+        phoneDisplay={CONTACT_PHONE_DISPLAY}
+        phoneE164={CONTACT_PHONE_E164}
       />
 
-      <div className="bg-brand-offwhite">
+      {/* Regions */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="where-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="where-heading"
+            eyebrow="Where we drive"
+            title="Where we drive in Connecticut"
+            intro="Most of our Connecticut rides are along the I-95 corridor in Fairfield and New Haven counties."
+          />
+          <InfoCards items={regions} />
+        </div>
+      </section>
 
-        {/* Hero */}
-        <section className="py-16 lg:py-24 bg-brand-black text-brand-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="text-brand-silver text-sm uppercase tracking-widest mb-3">Service Areas</p>
-            <h1 className="font-serif text-4xl lg:text-5xl font-semibold mb-5">
-              Connecticut Black Car Service | NYC Airport Transfers from CT
-            </h1>
-            <p className="text-lg text-brand-silver max-w-2xl mb-4">
-              Professional chauffeur service from Greenwich, Stamford, Westport, Fairfield, New Haven,
-              and all Connecticut communities. Flat-rate airport transfers to JFK, LaGuardia, and
-              EWR — all tolls included, no surge pricing, 24/7.
-            </p>
-            <p className="text-brand-silver max-w-2xl mb-8">
-              Connecticut to a New York City airport means I-95 or the Merritt Parkway, bridge and
-              tunnel tolls, and traffic that can vary dramatically. Eagle Eye Chauffeur handles all
-              of it — your chauffeur is confirmed the evening before, your rate is locked at booking,
-              and tolls are included. No variables, no surprises.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                href="/book"
-                className="inline-flex items-center justify-center px-8 py-4 bg-brand-white text-brand-black font-medium hover:bg-brand-offwhite transition-colors"
-              >
-                Get an Instant Quote
-              </Link>
-              <a
-                href={WHATSAPP_BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#25D366] text-white font-medium hover:bg-[#1ebe5d] transition-colors"
-              >
-                Book on WhatsApp
-              </a>
-            </div>
+      {/* Drive times */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="times-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="times-heading"
+            eyebrow="Drive times"
+            title="Drive times from Manhattan to Connecticut towns"
+            intro="Typical times from Midtown. Getting through the Bronx is the main variable; once in Connecticut, traffic usually eases."
+          />
+          <TextTable caption="Drive times from Midtown Manhattan to Connecticut towns" head={['To', 'Distance', 'Off-peak', 'Rush hour']} rows={driveTimes} />
+          <p className="mt-6 text-sm text-brand-muted">Approximate road distances and times; live traffic decides on the day.</p>
+        </div>
+      </section>
+
+      {/* Cost */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="cost-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="cost-heading" eyebrow="Pricing" title="How much is a car service between NYC and Connecticut?" />
+          <FactorTable caption="What affects the price of a car service between New York and Connecticut" rows={priceFactors} />
+          <p className="mt-6 max-w-3xl text-brand-muted leading-relaxed">
+            <Link href={bookHref} className="font-semibold text-brand-blue hover:underline">Enter your trip</Link> for an
+            estimate. We confirm the fare before the ride.
+          </p>
+        </div>
+      </section>
+
+      {/* Comparison */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="compare-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="compare-heading"
+            eyebrow="Compare"
+            title="Car service vs Metro-North and driving yourself"
+            intro="Metro-North is excellent between Grand Central and a station near you. A car covers the rest — late nights, luggage and addresses away from the line."
+          />
+          <ComparisonTable
+            caption="How a car service compares with Metro-North and driving between New York and Connecticut"
+            columns={['Car service', 'Metro-North', 'Drive yourself']}
+            rows={comparison}
+          />
+        </div>
+      </section>
+
+      {/* Airports */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="airports-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="airports-heading" eyebrow="Airports" title="Airport car service from Connecticut" />
+          <InfoCards items={airports} />
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <Link href={bookHref} className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
+              Book a Connecticut ride
+            </Link>
+            <a
+              href={WHATSAPP_BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
+            >
+              Ask on WhatsApp
+            </a>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Cities grid */}
-        <section className="py-16">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-2xl font-semibold text-brand-black mb-3">
-              Connecticut Cities &amp; Towns We Serve
-            </h2>
-            <p className="text-brand-grey mb-8">
-              Eagle Eye Chauffeur covers all of Fairfield County and New Haven County, and extends
-              service statewide to Hartford and beyond. Whether you&apos;re in the Gold Coast towns of
-              Greenwich and Darien or the inner-ring suburbs of Trumbull and Stratford, your
-              chauffeur meets you at the door.
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {ctCities.map((city) => (
-                <div
-                  key={city}
-                  className="p-3 bg-brand-white border border-brand-light text-sm text-brand-black text-center font-medium"
-                >
-                  {city}
-                </div>
-              ))}
-            </div>
-            <p className="text-sm text-brand-grey mt-4">
-              Don&apos;t see your town? We serve all Connecticut addresses.{' '}
-              <Link href="/book" className="underline">
-                Get a quote →
-              </Link>
-            </p>
-          </div>
-        </section>
+      {/* FAQ */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="faq-heading">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="faq-heading" eyebrow="FAQ" title="Connecticut car service FAQs" />
+          <FaqList faqs={faqs} />
+        </div>
+      </section>
 
-        {/* Popular routes */}
-        <section className="py-16 bg-brand-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-2xl font-semibold text-brand-black mb-3">
-              Popular CT Routes &amp; Travel Times
-            </h2>
-            <p className="text-brand-grey mb-6">
-              Estimated travel times under normal I-95 and Merritt Parkway conditions. We build
-              buffer time into all scheduling and monitor live traffic on the day of your trip.
-              For airport rides, we recommend a 3-hour lead before departure.
-            </p>
-            <div className="space-y-3">
-              {routes.map((r) => (
-                <div
-                  key={r.from}
-                  className="bg-brand-offwhite border border-brand-light p-4 flex justify-between items-center"
-                >
-                  <span className="font-medium text-brand-black text-sm">{r.from}</span>
-                  <span className="text-brand-grey text-sm tabular-nums">{r.time}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-sm text-brand-grey mt-4">
-              All rates are flat. All tolls included. No surge pricing.{' '}
-              <Link href="/book" className="underline">
-                Get an instant quote →
-              </Link>
-            </p>
-          </div>
-        </section>
-
-        {/* What's included */}
-        <section className="py-16">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-2xl font-semibold text-brand-black mb-3">
-              What&apos;s Included with Every Connecticut Ride
-            </h2>
-            <p className="text-brand-grey mb-8">
-              A long-distance trip from Connecticut deserves the full premium experience — and
-              every Eagle Eye booking delivers exactly that, from the moment you book to the
-              moment your driver drops you at the terminal.
-            </p>
-            <ul className="space-y-3">
-              {included.map((item) => (
-                <li key={item} className="flex items-start gap-3 bg-brand-white border border-brand-light p-4">
-                  <span className="text-brand-black font-bold mt-0.5">✓</span>
-                  <span className="text-brand-grey text-sm">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* Why Eagle Eye */}
-        <section className="py-16 bg-brand-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-2xl font-semibold text-brand-black mb-3">
-              Why Choose Eagle Eye for CT to NYC Airport Rides
-            </h2>
-            <p className="text-brand-grey mb-6">
-              For a long-distance trip from Greenwich or Westport to JFK, you need a professional
-              service built for the distance — flat rate, luggage assistance, and a driver confirmed
-              the night before.
-            </p>
-            <ul className="space-y-3">
-              {eaglEyeBenefits.map((benefit) => (
-                <li key={benefit.title} className="flex items-start gap-3 bg-brand-offwhite border border-brand-light p-4">
-                  <span className="text-brand-black font-bold mt-0.5 shrink-0">✓</span>
-                  <div>
-                    <span className="font-medium text-brand-black">{benefit.title} — </span>
-                    <span className="text-brand-grey text-sm">{benefit.desc}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section className="py-16">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-2xl font-semibold text-brand-black mb-6">
-              Connecticut Black Car Service — Frequently Asked Questions
-            </h2>
-            <div className="space-y-4">
-              {faqs.map((faq) => (
-                <div key={faq.q} className="bg-brand-white border border-brand-light p-5">
-                  <h3 className="font-medium text-brand-black mb-2">{faq.q}</h3>
-                  <p className="text-sm text-brand-grey">{faq.a}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Related services */}
-        <section className="py-16 bg-brand-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-2xl font-semibold text-brand-black mb-6">
-              Related Services
-            </h2>
-            <div className="grid sm:grid-cols-3 gap-4">
-              <Link
-                href="/services/airport/jfk"
-                className="bg-brand-offwhite border border-brand-light p-5 hover:border-brand-dark transition-colors"
-              >
-                <div className="font-semibold text-brand-black">JFK Airport Service</div>
-                <div className="text-sm text-brand-grey mt-1">Flat-rate transfers from all CT towns</div>
-              </Link>
-              <Link
-                href="/services/airport/lga"
-                className="bg-brand-offwhite border border-brand-light p-5 hover:border-brand-dark transition-colors"
-              >
-                <div className="font-semibold text-brand-black">LaGuardia Airport (LGA)</div>
-                <div className="text-sm text-brand-grey mt-1">Often faster from Stamford &amp; Greenwich</div>
-              </Link>
-              <Link
-                href="/services/areas/manhattan"
-                className="bg-brand-offwhite border border-brand-light p-5 hover:border-brand-dark transition-colors"
-              >
-                <div className="font-semibold text-brand-black">Manhattan Car Service</div>
-                <div className="text-sm text-brand-grey mt-1">CT to Manhattan, door-to-door</div>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="py-16 bg-brand-black text-brand-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="font-serif text-3xl font-semibold mb-4">
-              Book Your Connecticut Black Car
-            </h2>
-            <p className="text-brand-silver mb-3 max-w-xl mx-auto">
-              Available 24/7 from Greenwich to Hartford. Flat rates with all tolls included.
-              Driver confirmed the evening before. No surge pricing.
-            </p>
-            <p className="text-brand-silver mb-8 max-w-xl mx-auto">
-              Get an instant quote online or reach us on WhatsApp. We recommend booking 48 hours
-              ahead for Connecticut-to-airport trips.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/book"
-                className="inline-flex items-center justify-center px-8 py-4 bg-brand-white text-brand-black font-medium hover:bg-brand-offwhite transition-colors"
-              >
-                Get an Instant Quote
-              </Link>
-              <a
-                href={WHATSAPP_BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#25D366] text-white font-medium hover:bg-[#1ebe5d] transition-colors"
-              >
-                Book on WhatsApp
-              </a>
-            </div>
-          </div>
-        </section>
-
-      </div>
+      {/* Related */}
+      <section className="bg-brand-white py-16 lg:py-20" aria-labelledby="related-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="related-heading" eyebrow="Keep planning" title="Related airports and routes" />
+          <RelatedLinks links={related} />
+        </div>
+      </section>
     </>
   );
 }

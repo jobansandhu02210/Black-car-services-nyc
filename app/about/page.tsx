@@ -1,376 +1,186 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
-import { getSiteUrl } from '@/lib/site';
+import { getSiteUrl, SITE_NAME } from '@/lib/site';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164, WHATSAPP_URL } from '@/lib/contact';
 import { BreadcrumbJsonLd } from '@/components/JsonLd';
-import {
-  CONTACT_PHONE_DISPLAY,
-  CONTACT_PHONE_E164,
-  CONTACT_EMAIL_BOOKINGS,
-  WHATSAPP_BOOKING_URL,
-} from '@/lib/contact';
+import { SectionHeading } from '@/components/SectionHeading';
+import { PageHero } from '@/components/PageHero';
+import { InfoCards, RelatedLinks } from '@/components/AirportSections';
 import { ogDefaults } from '@/lib/og';
 
+const path = '/about';
+const title = 'About Us | Black Car Service — NYC Airports & Long Distance';
+const description =
+  'Black Car Service is a New York City car service for airport transfers and long-distance rides to New Jersey, Connecticut, Philadelphia and Washington, DC.';
+
 export const metadata: Metadata = {
-  title: {
-    absolute: 'About Eagle Eye Chauffeur | TLC Licensed NYC Luxury Car Service',
-  },
-  description:
-    'Eagle Eye Chauffeur — NYC\'s TLC-licensed black car service. JFK, LGA, EWR & HPN airport transfers, all 5 boroughs. Professional chauffeurs, flat rates, 24/7.',
-  alternates: { canonical: `${getSiteUrl()}/about` },
-  openGraph: {
-    ...ogDefaults,
-    url: `${getSiteUrl()}/about`,
-    title: 'About Eagle Eye Chauffeur | TLC Licensed NYC Luxury Car Service',
-    description:
-      'Eagle Eye Chauffeur — NYC\'s TLC-licensed black car service. JFK, LGA, EWR & HPN airport transfers, all 5 boroughs. Professional chauffeurs, flat rates, 24/7.',
-  },
+  title: { absolute: title },
+  description,
+  alternates: { canonical: `${getSiteUrl()}${path}` },
+  openGraph: { ...ogDefaults, url: `${getSiteUrl()}${path}`, title, description },
+  twitter: { card: 'summary_large_image', title, description },
 };
 
-const stats = [
-  { label: 'TLC Licensed', sub: 'Every chauffeur & vehicle' },
-  { label: '4 Airports', sub: 'JFK · LGA · EWR · HPN' },
-  { label: 'Tri-State Coverage', sub: 'NY · NJ · CT' },
-  { label: '24/7 Service', sub: 'Always available' },
+const focus = [
+  { title: 'Airports', body: 'JFK, LaGuardia and Newark, in both directions, for any address in New York City, New Jersey and Connecticut.' },
+  { title: 'Long distance', body: 'Door-to-door rides to Philadelphia, Washington, DC and towns across New Jersey and Connecticut.' },
+  { title: 'Rides that need to happen on time', body: 'Early flights, client pickups, hospital appointments, move-in days — trips where a late or missing car is not an option.' },
 ];
 
-const values = [
-  {
-    symbol: '✓',
-    title: 'TLC Licensed & Fully Insured',
-    body: 'Every chauffeur holds a valid NYC Taxi & Limousine Commission license and undergoes background screening. Our vehicles carry full commercial insurance so you ride with complete peace of mind.',
-  },
-  {
-    symbol: '✓',
-    title: 'Professional Training',
-    body: 'Our chauffeurs are trained in client protocol, personal presentation, discretion, and defensive driving. They arrive uniformed, prepared, and focused solely on your experience.',
-  },
-  {
-    symbol: '✓',
-    title: 'Real-Time Flight Tracking',
-    body: 'We monitor every inbound flight using live data. If your flight is delayed or arrives early, your driver adjusts automatically — at no extra charge. You never wait, we do.',
-  },
-  {
-    symbol: '✓',
-    title: 'Flat-Rate Pricing',
-    body: 'Your fare is locked at the moment you book. No surge pricing, no hidden fees, no meter ticking. What you see is what you pay — always.',
-  },
-  {
-    symbol: '✓',
-    title: 'All Boroughs & Tri-State Area',
-    body: 'We serve Manhattan, Brooklyn, Queens, the Bronx, and Staten Island, plus Long Island, Westchester, New Jersey, and Connecticut. One service, every corner of the region.',
-  },
-  {
-    symbol: '✓',
-    title: 'White-Glove Service',
-    body: 'Meet and greet at arrivals, name-sign pickup, luggage assistance, door-to-door care. Every ride receives the same elevated standard — regardless of distance or vehicle class.',
-  },
+// TODO(owner): confirm each working principle matches how you run the business.
+const principles = [
+  { title: 'The fare is confirmed before the ride', body: 'You see an estimate when you book, and we confirm the fare with you before the car is dispatched. Tolls and fees are listed on your invoice.' },
+  { title: 'We follow your flight', body: 'Give us a flight number and the pickup moves with the real landing time. Early or late, the car is there when you are.' },
+  { title: 'A person answers', body: 'Call or WhatsApp at any hour and you reach someone who can change the booking, not a menu.' },
+  { title: 'We say what we do not know', body: 'Airports change terminals and traffic changes plans. Our pages say when information is approximate, and we check the details of your trip before it happens.' },
 ];
 
-const serviceAreas = [
-  {
-    heading: 'NYC Boroughs',
-    places: ['Manhattan', 'Brooklyn', 'Queens', 'The Bronx', 'Staten Island'],
-  },
-  {
-    heading: 'Airports',
-    places: [
-      'John F. Kennedy (JFK)',
-      'LaGuardia (LGA)',
-      'Newark Liberty (EWR)',
-      'Westchester County (HPN)',
-    ],
-  },
-  {
-    heading: 'Surrounding Regions',
-    places: [
-      'Long Island (Nassau & Suffolk)',
-      'Westchester County',
-      'Fairfield County, CT',
-      'New Jersey (Newark, Hoboken, Jersey City, and beyond)',
-    ],
-  },
+// TODO(owner): confirm — remove any line for a service you do offer.
+const notFor = [
+  'Party buses, stretch limousines or Sprinter vans',
+  'Shared rides — every car is booked by one party',
+  'Rides booked through an app marketplace — you book with us directly',
+];
+
+const related = [
+  { href: '/fleet', title: 'Our fleet', body: 'Sedans and SUVs, Business and First Class.' },
+  { href: '/services/airport', title: 'Airport car service', body: 'JFK, LaGuardia and Newark compared.' },
+  { href: '/services/long-distance', title: 'Long-distance car service', body: 'Philadelphia, DC, New Jersey and Connecticut.' },
+  { href: '/contact', title: 'Contact us', body: 'Phone, WhatsApp and email, 24/7.' },
 ];
 
 export default function AboutPage() {
-  const breadcrumbs = [
-    { name: 'Home', url: getSiteUrl() },
-    { name: 'About', url: `${getSiteUrl()}/about` },
-  ];
-
+  const site = getSiteUrl();
   return (
     <>
-      <BreadcrumbJsonLd items={breadcrumbs} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', url: site },
+          { name: 'About', url: `${site}${path}` },
+        ]}
+      />
 
-      {/* ── HERO ─────────────────────────────────────────────────────── */}
-      <section className="relative h-[55vh] min-h-[380px] bg-brand-black">
-        <Image
-          src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1400&q=80"
-          alt="Professional Eagle Eye Chauffeur standing beside a luxury black sedan in New York City"
-          fill
-          className="object-cover opacity-50"
-          sizes="100vw"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-black/30 via-transparent to-brand-black/70" />
-        <div className="absolute inset-0 flex items-end pb-14">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <p className="text-brand-silver text-sm tracking-widest uppercase mb-3 font-medium">
-              TLC Licensed · NYC-Based · Tri-State Service
-            </p>
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold text-brand-white leading-tight max-w-3xl">
-              About Eagle Eye Chauffeur
-            </h1>
-            <p className="mt-4 text-brand-silver text-lg max-w-2xl leading-relaxed">
-              NYC's premier luxury chauffeur service — TLC licensed, professionally trained, serving the tri-state area 24/7.
-            </p>
-          </div>
+      <PageHero
+        crumbs={[{ name: 'Home', href: '/' }, { name: 'About' }]}
+        eyebrow="About us"
+        idPrefix="about"
+        h1={`About ${SITE_NAME}`}
+        answer={`${SITE_NAME} is a New York City car service built around two kinds of trip: getting to and from the airport, and getting to the next city without a train. We do those well, and we keep the rest of the business simple.`}
+        ctaHref="/book"
+        ctaLabel="Book a ride"
+        phoneDisplay={CONTACT_PHONE_DISPLAY}
+        phoneE164={CONTACT_PHONE_E164}
+      />
+
+      {/* Focus */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="focus-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="focus-heading"
+            eyebrow="What we do"
+            title="A New York car service for airports and long trips"
+            intro="We are a service-area business: our cars come to you anywhere in New York City and the surrounding states. There is no walk-in office — you book online, by phone or on WhatsApp."
+          />
+          <InfoCards items={focus} />
         </div>
       </section>
 
-      {/* ── STATS BAR ────────────────────────────────────────────────── */}
-      <section className="bg-brand-white border-b border-brand-light">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-brand-light">
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="py-8 px-6 text-center"
-              >
-                <p className="font-serif text-xl font-semibold text-brand-black">
-                  {stat.label}
-                </p>
-                <p className="mt-1 text-sm text-brand-grey">{stat.sub}</p>
+      {/* Principles */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="how-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="how-heading" eyebrow="How we work" title="How we run every booking" />
+          <div className="grid gap-5 md:grid-cols-2">
+            {principles.map((p) => (
+              <div key={p.title} className="rounded-2xl bg-brand-white p-6 ring-1 ring-brand-line">
+                <h3 className="text-xl text-brand-ink">{p.title}</h3>
+                <p className="mt-3 text-brand-muted leading-relaxed">{p.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── OUR STORY ────────────────────────────────────────────────── */}
-      <section className="bg-brand-offwhite py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <p className="text-brand-silver text-sm tracking-widest uppercase mb-3 font-medium">
-                Our Story
-              </p>
-              <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black mb-8 leading-snug">
-                Built Around the Standard NYC Deserves
-              </h2>
-              <div className="space-y-6 text-brand-grey leading-relaxed">
-                <p>
-                  Eagle Eye Chauffeur was founded by <strong className="text-brand-black">Joban Sandhu</strong>, a New Hyde Park native who built this service on a conviction: that every client — executive, family, or event planner — deserves access to truly professional ground transportation in New York City. A real chauffeur service, TLC licensed, commercially insured, and held to the highest standard on every single ride.
-                </p>
-                <p>
-                  We know New York the way only locals do. Our chauffeurs navigate JFK's terminal maze, LGA's perpetual construction, EWR's international arrivals corridors, and HPN's private terminal with the confidence of drivers who have done it hundreds of times. We know which routes through the Bronx avoid the morning bottleneck, which tunnel to take from Midtown at 6 PM, and how early to leave Brooklyn before a 7 AM departure. That local intelligence is built into every trip we plan.
-                </p>
-                <p>
-                  What began as a focused airport transfer service has grown into a full-service operation covering corporate travel, event transportation, long-distance rides to Connecticut and New Jersey, and on-demand hourly hire across the entire tri-state area. Through every stage of growth, the principle has stayed the same: show up on time, in a spotless vehicle, with a professional chauffeur — and get you there without stress.
-                </p>
-              </div>
-            </div>
-            <div className="relative h-80 lg:h-full min-h-[400px] rounded overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=900&q=80"
-                alt="New York City skyline — Eagle Eye Chauffeur serves all five boroughs and the tri-state area"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-brand-black/10" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── WHY CHOOSE US ────────────────────────────────────────────── */}
-      <section className="bg-brand-white py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-brand-silver text-sm tracking-widest uppercase mb-3 font-medium">
-              Why Eagle Eye
-            </p>
-            <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black">
-              What Sets Us Apart
+      {/* What we don't do */}
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="not-heading">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div>
+            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-3">Keeping it focused</p>
+            <h2 id="not-heading" className="text-3xl lg:text-[2.5rem] leading-tight text-brand-ink text-balance">
+              What we don’t do
             </h2>
-            <p className="mt-4 text-brand-grey max-w-xl mx-auto leading-relaxed">
-              Six commitments that define every ride — from the moment you book to the moment you arrive.
+            <p className="mt-4 text-lg leading-relaxed text-brand-muted">
+              Saying no to some work is how we stay good at the rest. If you need one of these, we are happy to point you in
+              the right direction.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {values.map((v) => (
-              <div
-                key={v.title}
-                className="border border-brand-light bg-brand-offwhite p-8 hover:border-brand-dark transition-colors"
-              >
-                <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 w-8 h-8 bg-brand-black text-brand-white flex items-center justify-center text-sm font-bold">
-                    {v.symbol}
-                  </span>
-                  <div>
-                    <h3 className="font-serif text-lg font-semibold text-brand-black mb-2">
-                      {v.title}
-                    </h3>
-                    <p className="text-brand-grey text-sm leading-relaxed">{v.body}</p>
-                  </div>
-                </div>
-              </div>
+          <ul className="space-y-4 self-center">
+            {notFor.map((n) => (
+              <li key={n} className="flex gap-3">
+                <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-blue" />
+                <span className="text-brand-ink">{n}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
-      {/* ── OUR MISSION ──────────────────────────────────────────────── */}
-      <section className="bg-brand-charcoal py-16 lg:py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-brand-silver text-sm tracking-widest uppercase mb-4 font-medium">
-            Our Mission
-          </p>
-          <blockquote className="font-serif text-2xl lg:text-3xl text-brand-white leading-relaxed font-medium">
-            "To be the most trusted name in NYC ground transportation — by earning it on every ride, with every client, without exception."
-          </blockquote>
-          <p className="mt-6 text-brand-silver leading-relaxed max-w-2xl mx-auto">
-            Reliability is not a marketing claim — it is a daily discipline. We invest in our chauffeurs' training, maintain our vehicles meticulously, and hold ourselves accountable to the same standard we'd expect for our own family.
-          </p>
+      {/*
+        TODO(owner): add before launch, from real paperwork only —
+        - "Who we are": owner/team names and short bios (E-E-A-T), with photos if available
+        - "Licensing and insurance": TLC base name and license number, insurance carrier
+        - Year founded
+        Do not publish placeholder or estimated values for any of these.
+      */}
+
+      {/* Where */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="where-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="where-heading"
+            eyebrow="Where we drive"
+            title="New York City, New Jersey, Connecticut, Philadelphia and DC"
+            intro="Pickups anywhere in the five boroughs and the nearby states, with regular routes to the cities below."
+          />
+          <RelatedLinks
+            links={[
+              { href: '/services/areas/new-jersey', title: 'New Jersey', body: 'Hoboken and Jersey City to Princeton and the Shore.' },
+              { href: '/services/areas/connecticut', title: 'Connecticut', body: 'Greenwich and Stamford to New Haven and Hartford.' },
+              { href: '/services/routes/nyc-to-philadelphia', title: 'Philadelphia', body: 'About two hours from Midtown.' },
+              { href: '/services/routes/nyc-to-washington-dc', title: 'Washington, DC', body: 'About four to four and a half hours.' },
+            ]}
+          />
         </div>
       </section>
 
-      {/* ── SERVICE AREAS ────────────────────────────────────────────── */}
-      <section className="bg-brand-offwhite py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-brand-silver text-sm tracking-widest uppercase mb-3 font-medium">
-              Coverage
-            </p>
-            <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-black">
-              Where We Serve
-            </h2>
-            <p className="mt-4 text-brand-grey max-w-xl mx-auto leading-relaxed">
-              From the tip of Staten Island to Greenwich, Connecticut — we cover the full tri-state region with the same professional standard.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {serviceAreas.map((area) => (
-              <div
-                key={area.heading}
-                className="bg-brand-white border border-brand-light p-8"
-              >
-                <h3 className="font-serif text-lg font-semibold text-brand-black mb-5 pb-4 border-b border-brand-light">
-                  {area.heading}
-                </h3>
-                <ul className="space-y-3">
-                  {area.places.map((place) => (
-                    <li key={place} className="flex items-start gap-3 text-brand-grey text-sm leading-relaxed">
-                      <span className="flex-shrink-0 mt-1 w-1.5 h-1.5 rounded-full bg-brand-black" />
-                      {place}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center text-brand-grey text-sm mt-8">
-            Need service to a destination not listed?{' '}
-            <Link href="/contact" className="text-brand-black underline hover:no-underline font-medium">
-              Contact us
-            </Link>{' '}
-            — we regularly handle long-distance and custom routes.
-          </p>
-        </div>
-      </section>
-
-      {/* ── TRUST SIGNALS ────────────────────────────────────────────── */}
-      <section className="bg-brand-white py-16 lg:py-20 border-y border-brand-light">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-brand-silver text-sm tracking-widest uppercase mb-3 font-medium">
-                Credentials
-              </p>
-              <h2 className="font-serif text-3xl font-semibold text-brand-black mb-6">
-                Fully Licensed, Insured & Accountable
-              </h2>
-              <div className="space-y-5 text-brand-grey leading-relaxed">
-                <p>
-                  Eagle Eye Chauffeur operates under full NYC Taxi & Limousine Commission (TLC) licensing. Every chauffeur in our fleet holds an active TLC driver's license — a credential that requires a background check, drug screening, defensive driving certification, and ongoing compliance.
-                </p>
-                <p>
-                  Our vehicles carry commercial livery insurance that meets and exceeds NYC requirements. You are protected from the moment you step in until the moment you arrive at your destination.
-                </p>
-                <p>
-                  We are not a technology platform dispatching independent contractors. We are a professional chauffeur company — and that distinction matters for your safety, your reliability, and your experience.
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-6">
-              {[
-                { label: 'TLC Driver Licensing', detail: 'Background checked & certified' },
-                { label: 'Commercial Insurance', detail: 'Full livery coverage on every vehicle' },
-                { label: 'Vehicle Standards', detail: 'Late-model luxury fleet, regularly serviced' },
-                { label: 'Privacy & Discretion', detail: 'Client confidentiality on every booking' },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="bg-brand-offwhite border border-brand-light p-6"
-                >
-                  <p className="font-serif font-semibold text-brand-black text-sm mb-1">{item.label}</p>
-                  <p className="text-brand-grey text-xs leading-relaxed">{item.detail}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ──────────────────────────────────────────────────────── */}
-      <section className="bg-brand-black py-20 lg:py-28">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-brand-silver text-sm tracking-widest uppercase mb-4 font-medium">
-            Ready to Book
-          </p>
-          <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-brand-white mb-4">
-            Experience the Eagle Eye Standard
-          </h2>
-          <p className="text-brand-silver leading-relaxed max-w-xl mx-auto mb-10">
-            Book your ride online in minutes, reach us on WhatsApp, or call direct. Our team is available 24/7.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-            <Link
-              href="/book"
-              className="inline-flex items-center justify-center px-8 py-4 bg-brand-white text-brand-black font-medium hover:bg-brand-silver transition-colors"
-            >
-              Book Now
-            </Link>
+      {/* Contact strip */}
+      <section className="bg-brand-ink py-16 text-brand-white lg:py-20" aria-label="Get in touch">
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+          <p className="font-display text-3xl font-bold tracking-tight lg:text-4xl">Questions before you book?</p>
+          <p className="mt-4 text-lg text-brand-silver">Call, WhatsApp or send us a message — any time.</p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <a href={`tel:${CONTACT_PHONE_E164}`} className="rounded-lg bg-brand-white px-6 py-3 font-display font-bold text-brand-ink hover:bg-brand-sky">
+              Call {CONTACT_PHONE_DISPLAY}
+            </a>
             <a
-              href={WHATSAPP_BOOKING_URL}
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-brand-white text-brand-white font-medium hover:bg-brand-white hover:text-brand-black transition-colors"
+              className="rounded-lg px-6 py-3 font-display font-bold text-brand-white ring-1 ring-brand-white/40 hover:bg-brand-white/10"
             >
-              WhatsApp Us
+              WhatsApp us
             </a>
-            <a
-              href={`tel:${CONTACT_PHONE_E164}`}
-              className="inline-flex items-center justify-center px-8 py-4 border border-brand-light text-brand-silver font-medium hover:border-brand-white hover:text-brand-white transition-colors"
-            >
-              {CONTACT_PHONE_DISPLAY}
-            </a>
+            <Link href="/contact" className="rounded-lg px-6 py-3 font-display font-bold text-brand-white ring-1 ring-brand-white/40 hover:bg-brand-white/10">
+              Contact page
+            </Link>
           </div>
+        </div>
+      </section>
 
-          <p className="text-brand-silver text-sm">
-            Or email us at{' '}
-            <a
-              href={`mailto:${CONTACT_EMAIL_BOOKINGS}`}
-              className="underline hover:text-brand-white transition-colors"
-            >
-              {CONTACT_EMAIL_BOOKINGS}
-            </a>
-          </p>
+      {/* Related */}
+      <section className="bg-brand-white py-16 lg:py-20" aria-labelledby="related-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading id="related-heading" eyebrow="Keep exploring" title="More about our service" />
+          <RelatedLinks links={related} />
         </div>
       </section>
     </>
