@@ -112,17 +112,17 @@ export default function HomePage() {
       <SpeakableJsonLd cssSelectors={['#hero-title', '#hero-answer']} />
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-brand-tint via-brand-tint to-brand-sky/70">
-        <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full text-brand-blue/25 lg:h-56" />
+      <section className="relative overflow-hidden bg-gradient-to-b from-brand-tint via-brand-tint to-brand-accent-soft/70">
+        <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full text-brand-accent/25 lg:h-56" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 pb-24 pt-12 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:px-8 lg:pb-32 lg:pt-20">
           <div>
-            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-4">
+            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-4">
               Airports · Long distance · 24/7
             </p>
             <h1 id="hero-title" className="text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-brand-ink text-balance">
               NYC Black Car Service
             </h1>
-            <p className="mt-2 font-display text-2xl sm:text-3xl lg:text-[2.1rem] leading-tight font-semibold text-brand-blue">
+            <p className="mt-2 font-display text-2xl sm:text-3xl lg:text-[2.1rem] leading-tight font-semibold text-brand-accent">
               Airports and long rides, door to door.
             </p>
             <p id="hero-answer" className="mt-6 max-w-xl text-lg leading-relaxed text-brand-muted">
@@ -130,14 +130,14 @@ export default function HomePage() {
               way to New Jersey, Connecticut, Philadelphia or Washington, DC. One private car, one driver, no transfers.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-              <a href={`tel:${CONTACT_PHONE_E164}`} className="font-display font-bold text-brand-ink hover:text-brand-blue">
+              <a href={`tel:${CONTACT_PHONE_E164}`} className="font-display font-bold text-brand-ink hover:text-brand-accent">
                 Call {CONTACT_PHONE_DISPLAY}
               </a>
               <a
                 href={WHATSAPP_BOOKING_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-display font-bold text-brand-ink hover:text-brand-blue"
+                className="font-display font-bold text-brand-ink hover:text-brand-accent"
               >
                 WhatsApp us
               </a>
@@ -152,7 +152,7 @@ export default function HomePage() {
         <ul className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
           {trust.map((t) => (
             <li key={t.title} className="flex gap-3">
-              <span aria-hidden="true" className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-brand-blue" />
+              <span aria-hidden="true" className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-brand-accent" />
               <div>
                 <p className="font-display text-base font-semibold text-brand-ink">{t.title}</p>
                 <p className="mt-1 text-sm leading-relaxed text-brand-muted">{t.body}</p>
@@ -176,17 +176,17 @@ export default function HomePage() {
               <Link
                 key={a.code}
                 href={a.href}
-                className="group rounded-2xl border border-brand-line bg-brand-white p-6 transition-shadow hover:shadow-[0_16px_40px_-24px_rgb(20_38_58/0.45)]"
+                className="group rounded-2xl border border-brand-line bg-brand-white p-6 transition-shadow hover:shadow-[0_16px_40px_-24px_rgb(19_35_43/0.45)]"
               >
                 <div className="flex items-baseline justify-between">
-                  <span className="font-display text-4xl font-bold text-brand-blue">{a.code}</span>
+                  <span className="font-display text-4xl font-bold text-brand-accent">{a.code}</span>
                   <span className="text-sm text-brand-muted">
                     {a.miles} · {a.time}
                   </span>
                 </div>
                 <h3 className="mt-4 text-xl text-brand-ink">{a.name} car service</h3>
                 <p className="mt-2 text-brand-muted">{a.note}</p>
-                <span className="mt-5 inline-block font-display text-sm font-bold text-brand-blue group-hover:underline">
+                <span className="mt-5 inline-block font-display text-sm font-bold text-brand-accent group-hover:underline">
                   {a.code} details →
                 </span>
               </Link>
@@ -194,7 +194,7 @@ export default function HomePage() {
           </div>
           <p className="mt-6 text-sm text-brand-muted">
             Not sure which airport is best for your flight?{' '}
-            <Link href="/services/airport" className="font-semibold text-brand-blue hover:underline">
+            <Link href="/services/airport" className="font-semibold text-brand-accent hover:underline">
               Compare all three NYC airports
             </Link>
             .
@@ -216,7 +216,7 @@ export default function HomePage() {
               <li key={r.to}>
                 <Link
                   href={r.href}
-                  className="flex items-center justify-between rounded-xl bg-brand-white px-5 py-4 ring-1 ring-brand-line transition-colors hover:ring-brand-blue"
+                  className="flex items-center justify-between rounded-xl bg-brand-white px-5 py-4 ring-1 ring-brand-line transition-colors hover:ring-brand-accent"
                 >
                   <span>
                     <span className="block text-xs font-semibold uppercase tracking-wide text-brand-muted">NYC to</span>
@@ -232,7 +232,7 @@ export default function HomePage() {
           </ul>
           <p className="mt-6 text-sm text-brand-muted">
             Distances and drive times are approximate, from Midtown Manhattan.{' '}
-            <Link href="/services/long-distance" className="font-semibold text-brand-blue hover:underline">
+            <Link href="/services/long-distance" className="font-semibold text-brand-accent hover:underline">
               See how long-distance rides work
             </Link>
             .
@@ -267,14 +267,14 @@ export default function HomePage() {
                 {/* TODO(owner): replace with a real photo of your own vehicle */}
                 <VehicleArt kind={v.name === 'Business SUV' ? 'suv' : 'sedan'} className="mb-5 h-28" />
                 <h3 className="text-xl text-brand-ink">{v.name}</h3>
-                <p className="mt-1 text-sm font-semibold text-brand-blue">
+                <p className="mt-1 text-sm font-semibold text-brand-accent">
                   {v.seats} · {v.bags}
                 </p>
                 <p className="mt-3 text-brand-muted">{v.body}</p>
               </div>
             ))}
           </div>
-          <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-blue hover:underline">
+          <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-accent hover:underline">
             See the full fleet →
           </Link>
         </div>
@@ -287,7 +287,7 @@ export default function HomePage() {
           <ol className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {steps.map((s, i) => (
               <li key={s.title}>
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-blue font-display font-bold text-brand-white">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-accent font-display font-bold text-brand-white">
                   {i + 1}
                 </span>
                 <h3 className="mt-4 text-lg text-brand-ink">{s.title}</h3>
@@ -297,7 +297,7 @@ export default function HomePage() {
           </ol>
           <Link
             href="/book"
-            className="mt-10 inline-flex rounded-lg bg-brand-blue px-6 py-3 font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover"
+            className="mt-10 inline-flex rounded-lg bg-brand-accent px-6 py-3 font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover"
           >
             Start a booking
           </Link>
@@ -315,7 +315,7 @@ export default function HomePage() {
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {areas.map((a) => (
               <li key={a.name}>
-                <Link href={a.href} className="block h-full rounded-xl bg-brand-white p-5 ring-1 ring-brand-line hover:ring-brand-blue">
+                <Link href={a.href} className="block h-full rounded-xl bg-brand-white p-5 ring-1 ring-brand-line hover:ring-brand-accent">
                   <h3 className="text-base text-brand-ink">{a.name}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-brand-muted">{a.body}</p>
                 </Link>
@@ -334,7 +334,7 @@ export default function HomePage() {
               <details key={f.q} className="group py-5">
                 <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
                   <h3 className="text-lg text-brand-ink">{f.q}</h3>
-                  <span aria-hidden="true" className="mt-1 font-display text-xl text-brand-blue transition-transform group-open:rotate-45">
+                  <span aria-hidden="true" className="mt-1 font-display text-xl text-brand-accent transition-transform group-open:rotate-45">
                     +
                   </span>
                 </summary>
@@ -352,7 +352,7 @@ export default function HomePage() {
           <p className="font-display text-3xl font-bold tracking-tight lg:text-4xl">Your car, when you need it.</p>
           <p className="mt-4 text-lg text-brand-silver">Book in a couple of minutes, or talk to us now.</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link href="/book" className="rounded-lg bg-brand-white px-6 py-3 font-display font-bold text-brand-ink hover:bg-brand-sky">
+            <Link href="/book" className="rounded-lg bg-brand-white px-6 py-3 font-display font-bold text-brand-ink hover:bg-brand-accent-soft">
               Get my price
             </Link>
             <a

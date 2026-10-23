@@ -173,7 +173,7 @@ export default function NewarkAirportCarServicePage() {
           <FactorTable caption="What affects the price of a Newark Airport car service" rows={priceFactors} />
           <p className="mt-6 max-w-3xl text-brand-muted leading-relaxed">
             The quickest way to a real number is to{' '}
-            <Link href={bookHref} className="font-semibold text-brand-blue hover:underline">enter your trip</Link>. The
+            <Link href={bookHref} className="font-semibold text-brand-accent hover:underline">enter your trip</Link>. The
             estimate updates as you go, and we confirm the fare before anything is booked.
           </p>
         </div>
@@ -247,7 +247,7 @@ export default function NewarkAirportCarServicePage() {
           <DriveTimeTable airport={airport} />
           <p className="mt-6 text-sm text-brand-muted">
             Approximate road distances and times; live traffic decides on the day. Staying in New Jersey?{' '}
-            <Link href="/services/areas/new-jersey" className="font-semibold text-brand-blue hover:underline">
+            <Link href="/services/areas/new-jersey" className="font-semibold text-brand-accent hover:underline">
               See our New Jersey car service
             </Link>
             .
@@ -260,7 +260,7 @@ export default function NewarkAirportCarServicePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="Newark black car fleet: vehicles and capacity" />
           <InfoCards items={vehicles} />
-          <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-blue hover:underline">
+          <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-accent hover:underline">
             See every vehicle →
           </Link>
         </div>
@@ -270,7 +270,7 @@ export default function NewarkAirportCarServicePage() {
       <section className="bg-brand-ink py-16 text-brand-white lg:py-24" aria-labelledby="corporate-heading">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
-            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-sky mb-3">Business travel</p>
+            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent-soft mb-3">Business travel</p>
             <h2 id="corporate-heading" className="text-3xl lg:text-[2.5rem] leading-tight text-balance">
               Corporate car service at Newark Airport
             </h2>
@@ -287,7 +287,7 @@ export default function NewarkAirportCarServicePage() {
               'An invoice for every ride, payable by card',
             ].map((item) => (
               <li key={item} className="flex gap-3">
-                <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-sky" />
+                <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-accent-soft" />
                 <span className="text-brand-tint">{item}</span>
               </li>
             ))}
@@ -343,14 +343,14 @@ export default function NewarkAirportCarServicePage() {
           <SectionHeading id="how-heading" eyebrow="How it works" title="How to book Newark airport car service" />
           <StepsList steps={steps} />
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <Link href={bookHref} className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
+            <Link href={bookHref} className="rounded-lg bg-brand-accent px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover">
               Book your Newark car
             </Link>
             <a
               href={WHATSAPP_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
+              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-accent"
             >
               Book on WhatsApp
             </a>

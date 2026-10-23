@@ -4,8 +4,8 @@
  */
 export function VehicleArt({ kind = 'sedan', className }: { kind?: 'sedan' | 'suv'; className?: string }) {
   return (
-    <div aria-hidden="true" className={`flex items-end rounded-xl bg-gradient-to-br from-brand-sky to-brand-tint px-4 pb-3 ${className ?? 'h-28'}`}>
-      <svg viewBox="0 0 120 40" className="h-12 w-auto text-brand-blue" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+    <div aria-hidden="true" className={`flex items-end rounded-xl bg-gradient-to-br from-brand-accent-soft to-brand-tint px-4 pb-3 ${className ?? 'h-28'}`}>
+      <svg viewBox="0 0 120 40" className="h-12 w-auto text-brand-accent" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
         {kind === 'suv' ? (
           <path d="M4 30h112v-8l-10-3-10-11H30L20 19 6 21z" />
         ) : (

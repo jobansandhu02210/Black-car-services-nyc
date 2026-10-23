@@ -8,16 +8,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // Palette A "Calm Corporate" (docs/REFERENCE-RESEARCH.md §4). Values live as CSS
+      // Palette "Teal + navy". Values live as CSS
       // variables in app/globals.css; the legacy names (black, charcoal, grey, …) are
       // remapped onto the new palette so template pages not yet rewritten stay on-brand.
       colors: {
         brand: {
           // New semantic tokens — use these in new code
           ink: 'rgb(var(--c-ink) / <alpha-value>)',
-          blue: 'rgb(var(--c-blue) / <alpha-value>)',
-          'blue-hover': 'rgb(var(--c-blue-hover) / <alpha-value>)',
-          sky: 'rgb(var(--c-sky) / <alpha-value>)',
+          accent: 'rgb(var(--c-accent) / <alpha-value>)',
+          'accent-hover': 'rgb(var(--c-accent-hover) / <alpha-value>)',
+          'accent-soft': 'rgb(var(--c-accent-soft) / <alpha-value>)',
           tint: 'rgb(var(--c-tint) / <alpha-value>)',
           line: 'rgb(var(--c-line) / <alpha-value>)',
           muted: 'rgb(var(--c-muted) / <alpha-value>)',

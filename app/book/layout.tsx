@@ -81,7 +81,7 @@ export default function BookLayout({ children }: { children: React.ReactNode }) 
           <FaqList faqs={faqs} />
           <p className="mt-8 text-sm text-brand-muted">
             Rather talk to someone?{' '}
-            <Link href="/contact" className="font-semibold text-brand-blue hover:underline">
+            <Link href="/contact" className="font-semibold text-brand-accent hover:underline">
               Contact us
             </Link>{' '}
             — phone and WhatsApp are answered 24/7.

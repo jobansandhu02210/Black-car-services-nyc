@@ -173,7 +173,7 @@ export default function LaGuardiaCarServicePage() {
           <FactorTable caption="What affects the price of a LaGuardia car service" rows={priceFactors} />
           <p className="mt-6 max-w-3xl text-brand-muted leading-relaxed">
             For your exact trip,{' '}
-            <Link href={bookHref} className="font-semibold text-brand-blue hover:underline">start a booking</Link> — the
+            <Link href={bookHref} className="font-semibold text-brand-accent hover:underline">start a booking</Link> — the
             estimate updates as you change the car or add stops, and nothing is booked until we confirm the fare with you.
           </p>
         </div>
@@ -247,7 +247,7 @@ export default function LaGuardiaCarServicePage() {
           <DriveTimeTable airport={airport} />
           <p className="mt-6 text-sm text-brand-muted">
             Approximate road distances and times; live traffic decides on the day. Heading north?{' '}
-            <Link href="/services/areas/connecticut" className="font-semibold text-brand-blue hover:underline">
+            <Link href="/services/areas/connecticut" className="font-semibold text-brand-accent hover:underline">
               See our Connecticut car service
             </Link>
             .
@@ -260,7 +260,7 @@ export default function LaGuardiaCarServicePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="LaGuardia black car fleet: vehicles and capacity" />
           <InfoCards items={vehicles} />
-          <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-blue hover:underline">
+          <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-accent hover:underline">
             See every vehicle →
           </Link>
         </div>
@@ -270,7 +270,7 @@ export default function LaGuardiaCarServicePage() {
       <section className="bg-brand-ink py-16 text-brand-white lg:py-24" aria-labelledby="corporate-heading">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
-            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-sky mb-3">Business travel</p>
+            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent-soft mb-3">Business travel</p>
             <h2 id="corporate-heading" className="text-3xl lg:text-[2.5rem] leading-tight text-balance">
               LaGuardia car service for business travelers
             </h2>
@@ -287,7 +287,7 @@ export default function LaGuardiaCarServicePage() {
               'An invoice for every ride, payable by card',
             ].map((item) => (
               <li key={item} className="flex gap-3">
-                <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-sky" />
+                <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-accent-soft" />
                 <span className="text-brand-tint">{item}</span>
               </li>
             ))}
@@ -343,14 +343,14 @@ export default function LaGuardiaCarServicePage() {
           <SectionHeading id="how-heading" eyebrow="How it works" title="How to book LaGuardia car service" />
           <StepsList steps={steps} />
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <Link href={bookHref} className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
+            <Link href={bookHref} className="rounded-lg bg-brand-accent px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover">
               Book your LaGuardia car
             </Link>
             <a
               href={WHATSAPP_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
+              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-accent"
             >
               Book on WhatsApp
             </a>

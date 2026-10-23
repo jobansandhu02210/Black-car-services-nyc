@@ -93,14 +93,14 @@ export default function ContactPage() {
         <div className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 lg:px-8 lg:pb-24 lg:pt-12">
           <nav aria-label="Breadcrumb" className="mb-8 text-sm text-brand-muted">
             <ol className="flex flex-wrap items-center gap-2">
-              <li><Link href="/" className="hover:text-brand-blue">Home</Link></li>
+              <li><Link href="/" className="hover:text-brand-accent">Home</Link></li>
               <li aria-hidden="true">/</li>
               <li aria-current="page" className="font-semibold text-brand-ink">Contact</li>
             </ol>
           </nav>
           <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
             <div>
-              <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-4">24 hours a day, 7 days a week</p>
+              <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-4">24 hours a day, 7 days a week</p>
               <h1 className="text-4xl sm:text-5xl leading-[1.05] text-brand-ink text-balance">Contact {SITE_NAME}</h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-brand-muted">
                 Book a ride, change one, or ask a question before you travel. A person answers the phone and WhatsApp at any
@@ -113,7 +113,7 @@ export default function ContactPage() {
                     <a
                       href={c.href}
                       {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                      className="mt-1 block break-all font-display text-xl font-bold text-brand-blue hover:underline"
+                      className="mt-1 block break-all font-display text-xl font-bold text-brand-accent hover:underline"
                     >
                       {c.value}
                     </a>
@@ -144,12 +144,12 @@ export default function ContactPage() {
           <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {include.map((item, i) => (
               <li key={item} className="rounded-xl bg-brand-tint p-5">
-                <span className="font-display text-sm font-bold text-brand-blue">{i + 1}</span>
+                <span className="font-display text-sm font-bold text-brand-accent">{i + 1}</span>
                 <p className="mt-2 text-brand-ink">{item}</p>
               </li>
             ))}
           </ol>
-          <Link href="/book" className="mt-8 inline-flex rounded-lg bg-brand-blue px-6 py-3 font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
+          <Link href="/book" className="mt-8 inline-flex rounded-lg bg-brand-accent px-6 py-3 font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover">
             Or book online now
           </Link>
         </div>

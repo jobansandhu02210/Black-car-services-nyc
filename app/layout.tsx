@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Manrope, Source_Sans_3 } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -14,18 +14,12 @@ import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { ogDefaults } from '@/lib/og';
 import { defaultSiteDescription, siteKeywords } from '@/lib/seo';
 
-// Body: Source Sans 3 (very readable at small sizes). Display: Manrope (headings, UI labels).
-const sourceSans = Source_Sans_3({
-  weight: ['400', '600'],
+// Plus Jakarta Sans for body and headings. Loaded once as --font-sans; globals.css points
+// --font-display at it so heading styles keep working if a separate display face returns.
+const jakarta = Plus_Jakarta_Sans({
+  weight: ['400', '600', '700'],
   subsets: ['latin'],
   variable: '--font-sans',
-  display: 'swap',
-});
-
-const manrope = Manrope({
-  weight: ['600', '700'],
-  subsets: ['latin'],
-  variable: '--font-display',
   display: 'swap',
 });
 
@@ -77,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${sourceSans.variable} ${manrope.variable}`}>
+    <html lang="en" className={jakarta.variable}>
       {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <body className="font-sans min-h-screen flex flex-col">
         <LocalBusinessJsonLd />

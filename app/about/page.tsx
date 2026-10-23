@@ -104,7 +104,7 @@ export default function AboutPage() {
       <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="not-heading">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
-            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-3">Keeping it focused</p>
+            <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-3">Keeping it focused</p>
             <h2 id="not-heading" className="text-3xl lg:text-[2.5rem] leading-tight text-brand-ink text-balance">
               What we don’t do
             </h2>
@@ -116,7 +116,7 @@ export default function AboutPage() {
           <ul className="space-y-4 self-center">
             {notFor.map((n) => (
               <li key={n} className="flex gap-3">
-                <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-blue" />
+                <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-accent" />
                 <span className="text-brand-ink">{n}</span>
               </li>
             ))}
@@ -158,7 +158,7 @@ export default function AboutPage() {
           <p className="font-display text-3xl font-bold tracking-tight lg:text-4xl">Questions before you book?</p>
           <p className="mt-4 text-lg text-brand-silver">Call, WhatsApp or send us a message — any time.</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <a href={`tel:${CONTACT_PHONE_E164}`} className="rounded-lg bg-brand-white px-6 py-3 font-display font-bold text-brand-ink hover:bg-brand-sky">
+            <a href={`tel:${CONTACT_PHONE_E164}`} className="rounded-lg bg-brand-white px-6 py-3 font-display font-bold text-brand-ink hover:bg-brand-accent-soft">
               Call {CONTACT_PHONE_DISPLAY}
             </a>
             <a

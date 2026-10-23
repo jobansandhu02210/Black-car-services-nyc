@@ -29,8 +29,8 @@ export function PageHero({
   phoneE164: string;
 }) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-brand-tint to-brand-sky/60">
-      <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-32 w-full text-brand-blue/20 lg:h-44" />
+    <section className="relative overflow-hidden bg-gradient-to-b from-brand-tint to-brand-accent-soft/60">
+      <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-32 w-full text-brand-accent/20 lg:h-44" />
       <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8 lg:pb-28 lg:pt-12">
         <nav aria-label="Breadcrumb" className="mb-8 text-sm text-brand-muted">
           <ol className="flex flex-wrap items-center gap-2">
@@ -38,7 +38,7 @@ export function PageHero({
               <li key={c.name} className="flex items-center gap-2">
                 {i > 0 && <span aria-hidden="true">/</span>}
                 {c.href ? (
-                  <Link href={c.href} className="hover:text-brand-blue">{c.name}</Link>
+                  <Link href={c.href} className="hover:text-brand-accent">{c.name}</Link>
                 ) : (
                   <span aria-current="page" className="font-semibold text-brand-ink">{c.name}</span>
                 )}
@@ -46,7 +46,7 @@ export function PageHero({
             ))}
           </ol>
         </nav>
-        <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-4">{eyebrow}</p>
+        <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-4">{eyebrow}</p>
         <h1 id={`${idPrefix}-title`} className="max-w-3xl text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-brand-ink text-balance">
           {h1}
         </h1>
@@ -56,13 +56,13 @@ export function PageHero({
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
             href={ctaHref}
-            className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display font-bold text-brand-white hover:bg-brand-blue-hover"
+            className="rounded-lg bg-brand-accent px-6 py-3 text-center font-display font-bold text-brand-white hover:bg-brand-accent-hover"
           >
             {ctaLabel}
           </Link>
           <a
             href={`tel:${phoneE164}`}
-            className="rounded-lg bg-brand-white px-6 py-3 text-center font-display font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
+            className="rounded-lg bg-brand-white px-6 py-3 text-center font-display font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-accent"
           >
             Call {phoneDisplay}
           </a>

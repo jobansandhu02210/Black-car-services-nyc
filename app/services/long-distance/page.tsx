@@ -165,10 +165,10 @@ export default function LongDistancePage() {
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {routes.map((r) => (
               <li key={r.to}>
-                <Link href={r.href} className="block h-full rounded-2xl border border-brand-line p-6 transition-colors hover:border-brand-blue">
+                <Link href={r.href} className="block h-full rounded-2xl border border-brand-line p-6 transition-colors hover:border-brand-accent">
                   <span className="block text-xs font-semibold uppercase tracking-wide text-brand-muted">NYC to</span>
                   <h3 className="mt-1 text-xl text-brand-ink">{r.to}</h3>
-                  <p className="mt-1 text-sm font-semibold text-brand-blue">{r.miles} · {r.time}</p>
+                  <p className="mt-1 text-sm font-semibold text-brand-accent">{r.miles} · {r.time}</p>
                   <p className="mt-3 text-brand-muted leading-relaxed">{r.note}</p>
                 </Link>
               </li>
@@ -191,7 +191,7 @@ export default function LongDistancePage() {
           </div>
           <p className="mt-6 max-w-3xl text-brand-muted leading-relaxed">
             For a real number,{' '}
-            <Link href={bookHref} className="font-semibold text-brand-blue hover:underline">enter your trip</Link>. You see an
+            <Link href={bookHref} className="font-semibold text-brand-accent hover:underline">enter your trip</Link>. You see an
             estimate as you book, and we confirm the fare before the ride.
           </p>
         </div>
@@ -227,7 +227,7 @@ export default function LongDistancePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="Choosing a car for a long trip" />
           <InfoCards items={vehicles} />
-          <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-blue hover:underline">
+          <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-accent hover:underline">
             See every vehicle →
           </Link>
         </div>
@@ -239,14 +239,14 @@ export default function LongDistancePage() {
           <SectionHeading id="how-heading" eyebrow="How it works" title="How to book a long-distance car" />
           <StepsList steps={steps} />
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <Link href={bookHref} className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
+            <Link href={bookHref} className="rounded-lg bg-brand-accent px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover">
               Book a long-distance ride
             </Link>
             <a
               href={WHATSAPP_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
+              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-accent"
             >
               Ask on WhatsApp
             </a>

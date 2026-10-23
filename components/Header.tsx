@@ -27,7 +27,7 @@ export default function Header() {
           <Link href="/" className="flex items-center shrink-0">
             {logoError || !BRAND_LOGO_SRC ? (
               <span className="flex items-center gap-2 font-display text-lg lg:text-xl font-bold text-brand-ink tracking-tight">
-                <span aria-hidden="true" className="inline-block h-6 w-1.5 rounded-full bg-brand-blue" />
+                <span aria-hidden="true" className="inline-block h-6 w-1.5 rounded-full bg-brand-accent" />
                 {SITE_NAME}
               </span>
             ) : (
@@ -51,7 +51,7 @@ export default function Header() {
                 className={clsx(
                   'text-sm font-medium transition-colors',
                   pathname === href || (href !== '/' && pathname.startsWith(`${href}/`))
-                    ? 'text-brand-blue'
+                    ? 'text-brand-accent'
                     : 'text-brand-muted hover:text-brand-ink'
                 )}
               >
@@ -73,7 +73,7 @@ export default function Header() {
             </a>
             <Link
               href="/book"
-              className="hidden sm:inline-flex items-center justify-center rounded-lg px-5 py-2.5 bg-brand-blue text-brand-white text-sm font-semibold hover:bg-brand-blue-hover transition-colors"
+              className="hidden sm:inline-flex items-center justify-center rounded-lg px-5 py-2.5 bg-brand-accent text-brand-white text-sm font-semibold hover:bg-brand-accent-hover transition-colors"
             >
               Get my price
             </Link>
@@ -108,7 +108,7 @@ export default function Header() {
                     onClick={() => setMobileOpen(false)}
                     className={clsx(
                       'block py-3 px-2 text-sm font-medium',
-                      pathname === href ? 'text-brand-blue bg-brand-tint rounded-md' : 'text-brand-muted'
+                      pathname === href ? 'text-brand-accent bg-brand-tint rounded-md' : 'text-brand-muted'
                     )}
                   >
                     {label}
@@ -119,7 +119,7 @@ export default function Header() {
                 <Link
                   href="/book"
                   onClick={() => setMobileOpen(false)}
-                  className="block text-center rounded-lg py-3 bg-brand-blue text-brand-white text-sm font-semibold"
+                  className="block text-center rounded-lg py-3 bg-brand-accent text-brand-white text-sm font-semibold"
                 >
                   Get my price
                 </Link>

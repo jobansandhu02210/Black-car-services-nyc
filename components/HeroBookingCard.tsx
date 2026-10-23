@@ -14,7 +14,7 @@ const AIRPORT_OPTIONS = [
 ];
 
 const inputClass =
-  'w-full rounded-lg border border-brand-line bg-brand-white px-3.5 py-3 text-[15px] text-brand-ink placeholder:text-brand-muted/80 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-sky';
+  'w-full rounded-lg border border-brand-line bg-brand-white px-3.5 py-3 text-[15px] text-brand-ink placeholder:text-brand-muted/80 focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent-soft';
 
 /**
  * Hero trip card: collects the basics and hands off to /book with the fields prefilled
@@ -44,7 +44,7 @@ export function HeroBookingCard() {
   return (
     <form
       onSubmit={submit}
-      className="w-full rounded-2xl bg-brand-white p-5 sm:p-6 shadow-[0_20px_50px_-20px_rgb(20_38_58/0.35)] ring-1 ring-brand-line"
+      className="w-full rounded-2xl bg-brand-white p-5 sm:p-6 shadow-[0_20px_50px_-20px_rgb(19_35_43/0.35)] ring-1 ring-brand-line"
       aria-label="Start a booking"
     >
       <div role="tablist" aria-label="Trip type" className="grid grid-cols-2 gap-1 rounded-lg bg-brand-tint p-1 mb-5">
@@ -60,7 +60,7 @@ export function HeroBookingCard() {
             onClick={() => setMode(value)}
             className={clsx(
               'rounded-md py-2 text-sm font-semibold font-display transition-colors',
-              mode === value ? 'bg-brand-white text-brand-blue shadow-sm' : 'text-brand-muted hover:text-brand-ink'
+              mode === value ? 'bg-brand-white text-brand-accent shadow-sm' : 'text-brand-muted hover:text-brand-ink'
             )}
           >
             {label}
@@ -129,7 +129,7 @@ export function HeroBookingCard() {
 
       <button
         type="submit"
-        className="mt-5 w-full rounded-lg bg-brand-blue py-3.5 font-display text-[15px] font-bold text-brand-white hover:bg-brand-blue-hover transition-colors"
+        className="mt-5 w-full rounded-lg bg-brand-accent py-3.5 font-display text-[15px] font-bold text-brand-white hover:bg-brand-accent-hover transition-colors"
       >
         Get my price
       </button>

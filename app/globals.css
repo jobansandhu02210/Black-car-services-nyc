@@ -3,21 +3,22 @@
 @tailwind utilities;
 
 :root {
-  /* Palette A "Calm Corporate" as RGB triplets (for Tailwind alpha support) */
+  /* Palette "Teal + navy" (sample B, chosen 2026-10-23) as RGB triplets (for Tailwind alpha support) */
   --c-white: 255 255 255;
-  --c-tint: 243 247 251;        /* #F3F7FB section tint */
-  --c-sky: 220 233 245;         /* #DCE9F5 light-blue accent */
-  --c-line: 227 234 241;        /* #E3EAF1 borders */
-  --c-blue: 46 94 140;          /* #2E5E8C primary */
-  --c-blue-hover: 36 75 112;    /* #244B70 */
-  --c-ink: 20 38 58;            /* #14263A navy text / dark sections */
-  --c-ink-2: 27 49 73;          /* #1B3149 */
-  --c-ink-3: 41 66 94;          /* #29425E */
-  --c-muted: 91 107 124;        /* #5B6B7C muted text (AA on white) */
-  --c-on-dark-muted: 176 194 212; /* #B0C2D4 secondary text on navy */
+  --c-tint: 238 246 247;          /* #EEF6F7 section tint */
+  --c-accent-soft: 214 236 239;   /* #D6ECEF light teal accent */
+  --c-line: 221 232 234;          /* #DDE8EA borders */
+  --c-accent: 25 100 123;         /* #19647B primary teal (6.6:1 on white) */
+  --c-accent-hover: 18 78 96;     /* #124E60 */
+  --c-ink: 19 35 43;              /* #13232B navy text / dark sections */
+  --c-ink-2: 26 47 56;            /* #1A2F38 */
+  --c-ink-3: 40 70 80;            /* #284650 */
+  --c-muted: 92 110 117;          /* #5C6E75 muted text (5.3:1 on white) */
+  --c-on-dark-muted: 175 198 204; /* #AFC6CC secondary text on navy */
 }
 
 html {
+  --font-display: var(--font-sans);
   scroll-behavior: smooth;
 }
 
@@ -25,7 +26,7 @@ body {
   @apply bg-brand-white text-brand-ink antialiased;
 }
 
-/* Headings use the display face (Manrope). `.font-serif` is the template's heading
+/* Headings use the display face (Plus Jakarta Sans). `.font-serif` is the template's heading
    class — it maps to the display face too, so un-rewritten pages pick it up. */
 h1, h2, h3, h4, h5, h6,
 .font-serif {
@@ -53,5 +54,5 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  @apply outline-2 outline-offset-2 outline-brand-blue;
+  @apply outline-2 outline-offset-2 outline-brand-accent;
 }

@@ -7,7 +7,7 @@ import { AIRPORTS, TERMINALS_CHECKED, type AirportCode } from '@/lib/airports';
 const OTHER = '__other__';
 
 const selectClass =
-  'w-full rounded-lg border border-brand-line bg-brand-white px-3.5 py-3 text-[15px] text-brand-ink focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-sky';
+  'w-full rounded-lg border border-brand-line bg-brand-white px-3.5 py-3 text-[15px] text-brand-ink focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent-soft';
 
 function checkedLabel(): string {
   const [y, m, d] = TERMINALS_CHECKED.split('-').map(Number);
@@ -38,7 +38,7 @@ export function TerminalFinder({ initialAirport }: { initialAirport: AirportCode
               }}
               className={clsx(
                 'rounded-md px-3 py-1.5 font-display text-sm font-bold transition-colors',
-                code === c ? 'bg-brand-blue text-brand-white' : 'text-brand-muted hover:text-brand-ink'
+                code === c ? 'bg-brand-accent text-brand-white' : 'text-brand-muted hover:text-brand-ink'
               )}
             >
               {c}
@@ -64,9 +64,9 @@ export function TerminalFinder({ initialAirport }: { initialAirport: AirportCode
         {match && (
           <div className="rounded-xl bg-brand-white p-5 ring-1 ring-brand-line">
             <p className="text-sm text-brand-muted">{match.airline} at {airport.shortName}</p>
-            <p className="mt-1 font-display text-2xl font-bold text-brand-blue">{match.terminal}</p>
+            <p className="mt-1 font-display text-2xl font-bold text-brand-accent">{match.terminal}</p>
             {match.moving && (
-              <p className="mt-2 rounded-md bg-brand-sky px-3 py-2 text-sm text-brand-ink">
+              <p className="mt-2 rounded-md bg-brand-accent-soft px-3 py-2 text-sm text-brand-ink">
                 This airline is changing terminals during 2026–27. Check the terminal on your boarding pass or in the airline’s
                 app the day before you fly.
               </p>

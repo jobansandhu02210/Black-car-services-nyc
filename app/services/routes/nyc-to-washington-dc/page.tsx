@@ -168,7 +168,7 @@ export default function NycToWashingtonDcPage() {
             <FactorTable caption="What affects the price of a New York to Washington, DC car service" rows={priceFactors} />
           </div>
           <p className="mt-6 max-w-3xl text-brand-muted leading-relaxed">
-            <Link href={bookHref} className="font-semibold text-brand-blue hover:underline">Enter your trip</Link> for an
+            <Link href={bookHref} className="font-semibold text-brand-accent hover:underline">Enter your trip</Link> for an
             estimate, or message us for a round trip or next-day return. We confirm the fare before the ride.
           </p>
         </div>
@@ -215,14 +215,14 @@ export default function NycToWashingtonDcPage() {
           />
           <InfoCards items={breaks} />
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <Link href={bookHref} className="rounded-lg bg-brand-blue px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
+            <Link href={bookHref} className="rounded-lg bg-brand-accent px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover">
               Book NYC to DC
             </Link>
             <a
               href={WHATSAPP_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-blue"
+              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-accent"
             >
               Ask about a round trip
             </a>

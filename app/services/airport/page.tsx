@@ -148,9 +148,9 @@ export default function AirportHubPage() {
           <TextTable caption="JFK, LaGuardia and Newark compared" head={['', 'JFK', 'LaGuardia', 'Newark']} rows={glance} />
           <p className="mt-6 text-sm text-brand-muted">
             Full tables for each airport:{' '}
-            <Link href="/services/airport/jfk" className="font-semibold text-brand-blue hover:underline">JFK</Link>,{' '}
-            <Link href="/services/airport/lga" className="font-semibold text-brand-blue hover:underline">LaGuardia</Link> and{' '}
-            <Link href="/services/airport/ewr" className="font-semibold text-brand-blue hover:underline">Newark</Link>.
+            <Link href="/services/airport/jfk" className="font-semibold text-brand-accent hover:underline">JFK</Link>,{' '}
+            <Link href="/services/airport/lga" className="font-semibold text-brand-accent hover:underline">LaGuardia</Link> and{' '}
+            <Link href="/services/airport/ewr" className="font-semibold text-brand-accent hover:underline">Newark</Link>.
           </p>
         </div>
       </section>
@@ -210,7 +210,7 @@ export default function AirportHubPage() {
               <p className="mt-2 text-brand-muted leading-relaxed">
                 Newark is minutes from Jersey City and Hoboken, and under an hour from Morristown and Princeton. We also drive
                 New Jersey travelers to JFK and LaGuardia.{' '}
-                <Link href="/services/areas/new-jersey" className="font-semibold text-brand-blue hover:underline">New Jersey car service</Link>
+                <Link href="/services/areas/new-jersey" className="font-semibold text-brand-accent hover:underline">New Jersey car service</Link>
               </p>
             </div>
             <div>
@@ -218,7 +218,7 @@ export default function AirportHubPage() {
               <p className="mt-2 text-brand-muted leading-relaxed">
                 From Greenwich, Stamford and the shoreline, LaGuardia is usually the nearest NYC airport, with JFK close
                 behind for international flights.{' '}
-                <Link href="/services/areas/connecticut" className="font-semibold text-brand-blue hover:underline">Connecticut car service</Link>
+                <Link href="/services/areas/connecticut" className="font-semibold text-brand-accent hover:underline">Connecticut car service</Link>
               </p>
             </div>
             <div>
@@ -226,7 +226,7 @@ export default function AirportHubPage() {
               <p className="mt-2 text-brand-muted leading-relaxed">
                 Some international routes are only offered from New York. Newark is about an hour and a half from Center City
                 outside rush hour.{' '}
-                <Link href="/services/routes/nyc-to-philadelphia" className="font-semibold text-brand-blue hover:underline">NYC to Philadelphia</Link>
+                <Link href="/services/routes/nyc-to-philadelphia" className="font-semibold text-brand-accent hover:underline">NYC to Philadelphia</Link>
               </p>
             </div>
           </div>

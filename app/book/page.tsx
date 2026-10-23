@@ -358,7 +358,7 @@ export default function BookPage() {
     <div className="bg-brand-offwhite min-h-screen py-12 lg:py-20">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-10">
-          <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-blue mb-3">Book a ride</p>
+          <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-3">Book a ride</p>
           <h1 className="text-3xl lg:text-4xl text-brand-ink">Book Your Black Car</h1>
           <p className="mt-3 text-brand-muted leading-relaxed">
             Airport or city to city, five short steps. You see an estimate as you go; we confirm the fare by email before
@@ -534,21 +534,21 @@ export default function BookPage() {
                         onClick={() => setVehicle(v)}
                         className={`text-left rounded-xl border transition-all overflow-hidden ${
                           isSelected
-                            ? 'border-brand-blue ring-2 ring-brand-blue'
-                            : 'border-brand-line hover:border-brand-blue'
+                            ? 'border-brand-accent ring-2 ring-brand-accent'
+                            : 'border-brand-line hover:border-brand-accent'
                         }`}
                       >
                         {/* Vehicle image */}
                         <div className="relative overflow-hidden">
                           <VehicleArt kind={meta.kind} className="h-24 rounded-none" />
                           {isSelected && (
-                            <div className="absolute top-2 right-2 rounded-md bg-brand-blue text-brand-white text-xs px-2 py-1 font-semibold">
+                            <div className="absolute top-2 right-2 rounded-md bg-brand-accent text-brand-white text-xs px-2 py-1 font-semibold">
                               ✓ Selected
                             </div>
                           )}
                         </div>
                         {/* Vehicle info + price */}
-                        <div className={`p-4 ${ isSelected ? 'bg-brand-blue' : 'bg-brand-white' }`}>
+                        <div className={`p-4 ${ isSelected ? 'bg-brand-accent' : 'bg-brand-white' }`}>
                           <p className={`font-serif text-base font-semibold ${ isSelected ? 'text-brand-white' : 'text-brand-black' }`}>
                             {VEHICLE_LABELS[v]}
                           </p>

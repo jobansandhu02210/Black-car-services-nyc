@@ -3,7 +3,7 @@ export type Cell = 'yes' | 'no' | 'varies';
 const cellLabel: Record<Cell, string> = { yes: 'Yes', no: 'No', varies: 'Varies' };
 
 const cellStyle: Record<Cell, string> = {
-  yes: 'bg-brand-sky text-brand-blue',
+  yes: 'bg-brand-accent-soft text-brand-accent',
   varies: 'bg-brand-tint text-brand-muted',
   no: 'bg-brand-white text-brand-muted ring-1 ring-brand-line',
 };
@@ -39,7 +39,7 @@ export function ComparisonTable({
               <span className="sr-only">Feature</span>
             </th>
             {columns.map((c, i) => (
-              <th key={c} scope="col" className={`px-4 py-4 font-bold ${i === 0 ? 'text-brand-blue' : ''}`}>
+              <th key={c} scope="col" className={`px-4 py-4 font-bold ${i === 0 ? 'text-brand-accent' : ''}`}>
                 {c}
               </th>
             ))}

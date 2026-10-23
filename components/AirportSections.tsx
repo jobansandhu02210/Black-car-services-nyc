@@ -73,7 +73,7 @@ export function TerminalCards({ airport, fallbackTitle, fallbackBody }: { airpor
       {airport.terminals.map((t) => (
         <div key={t.name} className="rounded-2xl border border-brand-line p-6">
           <h3 className="text-xl text-brand-ink">{t.name}</h3>
-          <p className="mt-2 text-sm font-semibold text-brand-blue">{t.airlines}</p>
+          <p className="mt-2 text-sm font-semibold text-brand-accent">{t.airlines}</p>
           <p className="mt-3 text-brand-muted leading-relaxed">{t.note}</p>
         </div>
       ))}
@@ -121,7 +121,7 @@ export function InfoCards({ items, tone = 'white' }: { items: { title: string; s
       {items.map((v) => (
         <div key={v.title} className={tone === 'tint' ? 'rounded-2xl bg-brand-white p-6 ring-1 ring-brand-line' : 'rounded-2xl border border-brand-line p-6'}>
           <h3 className="text-xl text-brand-ink">{v.title}</h3>
-          {v.spec && <p className="mt-1 text-sm font-semibold text-brand-blue">{v.spec}</p>}
+          {v.spec && <p className="mt-1 text-sm font-semibold text-brand-accent">{v.spec}</p>}
           <p className="mt-3 text-brand-muted leading-relaxed">{v.body}</p>
         </div>
       ))}
@@ -134,7 +134,7 @@ export function StepsList({ steps }: { steps: { name: string; text: string }[] }
     <ol className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
       {steps.map((s, i) => (
         <li key={s.name}>
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-blue font-display font-bold text-brand-white">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-accent font-display font-bold text-brand-white">
             {i + 1}
           </span>
           <h3 className="mt-4 text-lg text-brand-ink">{s.name}</h3>
@@ -152,7 +152,7 @@ export function FaqList({ faqs }: { faqs: { q: string; a: string }[] }) {
         <details key={f.q} className="group py-5">
           <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
             <h3 className="text-lg text-brand-ink">{f.q}</h3>
-            <span aria-hidden="true" className="mt-1 font-display text-xl text-brand-blue transition-transform group-open:rotate-45">
+            <span aria-hidden="true" className="mt-1 font-display text-xl text-brand-accent transition-transform group-open:rotate-45">
               +
             </span>
           </summary>
@@ -168,7 +168,7 @@ export function RelatedLinks({ links }: { links: { href: string; title: string; 
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {links.map((r) => (
         <li key={r.href}>
-          <Link href={r.href} className="block h-full rounded-xl bg-brand-white p-5 ring-1 ring-brand-line hover:ring-brand-blue">
+          <Link href={r.href} className="block h-full rounded-xl bg-brand-white p-5 ring-1 ring-brand-line hover:ring-brand-accent">
             <span className="font-display font-bold text-brand-ink">{r.title} →</span>
             <span className="mt-1 block text-sm text-brand-muted">{r.body}</span>
           </Link>

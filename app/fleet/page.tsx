@@ -133,7 +133,7 @@ export default function FleetPage() {
               <div key={c.name} className="rounded-2xl border border-brand-line p-6">
                 <VehicleArt kind={c.kind} className="mb-5 h-32" />
                 <h3 className="text-xl text-brand-ink">{c.name}</h3>
-                <p className="mt-1 text-sm font-semibold text-brand-blue">{c.spec}</p>
+                <p className="mt-1 text-sm font-semibold text-brand-accent">{c.spec}</p>
                 <p className="mt-3 text-brand-muted leading-relaxed">{c.body}</p>
                 <p className="mt-3 text-sm text-brand-ink">
                   <span className="font-semibold">Best for:</span> {c.bestFor}
@@ -175,7 +175,7 @@ export default function FleetPage() {
               </li>
             ))}
           </ul>
-          <Link href="/book" className="mt-10 inline-flex rounded-lg bg-brand-blue px-6 py-3 font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover">
+          <Link href="/book" className="mt-10 inline-flex rounded-lg bg-brand-accent px-6 py-3 font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover">
             Book your car
           </Link>
         </div>

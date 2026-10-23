@@ -9,7 +9,7 @@ const BUFFER_MIN = 30;
 const AT_AIRPORT_MIN = { domestic: 120, international: 180 } as const;
 
 const fieldClass =
-  'w-full rounded-lg border border-brand-line bg-brand-white px-3.5 py-3 text-[15px] text-brand-ink focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-sky';
+  'w-full rounded-lg border border-brand-line bg-brand-white px-3.5 py-3 text-[15px] text-brand-ink focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent-soft';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const toDateParam = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -81,7 +81,7 @@ export function PickupPlanner({ airportCode }: { airportCode: AirportCode }) {
                 onClick={() => setKind(k)}
                 className={clsx(
                   'rounded-md py-2 text-sm font-semibold font-display capitalize transition-colors',
-                  kind === k ? 'bg-brand-white text-brand-blue shadow-sm' : 'text-brand-muted hover:text-brand-ink'
+                  kind === k ? 'bg-brand-white text-brand-accent shadow-sm' : 'text-brand-muted hover:text-brand-ink'
                 )}
               >
                 {k}
@@ -95,7 +95,7 @@ export function PickupPlanner({ airportCode }: { airportCode: AirportCode }) {
         {plan ? (
           <div className="rounded-xl bg-brand-tint p-5">
             <p className="text-sm text-brand-muted">Be picked up by</p>
-            <p className="font-display text-3xl font-bold text-brand-blue">
+            <p className="font-display text-3xl font-bold text-brand-accent">
               {showTime(plan.leave)} <span className="text-base font-semibold text-brand-muted">{showDay(plan.leave)}</span>
             </p>
             <p className="mt-3 text-sm leading-relaxed text-brand-muted">
@@ -105,7 +105,7 @@ export function PickupPlanner({ airportCode }: { airportCode: AirportCode }) {
             </p>
             <Link
               href={`/book?service=airport&airport=${encodeURIComponent(airport.bookValue)}&date=${toDateParam(plan.leave)}&time=${toTimeParam(plan.leave)}`}
-              className="mt-4 inline-flex rounded-lg bg-brand-blue px-5 py-2.5 font-display text-sm font-bold text-brand-white hover:bg-brand-blue-hover"
+              className="mt-4 inline-flex rounded-lg bg-brand-accent px-5 py-2.5 font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover"
             >
               Book a pickup at {showTime(plan.leave)}
             </Link>
