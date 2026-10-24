@@ -37,13 +37,13 @@ const principles = [
 
 // TODO(owner): confirm — remove any line for a service you do offer.
 const notFor = [
-  'Party buses, stretch limousines or Sprinter vans',
+  'Party buses or stretch limousines',
   'Shared rides — every car is booked by one party',
   'Rides booked through an app marketplace — you book with us directly',
 ];
 
 const related = [
-  { href: '/fleet', title: 'Our fleet', body: 'Sedans and SUVs, Business and First Class.' },
+  { href: '/fleet', title: 'Our fleet', body: 'Sedans, SUVs and Sprinter vans for groups.' },
   { href: '/services/airport', title: 'Airport car service', body: 'JFK, LaGuardia and Newark compared.' },
   { href: '/services/long-distance', title: 'Long-distance car service', body: 'Philadelphia, DC, New Jersey and Connecticut.' },
   { href: '/contact', title: 'Contact us', body: 'Phone, WhatsApp and email, 24/7.' },

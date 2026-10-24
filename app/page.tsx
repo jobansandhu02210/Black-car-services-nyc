@@ -5,7 +5,8 @@ import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { FaqJsonLd, SpeakableJsonLd } from '@/components/JsonLd';
 import { HeroBookingCard } from '@/components/HeroBookingCard';
 import { SkylineArt } from '@/components/SkylineArt';
-import { VehicleArt } from '@/components/VehicleArt';
+import { VehiclePhoto } from '@/components/VehiclePhoto';
+import { classPhoto, type VehicleClassId } from '@/lib/fleet';
 import { SectionHeading } from '@/components/SectionHeading';
 import { ComparisonTable, type Cell } from '@/components/ComparisonTable';
 import { ogDefaults } from '@/lib/og';
@@ -57,9 +58,9 @@ const comparison: { row: string; cells: Cell[] }[] = [
 
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts.
 const vehicles = [
-  { name: 'Business Sedan', seats: 'Up to 3 passengers', bags: '3 bags', body: 'The usual choice for one or two travelers and a couple of suitcases.' },
-  { name: 'Business SUV', seats: 'Up to 6 passengers', bags: '6 bags', body: 'For families, small teams, ski bags and anyone packing heavy.' },
-  { name: 'First Class', seats: 'Sedan or SUV', bags: 'Same capacity', body: 'A newer, top-trim vehicle for client pickups and executive travel.' },
+  { name: 'Business Sedan', photo: 'business-sedan' as VehicleClassId, seats: 'Up to 3 passengers', bags: '3 bags', body: 'The usual choice for one or two travelers and a couple of suitcases.' },
+  { name: 'Business SUV', photo: 'business-suv' as VehicleClassId, seats: 'Up to 6 passengers', bags: '6 bags', body: 'For families, small teams, ski bags and anyone packing heavy.' },
+  { name: 'First Class', photo: 'first-sedan' as VehicleClassId, seats: 'Sedan or SUV', bags: 'Same capacity', body: 'A newer, top-trim vehicle for client pickups and executive travel.' },
 ];
 
 const steps = [
@@ -264,8 +265,7 @@ export default function HomePage() {
           <div className="grid gap-5 md:grid-cols-3">
             {vehicles.map((v) => (
               <div key={v.name} className="rounded-2xl bg-brand-white p-6 ring-1 ring-brand-line">
-                {/* TODO(owner): replace with a real photo of your own vehicle */}
-                <VehicleArt kind={v.name === 'Business SUV' ? 'suv' : 'sedan'} className="mb-5 h-28" />
+                <VehiclePhoto src={classPhoto(v.photo).image} alt={classPhoto(v.photo).name} className="mb-5" />
                 <h3 className="text-xl text-brand-ink">{v.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-brand-accent">
                   {v.seats} · {v.bags}

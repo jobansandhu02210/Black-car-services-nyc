@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GooglePlacesAutocomplete } from '@/components/GooglePlacesAutocomplete';
-import { VehicleArt } from '@/components/VehicleArt';
+import { VehiclePhoto } from '@/components/VehiclePhoto';
+import { classPhoto } from '@/lib/fleet';
 import {
   CONTACT_EMAIL_BOOKINGS,
   CONTACT_PHONE_DISPLAY,
@@ -28,11 +29,11 @@ const VEHICLE_LABELS: Record<VehicleType, string> = {
 
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts and /fleet.
 // No hard-coded hourly rates: pricing is still to be set by the owner (TODO(owner)).
-const VEHICLE_META: Record<VehicleType, { kind: 'sedan' | 'suv'; passengers: number; luggage: number; description: string }> = {
-  'business-sedan': { kind: 'sedan', passengers: 3, luggage: 3, description: 'The everyday choice for one or two travelers' },
-  'business-suv':   { kind: 'suv',   passengers: 6, luggage: 6, description: 'Room for a family, a team or a lot of luggage' },
-  'first-suv':      { kind: 'suv',   passengers: 6, luggage: 6, description: 'Our most spacious car, newer and top-trim' },
-  'first-sedan':    { kind: 'sedan', passengers: 3, luggage: 3, description: 'Newer, quieter, more legroom — for clients' },
+const VEHICLE_META: Record<VehicleType, { passengers: number; luggage: number; description: string }> = {
+  'business-sedan': { passengers: 3, luggage: 3, description: 'The everyday choice for one or two travelers' },
+  'business-suv':   { passengers: 6, luggage: 6, description: 'Room for a family, a team or a lot of luggage' },
+  'first-suv':      { passengers: 6, luggage: 6, description: 'Our most spacious car, newer and top-trim' },
+  'first-sedan':    { passengers: 3, luggage: 3, description: 'Newer, quieter, more legroom — for clients' },
 };
 
 const AIRPORTS = ['JFK - John F. Kennedy', 'LGA - LaGuardia', 'EWR - Newark Liberty'];
@@ -540,7 +541,7 @@ export default function BookPage() {
                       >
                         {/* Vehicle image */}
                         <div className="relative overflow-hidden">
-                          <VehicleArt kind={meta.kind} className="h-24 rounded-none" />
+                          <VehiclePhoto src={classPhoto(v).image} alt={`${VEHICLE_LABELS[v]} — ${classPhoto(v).name}`} className="rounded-none" sizes="(min-width: 640px) 320px, 100vw" />
                           {isSelected && (
                             <div className="absolute top-2 right-2 rounded-md bg-brand-accent text-brand-white text-xs px-2 py-1 font-semibold">
                               ✓ Selected

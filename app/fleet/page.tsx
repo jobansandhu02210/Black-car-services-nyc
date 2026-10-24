@@ -6,13 +6,14 @@ import { BreadcrumbJsonLd, FaqJsonLd } from '@/components/JsonLd';
 import { SectionHeading } from '@/components/SectionHeading';
 import { PageHero, TextTable } from '@/components/PageHero';
 import { FaqList, RelatedLinks } from '@/components/AirportSections';
-import { VehicleArt } from '@/components/VehicleArt';
+import { VehiclePhoto } from '@/components/VehiclePhoto';
+import { FLEET_CLASSES, SPRINTERS } from '@/lib/fleet';
 import { ogDefaults } from '@/lib/og';
 
 const path = '/fleet';
-const title = 'Our Fleet: Black Sedans & SUVs | Black Car Service';
+const title = 'Our Fleet: Sedans, SUVs & Sprinter Vans | Black Car Service';
 const description =
-  'Business and First Class sedans and SUVs for NYC airport and long-distance rides. See how many passengers and bags each car takes, and pick the right one.';
+  'Mercedes, BMW, Cadillac, Lincoln and Chevrolet sedans and SUVs, plus Sprinter vans for groups. See what each class seats and pick the right car.';
 
 export const metadata: Metadata = {
   title: { absolute: title },
@@ -22,39 +23,6 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', title, description },
 };
 
-// Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts and the /book form.
-// TODO(owner): add your real makes/models and photos of your own cars (no stock photos).
-const classes = [
-  {
-    name: 'Business Sedan',
-    kind: 'sedan' as const,
-    spec: 'Up to 3 passengers · 3 bags',
-    body: 'A full-size black sedan. The everyday choice for airport runs and trips to New Jersey or Connecticut with one or two people.',
-    bestFor: 'Solo travelers, couples, most airport rides',
-  },
-  {
-    name: 'Business SUV',
-    kind: 'suv' as const,
-    spec: 'Up to 6 passengers · 6 bags',
-    body: 'A full-size black SUV with a third row and real cargo space behind it.',
-    bestFor: 'Families, small teams, ski and golf bags, long trips',
-  },
-  {
-    name: 'First Class Sedan',
-    kind: 'sedan' as const,
-    spec: 'Up to 3 passengers · 3 bags',
-    body: 'A newer, top-trim sedan with a quieter cabin and more rear legroom.',
-    bestFor: 'Client pickups, executives, a long ride to DC',
-  },
-  {
-    name: 'First Class SUV',
-    kind: 'suv' as const,
-    spec: 'Up to 6 passengers · 6 bags',
-    body: 'Our most spacious car, in a newer, top-trim SUV.',
-    bestFor: 'VIP groups, families who want the most room',
-  },
-];
-
 const chooser: string[][] = [
   ['1–2 people, carry-ons or one suitcase each', 'Business Sedan'],
   ['3 people with one suitcase each', 'Business Sedan (tight) or Business SUV'],
@@ -62,7 +30,7 @@ const chooser: string[][] = [
   ['Strollers, car seats, skis, golf bags', 'Business SUV'],
   ['Visiting client or senior executive', 'First Class Sedan or SUV'],
   ['Four-hour trip to Washington, DC', 'SUV or First Class for the legroom'],
-  ['7 or more people', 'Two cars, timed to travel together'],
+  ['7 or more people', 'A Sprinter van, or two cars timed to travel together'],
 ];
 
 // TODO(owner): confirm child-seat policy and anything else you provide on request.
@@ -85,7 +53,7 @@ const faqs = [
   },
   {
     q: 'What if our group is too big for one car?',
-    a: 'We send two or more cars timed to travel together, and the fare for each is confirmed before the ride.',
+    a: 'Book a Sprinter — they seat 13 to 18 depending on the build — or we send two or more cars timed to travel together. Call or message us for a Sprinter quote.',
   },
   {
     q: 'Can I request a specific vehicle?',
@@ -114,10 +82,10 @@ export default function FleetPage() {
 
       <PageHero
         crumbs={[{ name: 'Home', href: '/' }, { name: 'Fleet' }]}
-        eyebrow="Sedans and SUVs"
+        eyebrow="Sedans · SUVs · Sprinter vans"
         idPrefix="fleet"
-        h1="Our Fleet: Black Sedans and SUVs"
-        answer={`${SITE_NAME} runs four classes of car: Business and First Class, each as a sedan for up to three people or an SUV for up to six. Every class takes as many bags as it takes passengers, so picking a car is mostly about counting suitcases.`}
+        h1="Our Fleet: Sedans, SUVs and Sprinter Vans"
+        answer={`${SITE_NAME} runs four classes of car — Business and First Class, each as a sedan for up to three people or an SUV for up to six — plus three Sprinter vans for groups of up to 18. Every car takes as many bags as it does passengers, so choosing is mostly about counting suitcases.`}
         ctaHref="/book"
         ctaLabel="Choose a car and book"
         phoneDisplay={CONTACT_PHONE_DISPLAY}
@@ -127,25 +95,74 @@ export default function FleetPage() {
       {/* Classes */}
       <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="classes-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading id="classes-heading" eyebrow="Vehicle classes" title="Business and First Class, sedan or SUV" />
-          <div className="grid gap-5 md:grid-cols-2">
-            {classes.map((c) => (
-              <div key={c.name} className="rounded-2xl border border-brand-line p-6">
-                <VehicleArt kind={c.kind} className="mb-5 h-32" />
-                <h3 className="text-xl text-brand-ink">{c.name}</h3>
-                <p className="mt-1 text-sm font-semibold text-brand-accent">{c.spec}</p>
-                <p className="mt-3 text-brand-muted leading-relaxed">{c.body}</p>
-                <p className="mt-3 text-sm text-brand-ink">
+          <SectionHeading
+            id="classes-heading"
+            eyebrow="Vehicle classes"
+            title="Business and First Class, sedan or SUV"
+            intro="You book a class, not a specific car. The models below are what each class looks like on the day."
+          />
+          <div className="space-y-12">
+            {FLEET_CLASSES.map((c) => (
+              <div key={c.id} className="rounded-2xl border border-brand-line p-6 lg:p-8">
+                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                  <h3 className="text-2xl text-brand-ink">{c.name}</h3>
+                  <p className="text-sm font-semibold text-brand-accent">
+                    Up to {c.passengers} passengers · {c.bags} bags
+                  </p>
+                </div>
+                <p className="mt-2 max-w-3xl text-brand-muted leading-relaxed">{c.body}</p>
+                <p className="mt-2 text-sm text-brand-ink">
                   <span className="font-semibold">Best for:</span> {c.bestFor}
                 </p>
+                <ul className={`mt-6 grid gap-4 sm:grid-cols-2 ${c.models.length > 2 ? 'lg:grid-cols-4' : 'lg:grid-cols-2'}`}>
+                  {c.models.map((m) => (
+                    <li key={m.name} className="rounded-xl ring-1 ring-brand-line">
+                      <VehiclePhoto src={m.image} alt={`${m.name} — ${c.name}`} />
+                      <p className="px-4 pb-4 pt-1 font-display font-semibold text-brand-ink">{m.name}</p>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Sprinters */}
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="sprinter-heading">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            id="sprinter-heading"
+            eyebrow="Groups"
+            title="Sprinter vans for groups of up to 18"
+            intro="When the group is too big for one SUV. Sprinters are quoted per trip — call, WhatsApp or send us a message with the date, times and head count."
+          />
+          <ul className="grid gap-5 md:grid-cols-3">
+            {SPRINTERS.map((v) => (
+              <li key={v.name} className="rounded-2xl bg-brand-white p-5 ring-1 ring-brand-line">
+                <VehiclePhoto src={v.image} alt={v.name} />
+                <h3 className="mt-4 text-xl text-brand-ink">{v.name}</h3>
+                <p className="mt-1 text-sm font-semibold text-brand-accent">{v.seats}</p>
+                <p className="mt-3 text-brand-muted leading-relaxed">{v.body}</p>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link href="/contact" className="rounded-lg bg-brand-accent px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover">
+              Ask for a Sprinter quote
+            </Link>
+            <a
+              href={`tel:${CONTACT_PHONE_E164}`}
+              className="rounded-lg bg-brand-white px-6 py-3 text-center font-display text-sm font-bold text-brand-ink ring-1 ring-brand-line hover:ring-brand-accent"
+            >
+              Call {CONTACT_PHONE_DISPLAY}
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Chooser */}
-      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="choose-heading">
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="choose-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             id="choose-heading"
@@ -158,7 +175,7 @@ export default function FleetPage() {
       </section>
 
       {/* Every car */}
-      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="every-heading">
+      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="every-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="every-heading" eyebrow="Every ride" title="What comes with every car" />
           {/* TODO(owner): confirm each item before launch. */}
@@ -182,7 +199,7 @@ export default function FleetPage() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="faq-heading">
+      <section className="bg-brand-white py-16 lg:py-24" aria-labelledby="faq-heading">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="faq-heading" eyebrow="FAQ" title="Fleet and luggage FAQs" />
           <FaqList faqs={faqs} />
@@ -190,7 +207,7 @@ export default function FleetPage() {
       </section>
 
       {/* Related */}
-      <section className="bg-brand-white py-16 lg:py-20" aria-labelledby="related-heading">
+      <section className="bg-brand-tint py-16 lg:py-20" aria-labelledby="related-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading id="related-heading" eyebrow="Keep planning" title="Where our cars go" />
           <RelatedLinks links={related} />
