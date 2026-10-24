@@ -1,9 +1,11 @@
 /**
  * Single source for the fleet: vehicle classes, the models in each, and their photos
- * (public/fleet/*.jpg, 960×540, white background). Used by /fleet, the home page and /book.
+ * (public/fleet/*.jpg, 960×540, faint blue gradient background #F4F7FC → #E5ECF6 applied as a
+ * multiply tint). Used by /fleet, the home page and /book.
  * Capacities must match VEHICLE_CAPACITY in lib/booking-estimate-server.ts.
  *
- * Note: these photos are the same files eagleeyechauffeur.com uses (owner's choice, 2026-10-24).
+ * Note: these start from the same photos eagleeyechauffeur.com uses (owner's choice, 2026-10-24).
+ * The tint and reframing make the files differ, but image search can still match the shapes.
  * TODO(owner): replace with photos of your own cars before launch to keep the two sites distinct.
  */
 
