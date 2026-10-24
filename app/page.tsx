@@ -177,7 +177,7 @@ export default function HomePage() {
               <Link
                 key={a.code}
                 href={a.href}
-                className="group rounded-2xl border border-brand-line bg-brand-white p-6 transition-shadow hover:shadow-[0_16px_40px_-24px_rgb(19_35_43/0.45)]"
+                className="group card-hover rounded-2xl border border-brand-line bg-brand-white p-6"
               >
                 <div className="flex items-baseline justify-between">
                   <span className="font-display text-4xl font-bold text-brand-accent">{a.code}</span>
@@ -217,7 +217,7 @@ export default function HomePage() {
               <li key={r.to}>
                 <Link
                   href={r.href}
-                  className="flex items-center justify-between rounded-xl bg-brand-white px-5 py-4 ring-1 ring-brand-line transition-colors hover:ring-brand-accent"
+                  className="card-hover flex items-center justify-between rounded-xl bg-brand-white px-5 py-4 ring-1 ring-brand-line hover:ring-brand-accent"
                 >
                   <span>
                     <span className="block text-xs font-semibold uppercase tracking-wide text-brand-muted">NYC to</span>
@@ -264,14 +264,14 @@ export default function HomePage() {
           <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="Black car fleet: sedans and SUVs" />
           <div className="grid gap-5 md:grid-cols-3">
             {vehicles.map((v) => (
-              <div key={v.name} className="rounded-2xl bg-brand-white p-6 ring-1 ring-brand-line">
+              <Link key={v.name} href="/fleet" className="card-hover block rounded-2xl bg-brand-white p-6 ring-1 ring-brand-line">
                 <VehiclePhoto src={classPhoto(v.photo).image} alt={classPhoto(v.photo).name} className="mb-5" />
                 <h3 className="text-xl text-brand-ink">{v.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-brand-accent">
                   {v.seats} · {v.bags}
                 </p>
                 <p className="mt-3 text-brand-muted">{v.body}</p>
-              </div>
+              </Link>
             ))}
           </div>
           <Link href="/fleet" className="mt-8 inline-block font-display text-sm font-bold text-brand-accent hover:underline">
@@ -315,7 +315,7 @@ export default function HomePage() {
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {areas.map((a) => (
               <li key={a.name}>
-                <Link href={a.href} className="block h-full rounded-xl bg-brand-white p-5 ring-1 ring-brand-line hover:ring-brand-accent">
+                <Link href={a.href} className="card-hover block h-full rounded-xl bg-brand-white p-5 ring-1 ring-brand-line hover:ring-brand-accent">
                   <h3 className="text-base text-brand-ink">{a.name}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-brand-muted">{a.body}</p>
                 </Link>

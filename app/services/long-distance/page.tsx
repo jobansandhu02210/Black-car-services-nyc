@@ -165,7 +165,7 @@ export default function LongDistancePage() {
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {routes.map((r) => (
               <li key={r.to}>
-                <Link href={r.href} className="block h-full rounded-2xl border border-brand-line p-6 transition-colors hover:border-brand-accent">
+                <Link href={r.href} className="card-hover block h-full rounded-2xl border border-brand-line p-6 hover:border-brand-accent">
                   <span className="block text-xs font-semibold uppercase tracking-wide text-brand-muted">NYC to</span>
                   <h3 className="mt-1 text-xl text-brand-ink">{r.to}</h3>
                   <p className="mt-1 text-sm font-semibold text-brand-accent">{r.miles} · {r.time}</p>

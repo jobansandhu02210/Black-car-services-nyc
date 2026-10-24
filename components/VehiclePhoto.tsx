@@ -13,7 +13,7 @@ export function VehiclePhoto({
   sizes?: string;
 }) {
   return (
-    <div className={`relative aspect-[16/9] overflow-hidden rounded-xl bg-brand-white ${className ?? ''}`}>
+    <div className={`vehicle-photo relative aspect-[16/9] overflow-hidden rounded-xl bg-brand-white ${className ?? ''}`}>
       <Image src={src} alt={alt} fill sizes={sizes} className="object-contain" />
     </div>
   );

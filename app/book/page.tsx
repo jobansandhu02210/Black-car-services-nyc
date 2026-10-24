@@ -533,7 +533,7 @@ export default function BookPage() {
                         key={v}
                         type="button"
                         onClick={() => setVehicle(v)}
-                        className={`text-left rounded-xl border transition-all overflow-hidden ${
+                        className={`card-hover text-left rounded-xl border overflow-hidden ${
                           isSelected
                             ? 'border-brand-accent ring-2 ring-brand-accent'
                             : 'border-brand-line hover:border-brand-accent'

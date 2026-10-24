@@ -168,7 +168,7 @@ export function RelatedLinks({ links }: { links: { href: string; title: string; 
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {links.map((r) => (
         <li key={r.href}>
-          <Link href={r.href} className="block h-full rounded-xl bg-brand-white p-5 ring-1 ring-brand-line hover:ring-brand-accent">
+          <Link href={r.href} className="card-hover block h-full rounded-xl bg-brand-white p-5 ring-1 ring-brand-line hover:ring-brand-accent">
             <span className="font-display font-bold text-brand-ink">{r.title} →</span>
             <span className="mt-1 block text-sm text-brand-muted">{r.body}</span>
           </Link>

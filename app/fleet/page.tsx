@@ -116,7 +116,7 @@ export default function FleetPage() {
                 </p>
                 <ul className={`mt-6 grid gap-4 sm:grid-cols-2 ${c.models.length > 2 ? 'lg:grid-cols-4' : 'lg:grid-cols-2'}`}>
                   {c.models.map((m) => (
-                    <li key={m.name} className="rounded-xl ring-1 ring-brand-line">
+                    <li key={m.name} className="card-hover rounded-xl bg-brand-white ring-1 ring-brand-line">
                       <VehiclePhoto src={m.image} alt={`${m.name} — ${c.name}`} />
                       <p className="px-4 pb-4 pt-1 font-display font-semibold text-brand-ink">{m.name}</p>
                     </li>
@@ -139,7 +139,7 @@ export default function FleetPage() {
           />
           <ul className="grid gap-5 md:grid-cols-3">
             {SPRINTERS.map((v) => (
-              <li key={v.name} className="rounded-2xl bg-brand-white p-5 ring-1 ring-brand-line">
+              <li key={v.name} className="card-hover rounded-2xl bg-brand-white p-5 ring-1 ring-brand-line">
                 <VehiclePhoto src={v.image} alt={v.name} />
                 <h3 className="mt-4 text-xl text-brand-ink">{v.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-brand-accent">{v.seats}</p>

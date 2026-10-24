@@ -56,3 +56,56 @@ select:focus-visible,
 textarea:focus-visible {
   @apply outline-2 outline-offset-2 outline-brand-accent;
 }
+
+/* ---------------------------------------------------------------------------
+   Hover motion — subtle and consistent.
+   .card-hover   clickable cards (and fleet cards): small lift + scale + soft shadow
+   .vehicle-photo  photo inside a .card-hover zooms gently within its frame
+   Buttons (rounded-lg links/buttons) nudge up 1px.
+   Everything is disabled for people who prefer reduced motion.
+--------------------------------------------------------------------------- */
+@layer components {
+  .card-hover {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+    will-change: transform;
+  }
+  .card-hover:hover,
+  .card-hover:focus-visible {
+    transform: translateY(-3px) scale(1.015);
+    box-shadow: 0 18px 40px -24px rgb(var(--c-ink) / 0.45);
+  }
+
+  .vehicle-photo img {
+    transition: transform 0.45s ease;
+  }
+  .card-hover:hover .vehicle-photo img,
+  .card-hover:focus-visible .vehicle-photo img {
+    transform: scale(1.06);
+  }
+
+  a.rounded-lg,
+  button.rounded-lg {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+  a.rounded-lg:hover,
+  button.rounded-lg:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px -14px rgb(var(--c-ink) / 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover,
+  .vehicle-photo img,
+  a.rounded-lg,
+  button.rounded-lg {
+    transition: none;
+  }
+  .card-hover:hover,
+  .card-hover:focus-visible,
+  .card-hover:hover .vehicle-photo img,
+  a.rounded-lg:hover,
+  button.rounded-lg:hover {
+    transform: none;
+  }
+}
