@@ -271,10 +271,10 @@ export default function LaGuardiaCarServicePage() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
             <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent-soft mb-3">Business travel</p>
-            <h2 id="corporate-heading" className="text-3xl lg:text-[2.5rem] leading-tight text-balance">
+            <h2 id="corporate-heading" className="text-4xl lg:text-5xl text-balance">
               LaGuardia car service for business travelers
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-brand-silver">
+            <p className="mt-4 text-base leading-relaxed text-brand-silver">
               LaGuardia is the day-trip airport: Boston, Washington and Chicago and back before dinner. When the day runs on
               the shuttle schedule, the car on either end needs to be there already.
             </p>

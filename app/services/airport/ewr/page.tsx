@@ -271,10 +271,10 @@ export default function NewarkAirportCarServicePage() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
             <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent-soft mb-3">Business travel</p>
-            <h2 id="corporate-heading" className="text-3xl lg:text-[2.5rem] leading-tight text-balance">
+            <h2 id="corporate-heading" className="text-4xl lg:text-5xl text-balance">
               Corporate car service at Newark Airport
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-brand-silver">
+            <p className="mt-4 text-base leading-relaxed text-brand-silver">
               Newark serves two business markets at once: Manhattan offices, and the corporate campuses along Route 78, Route
               287 and the Route 1 corridor near Princeton. We drive both from the same booking.
             </p>

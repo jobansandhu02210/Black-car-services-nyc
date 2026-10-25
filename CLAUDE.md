@@ -4,7 +4,7 @@ New NYC black car / chauffeur website. **Started as a copy of the Eagle Eye Chau
 
 ## Brand facts
 Brand **Black Car Service** · domain **blackcarservicesnyc.com** · phone (929) 710-1444. Brand constants live in `lib/site.ts` (`SITE_NAME`, `SITE_DOMAIN`) and `lib/contact.ts` — import them, never hardcode. Service-area business (no office address). Lean page set + prune list: `LAUNCH-PLAN.md`.
-**Design (chosen 2026-10-23):** palette "Midnight navy" (accent #1E3A5F, ink #0F1B2D) + DM Sans. Colours are CSS variables in `app/globals.css` used through Tailwind `brand-*` tokens (`brand-accent`, `brand-accent-hover`, `brand-accent-soft`, `brand-ink`, `brand-muted`, `brand-tint`, `brand-line`) — never hard-code hex in components.
+**Design:** palette "Midnight navy" (accent #1E3A5F, ink #0F1B2D, chosen 2026-10-23). Type (2026-10-25) modelled on detaileddrivers.com: Oswald for H1/H2 (uppercase; H1 300 at 72px, H2 600 at 48px), Poppins for body (16px/1.6), menu and buttons (15px/500) — rules in `app/globals.css`. Colours are CSS variables in `app/globals.css` used through Tailwind `brand-*` tokens (`brand-accent`, `brand-accent-hover`, `brand-accent-soft`, `brand-ink`, `brand-muted`, `brand-tint`, `brand-line`) — never hard-code hex in components.
 **Design/SEO reference research (Ridelux, Detailed Drivers, Noble, Blacklane): `docs/REFERENCE-RESEARCH.md`** — heading blueprints, schema map, design direction, creative ideas. `LAUNCH-PLAN.md` stays the source of truth for WHICH pages exist; the research doc says HOW to build them.
 
 ## STATUS: PRE-LAUNCH TEMPLATE — REBRAND IN PROGRESS (shared layout/schema/emails done; page copy not yet)

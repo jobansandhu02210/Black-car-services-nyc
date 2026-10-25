@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { DM_Sans } from 'next/font/google';
+import { Oswald, Poppins } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -14,12 +14,19 @@ import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { ogDefaults } from '@/lib/og';
 import { defaultSiteDescription, siteKeywords } from '@/lib/seo';
 
-// DM Sans for body and headings. Loaded once as --font-sans; globals.css points
-// --font-display at it so heading styles keep working if a separate display face returns.
-const dmSans = DM_Sans({
-  weight: ['400', '600', '700'],
+// Type system modelled on detaileddrivers.com: Oswald (condensed, uppercase) for H1/H2,
+// Poppins for everything else. `font-display` in components maps to Poppins (globals.css).
+const poppins = Poppins({
+  weight: ['400', '500', '600'],
   subsets: ['latin'],
   variable: '--font-sans',
+  display: 'swap',
+});
+
+const oswald = Oswald({
+  weight: ['300', '400', '600'],
+  subsets: ['latin'],
+  variable: '--font-heading',
   display: 'swap',
 });
 
@@ -71,7 +78,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={dmSans.variable}>
+    <html lang="en" className={`${poppins.variable} ${oswald.variable}`}>
       {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <body className="font-sans min-h-screen flex flex-col">
         <LocalBusinessJsonLd />

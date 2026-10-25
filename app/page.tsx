@@ -120,13 +120,13 @@ export default function HomePage() {
             <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-4">
               Airports · Long distance · 24/7
             </p>
-            <h1 id="hero-title" className="text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-brand-ink text-balance">
+            <h1 id="hero-title" className="text-5xl sm:text-6xl lg:text-[72px] text-brand-ink text-balance">
               NYC Black Car Service
             </h1>
-            <p className="mt-2 font-display text-2xl sm:text-3xl lg:text-[2.1rem] leading-tight font-semibold text-brand-accent">
+            <p className="mt-5 text-2xl lg:text-[30px] leading-tight uppercase text-brand-ink">
               Airports and long rides, door to door.
             </p>
-            <p id="hero-answer" className="mt-6 max-w-xl text-lg leading-relaxed text-brand-muted">
+            <p id="hero-answer" className="mt-6 max-w-xl text-base leading-relaxed text-brand-muted">
               {SITE_NAME} picks you up anywhere in New York City and drives you to JFK, LaGuardia or Newark — or all the
               way to New Jersey, Connecticut, Philadelphia or Washington, DC. One private car, one driver, no transfers.
             </p>

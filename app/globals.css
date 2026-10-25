@@ -24,22 +24,41 @@ html {
 
 body {
   @apply bg-brand-white text-brand-ink antialiased;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-/* Headings use the display face (DM Sans). `.font-serif` is the template's heading
-   class — it maps to the display face too, so un-rewritten pages pick it up. */
-h1, h2, h3, h4, h5, h6,
-.font-serif {
-  font-family: var(--font-display), system-ui, sans-serif;
-  letter-spacing: -0.015em;
+/* Type scale modelled on detaileddrivers.com.
+   H1/H2: Oswald, uppercase, tight leading (H1 light 300, H2 semibold 600).
+   H3–H6 and everything else: Poppins. `.font-serif` (template heading class) follows H2. */
+h1, h2, .font-serif {
+  font-family: var(--font-heading), system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
 }
 
-h1, h2 {
-  font-weight: 700 !important;
+h1 {
+  font-weight: 300 !important;
+  line-height: 0.95 !important;
 }
 
-h3, h4 {
+h2, .font-serif {
   font-weight: 600 !important;
+  line-height: 1 !important;
+}
+
+h3, h4, h5, h6 {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em;
+}
+
+/* Buttons: Poppins 500 at 15px, like the reference site. Beats .font-bold/.text-sm by specificity. */
+a.rounded-lg,
+button.rounded-lg {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 15px;
 }
 
 @layer utilities {

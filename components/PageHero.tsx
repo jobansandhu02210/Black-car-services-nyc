@@ -47,10 +47,10 @@ export function PageHero({
           </ol>
         </nav>
         <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-4">{eyebrow}</p>
-        <h1 id={`${idPrefix}-title`} className="max-w-3xl text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-brand-ink text-balance">
+        <h1 id={`${idPrefix}-title`} className="max-w-3xl text-5xl sm:text-6xl lg:text-[72px] text-brand-ink text-balance">
           {h1}
         </h1>
-        <p id={`${idPrefix}-answer`} className="mt-6 max-w-2xl text-lg leading-relaxed text-brand-muted">
+        <p id={`${idPrefix}-answer`} className="mt-6 max-w-2xl text-base leading-relaxed text-brand-muted">
           {answer}
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">

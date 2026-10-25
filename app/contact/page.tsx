@@ -101,8 +101,8 @@ export default function ContactPage() {
           <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
             <div>
               <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-4">24 hours a day, 7 days a week</p>
-              <h1 className="text-4xl sm:text-5xl leading-[1.05] text-brand-ink text-balance">Contact {SITE_NAME}</h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-brand-muted">
+              <h1 className="text-5xl sm:text-6xl lg:text-[72px] text-brand-ink text-balance">Contact {SITE_NAME}</h1>
+              <p className="mt-6 max-w-xl text-base leading-relaxed text-brand-muted">
                 Book a ride, change one, or ask a question before you travel. A person answers the phone and WhatsApp at any
                 hour.
               </p>

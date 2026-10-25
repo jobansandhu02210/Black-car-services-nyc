@@ -49,7 +49,7 @@ export default function Header() {
                 key={href}
                 href={href}
                 className={clsx(
-                  'text-sm font-medium transition-colors',
+                  'text-[15px] font-medium transition-colors',
                   pathname === href || (href !== '/' && pathname.startsWith(`${href}/`))
                     ? 'text-brand-accent'
                     : 'text-brand-muted hover:text-brand-ink'

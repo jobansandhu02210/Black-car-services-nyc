@@ -272,10 +272,10 @@ export default function JfkCarServicePage() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
             <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent-soft mb-3">For assistants and travel managers</p>
-            <h2 id="corporate-heading" className="text-3xl lg:text-[2.5rem] leading-tight text-balance">
+            <h2 id="corporate-heading" className="text-4xl lg:text-5xl text-balance">
               Corporate JFK car service in NYC
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-brand-silver">
+            <p className="mt-4 text-base leading-relaxed text-brand-silver">
               Booking for an executive or a visiting team? Send us the itinerary once and we handle the rest: the flight
               is followed, the traveler gets the driver’s details directly, and you get one invoice per ride for your
               expense system.

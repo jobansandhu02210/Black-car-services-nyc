@@ -105,10 +105,10 @@ export default function AboutPage() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
             <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-3">Keeping it focused</p>
-            <h2 id="not-heading" className="text-3xl lg:text-[2.5rem] leading-tight text-brand-ink text-balance">
+            <h2 id="not-heading" className="text-4xl lg:text-5xl text-brand-ink text-balance">
               What we don’t do
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-brand-muted">
+            <p className="mt-4 text-base leading-relaxed text-brand-muted">
               Saying no to some work is how we stay good at the rest. If you need one of these, we are happy to point you in
               the right direction.
             </p>
