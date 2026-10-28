@@ -28,7 +28,7 @@ export function PageHero({
   phoneE164: string;
 }) {
   return (
-    <section className="border-b border-brand-line bg-brand-white">
+    <section className="border-b border-brand-line bg-gradient-to-br from-brand-white via-brand-tint to-brand-accent-soft">
       <div className="mx-auto max-w-7xl px-4 pb-14 pt-8 sm:px-6 lg:px-8 lg:pb-20 lg:pt-12">
         <nav aria-label="Breadcrumb" className="mb-8 text-sm text-brand-muted">
           <ol className="flex flex-wrap items-center gap-2">
