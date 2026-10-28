@@ -122,7 +122,7 @@ export default function HomePage() {
               NYC Black Car Service
             </h1>
             <p className="mt-5 text-2xl lg:text-[30px] leading-tight uppercase text-brand-ink">
-              Airports and long rides, door to door.
+              Private airport transfers &amp; intercity travel
             </p>
             <p id="hero-answer" className="mt-6 max-w-xl text-base leading-relaxed text-brand-muted">
               {SITE_NAME} picks you up anywhere in New York City and drives you to JFK, LaGuardia or Newark — or all the
