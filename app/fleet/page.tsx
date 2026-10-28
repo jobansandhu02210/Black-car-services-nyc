@@ -135,14 +135,16 @@ export default function FleetPage() {
             id="sprinter-heading"
             eyebrow="Groups"
             title="Sprinter vans for groups of up to 18"
-            intro="When the group is too big for one SUV. Sprinters are quoted per trip — call, WhatsApp or send us a message with the date, times and head count."
+            intro="When the group is too big for one SUV. Sprinters are booked by the hour with a 2-hour minimum — call, WhatsApp or send us a message with the date, times and head count."
           />
           <ul className="grid gap-5 md:grid-cols-3">
             {SPRINTERS.map((v) => (
               <li key={v.name} className="card-hover rounded-2xl bg-brand-white p-5 ring-1 ring-brand-line">
                 <VehiclePhoto src={v.image} alt={v.name} />
                 <h3 className="mt-4 text-xl text-brand-ink">{v.name}</h3>
-                <p className="mt-1 text-sm font-semibold text-brand-accent">{v.seats}</p>
+                <p className="mt-1 text-sm font-semibold text-brand-accent">
+                  {v.seats} · ${v.hourlyRate}/hr
+                </p>
                 <p className="mt-3 text-brand-muted leading-relaxed">{v.body}</p>
               </li>
             ))}

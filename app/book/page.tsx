@@ -28,12 +28,14 @@ const VEHICLE_LABELS: Record<VehicleType, string> = {
 };
 
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts and /fleet.
-// No hard-coded hourly rates: pricing is still to be set by the owner (TODO(owner)).
-const VEHICLE_META: Record<VehicleType, { passengers: number; luggage: number; description: string }> = {
-  'business-sedan': { passengers: 3, luggage: 3, description: 'The everyday choice for one or two travelers' },
-  'business-suv':   { passengers: 6, luggage: 6, description: 'Room for a family, a team or a lot of luggage' },
-  'first-suv':      { passengers: 6, luggage: 6, description: 'Our most spacious car, newer and top-trim' },
-  'first-sedan':    { passengers: 3, luggage: 3, description: 'Newer, quieter, more legroom — for clients' },
+// Hourly rates are shown on the vehicle cards for "By the hour" bookings (same rates as
+// eagleeyechauffeur.com, owner's choice 2026-10-28). Point-to-point and airport prices come
+// from /api/booking/estimate.
+const VEHICLE_META: Record<VehicleType, { passengers: number; luggage: number; description: string; hourlyRate: number }> = {
+  'business-sedan': { passengers: 3, luggage: 3, description: 'The everyday choice for one or two travelers', hourlyRate: 110 },
+  'business-suv':   { passengers: 6, luggage: 6, description: 'Room for a family, a team or a lot of luggage', hourlyRate: 120 },
+  'first-suv':      { passengers: 6, luggage: 6, description: 'Our most spacious car, newer and top-trim', hourlyRate: 130 },
+  'first-sedan':    { passengers: 3, luggage: 3, description: 'Newer, quieter, more legroom — for clients', hourlyRate: 210 },
 };
 
 const AIRPORTS = ['JFK - John F. Kennedy', 'LGA - LaGuardia', 'EWR - Newark Liberty'];
@@ -562,9 +564,14 @@ export default function BookPage() {
                           {/* Price display */}
                           <div className={`mt-3 pt-3 border-t ${ isSelected ? 'border-white/20' : 'border-brand-light' }`}>
                             {service === 'hourly' ? (
-                              <p className={`text-sm ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
-                                Hourly rate confirmed with your quote
-                              </p>
+                              <div className="flex items-baseline gap-1">
+                                <span className={`text-2xl font-semibold tabular-nums ${ isSelected ? 'text-brand-white' : 'text-brand-black' }`}>
+                                  ${meta.hourlyRate}
+                                </span>
+                                <span className={`text-xs ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
+                                  / hr
+                                </span>
+                              </div>
                             ) : !hasRequiredLocations ? (
                               <p className={`text-sm ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
                                 Enter your route to see estimate

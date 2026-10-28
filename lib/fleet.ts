@@ -76,23 +76,29 @@ export const FLEET_CLASSES: FleetClass[] = [
   },
 ];
 
-/** Sprinters are quoted on request (not in the online booking form). Capacities per owner's fleet. */
+/**
+ * Sprinters are booked by phone/WhatsApp/contact (not in the online form). Hourly rates and
+ * capacities match eagleeyechauffeur.com (owner's choice 2026-10-28); 2-hour minimum.
+ */
 export const SPRINTERS = [
   {
     name: 'Executive Sprinter',
     seats: 'Up to 14 passengers',
+    hourlyRate: 175,
     image: '/fleet/executive-sprinter.jpg',
     body: 'Forward-facing seats and room for luggage — for teams, conference transfers and big family airport runs.',
   },
   {
     name: 'Limo Sprinter',
     seats: 'Up to 18 passengers',
+    hourlyRate: 200,
     image: '/fleet/limo-sprinter.jpg',
     body: 'Side-facing lounge seating for a group that wants to travel together and talk on the way.',
   },
   {
     name: 'Jet Sprinter',
     seats: 'Up to 13 passengers',
+    hourlyRate: 250,
     image: '/fleet/jet-sprinter.jpg',
     body: 'Captain’s chairs and a private-jet style cabin for clients and special occasions.',
   },

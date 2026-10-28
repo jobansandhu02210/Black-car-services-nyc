@@ -59,7 +59,7 @@ By default, `/api/places/*` accepts requests when the browser’s **Referer** / 
 
 - `localhost` / `127.0.0.1` (any port)
 - `*.vercel.app`
-- `eagleeyechauffeur.com` and `*.eagleeyechauffeur.com`
+- `blackcarservicesnyc.com` and `*.blackcarservicesnyc.com`
 
 To allow another domain, set:
 
