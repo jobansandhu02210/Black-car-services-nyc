@@ -89,7 +89,7 @@ export default function ContactPage() {
       />
       <FaqJsonLd faqs={faqs} />
 
-      <section className="bg-gradient-to-b from-brand-tint to-brand-white">
+      <section className="bg-brand-white">
         <div className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 lg:px-8 lg:pb-24 lg:pt-12">
           <nav aria-label="Breadcrumb" className="mb-8 text-sm text-brand-muted">
             <ol className="flex flex-wrap items-center gap-2">

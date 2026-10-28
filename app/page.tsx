@@ -4,7 +4,6 @@ import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164, WHATSAPP_BOOKING_URL } from 
 import { getSiteUrl, SITE_NAME } from '@/lib/site';
 import { FaqJsonLd, SpeakableJsonLd } from '@/components/JsonLd';
 import { HeroBookingCard } from '@/components/HeroBookingCard';
-import { SkylineArt } from '@/components/SkylineArt';
 import { VehiclePhoto } from '@/components/VehiclePhoto';
 import { classPhoto, type VehicleClassId } from '@/lib/fleet';
 import { SectionHeading } from '@/components/SectionHeading';
@@ -113,9 +112,8 @@ export default function HomePage() {
       <SpeakableJsonLd cssSelectors={['#hero-title', '#hero-answer']} />
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-brand-tint via-brand-tint to-brand-accent-soft/70">
-        <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full text-brand-accent/25 lg:h-56" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 pb-24 pt-12 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:px-8 lg:pb-32 lg:pt-20">
+      <section className="border-b border-brand-line bg-brand-white">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:px-8 lg:py-20">
           <div>
             <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-4">
               Airports · Long distance · 24/7
@@ -347,7 +345,6 @@ export default function HomePage() {
 
       {/* Final CTA */}
       <section className="relative overflow-hidden bg-brand-ink py-16 text-brand-white lg:py-20" aria-label="Book a ride">
-        <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-32 w-full text-brand-white/10" />
         <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <p className="font-display text-3xl font-bold tracking-tight lg:text-4xl">Your car, when you need it.</p>
           <p className="mt-4 text-lg text-brand-silver">Book in a couple of minutes, or talk to us now.</p>

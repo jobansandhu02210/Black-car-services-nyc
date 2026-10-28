@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { SkylineArt } from '@/components/SkylineArt';
 
 export type Crumb = { name: string; href?: string };
 
@@ -29,9 +28,8 @@ export function PageHero({
   phoneE164: string;
 }) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-brand-tint to-brand-accent-soft/60">
-      <SkylineArt className="pointer-events-none absolute inset-x-0 bottom-0 h-32 w-full text-brand-accent/20 lg:h-44" />
-      <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8 lg:pb-28 lg:pt-12">
+    <section className="border-b border-brand-line bg-brand-white">
+      <div className="mx-auto max-w-7xl px-4 pb-14 pt-8 sm:px-6 lg:px-8 lg:pb-20 lg:pt-12">
         <nav aria-label="Breadcrumb" className="mb-8 text-sm text-brand-muted">
           <ol className="flex flex-wrap items-center gap-2">
             {crumbs.map((c, i) => (
