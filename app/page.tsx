@@ -112,7 +112,7 @@ export default function HomePage() {
       <SpeakableJsonLd cssSelectors={['#hero-title', '#hero-answer']} />
 
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-brand-line bg-gradient-to-br from-brand-white via-brand-tint to-brand-accent-soft">
+      <section className="relative border-b border-brand-line bg-gradient-to-br from-brand-white via-brand-tint to-brand-accent-soft">
         {/* Navy panel behind the booking card (desktop only) — the card straddles its edge. */}
         <div aria-hidden="true" className="absolute inset-y-0 right-0 hidden w-[34%] rounded-bl-[64px] bg-brand-ink lg:block" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:px-8 lg:py-20">

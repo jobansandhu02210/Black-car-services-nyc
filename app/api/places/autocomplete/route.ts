@@ -28,6 +28,9 @@ export async function GET(request: NextRequest) {
   const url = new URL('https://maps.googleapis.com/maps/api/place/autocomplete/json');
   url.searchParams.set('input', input);
   url.searchParams.set('components', 'country:us');
+  // Rank NYC-area addresses first (a bias, not a limit: NJ, CT, PA and DC still appear).
+  url.searchParams.set('location', '40.7549,-73.9840');
+  url.searchParams.set('radius', '50000');
   url.searchParams.set('key', key);
 
   let data: GoogleAutocompleteResponse;

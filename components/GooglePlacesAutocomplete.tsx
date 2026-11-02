@@ -14,6 +14,11 @@ type Props = {
    * When true, suggestions use your server-side key via /api/places/* (no browser referrer rules).
    */
   serverProxyEnabled: boolean;
+  /** Optional style overrides so the field can match its surroundings (e.g. the home trip card). */
+  labelClassName?: string;
+  inputClassName?: string;
+  /** Hide the "Loading suggestions…" line, which shifts the layout in compact forms. */
+  hideLoading?: boolean;
 };
 
 export function GooglePlacesAutocomplete({
@@ -23,6 +28,9 @@ export function GooglePlacesAutocomplete({
   onChange,
   placeholder,
   serverProxyEnabled,
+  labelClassName,
+  inputClassName,
+  hideLoading = false,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -108,7 +116,7 @@ export function GooglePlacesAutocomplete({
 
   return (
     <div ref={wrapRef} className="relative">
-      <label htmlFor={id} className="block text-sm font-medium text-brand-black mb-2">
+      <label htmlFor={id} className={labelClassName ?? 'block text-sm font-medium text-brand-black mb-2'}>
         {label}
       </label>
       <input
@@ -124,9 +132,12 @@ export function GooglePlacesAutocomplete({
         aria-autocomplete={serverProxyEnabled ? 'list' : undefined}
         aria-controls={serverProxyEnabled ? `${id}-places-list` : undefined}
         aria-expanded={serverProxyEnabled ? open : undefined}
-        className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black placeholder-brand-silver focus:outline-none focus:ring-2 focus:ring-brand-black"
+        className={
+          inputClassName ??
+          'w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black placeholder-brand-silver focus:outline-none focus:ring-2 focus:ring-brand-black'
+        }
       />
-      {loading && (
+      {loading && !hideLoading && (
         <p className="mt-1 text-xs text-brand-silver" aria-live="polite">
           Loading suggestions…
         </p>
@@ -136,7 +147,7 @@ export function GooglePlacesAutocomplete({
         <ul
           id={`${id}-places-list`}
           role="listbox"
-          className="absolute z-[100] left-0 right-0 top-full mt-1 max-h-56 overflow-auto border border-brand-light bg-brand-white shadow-lg text-sm"
+          className="absolute z-[100] left-0 right-0 top-full mt-1 max-h-56 overflow-auto rounded-lg border border-brand-light bg-brand-white shadow-lg text-sm"
         >
           {predictions.map((p) => (
             <li key={p.placeId} role="presentation">

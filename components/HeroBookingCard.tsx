@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { clsx } from 'clsx';
+import { GooglePlacesAutocomplete } from '@/components/GooglePlacesAutocomplete';
 
 type Mode = 'airport' | 'point-to-point';
 
@@ -15,6 +16,8 @@ const AIRPORT_OPTIONS = [
 
 const inputClass =
   'w-full rounded-lg border border-brand-line bg-brand-white px-3.5 py-3 text-[15px] text-brand-ink placeholder:text-brand-muted/80 focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent-soft';
+
+const labelClass = 'block text-xs font-semibold uppercase tracking-wide text-brand-muted mb-1.5';
 
 /**
  * Hero trip card: collects the basics and hands off to /book with the fields prefilled
@@ -29,6 +32,22 @@ export function HeroBookingCard() {
   const [airport, setAirport] = useState(AIRPORT_OPTIONS[0].value);
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [placesEnabled, setPlacesEnabled] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/places/config', { credentials: 'same-origin' })
+      .then((r) => (r.ok ? r.json() : { enabled: false }))
+      .then((d: { enabled?: boolean }) => {
+        if (!cancelled) setPlacesEnabled(!!d.enabled);
+      })
+      .catch(() => {
+        if (!cancelled) setPlacesEnabled(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -69,19 +88,17 @@ export function HeroBookingCard() {
       </div>
 
       <div className="space-y-3">
-        <div>
-          <label htmlFor="hero-pickup" className="block text-xs font-semibold uppercase tracking-wide text-brand-muted mb-1.5">
-            Pick-up
-          </label>
-          <input
-            id="hero-pickup"
-            className={inputClass}
-            placeholder="Address, hotel or office"
-            value={pickup}
-            onChange={(e) => setPickup(e.target.value)}
-            autoComplete="street-address"
-          />
-        </div>
+        <GooglePlacesAutocomplete
+          id="hero-pickup"
+          label="Pick-up"
+          value={pickup}
+          onChange={setPickup}
+          placeholder="Address, hotel or office"
+          serverProxyEnabled={placesEnabled}
+          labelClassName={labelClass}
+          inputClassName={inputClass}
+          hideLoading
+        />
 
         {mode === 'airport' ? (
           <div>
@@ -97,18 +114,17 @@ export function HeroBookingCard() {
             </select>
           </div>
         ) : (
-          <div>
-            <label htmlFor="hero-dropoff" className="block text-xs font-semibold uppercase tracking-wide text-brand-muted mb-1.5">
-              Destination
-            </label>
-            <input
-              id="hero-dropoff"
-              className={inputClass}
-              placeholder="e.g. Philadelphia, Stamford, Washington DC"
-              value={dropoff}
-              onChange={(e) => setDropoff(e.target.value)}
-            />
-          </div>
+          <GooglePlacesAutocomplete
+            id="hero-dropoff"
+            label="Destination"
+            value={dropoff}
+            onChange={setDropoff}
+            placeholder="e.g. Philadelphia, Stamford, Washington DC"
+            serverProxyEnabled={placesEnabled}
+            labelClassName={labelClass}
+            inputClassName={inputClass}
+            hideLoading
+          />
         )}
 
         <div className="grid grid-cols-2 gap-3">
