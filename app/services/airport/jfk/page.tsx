@@ -45,7 +45,7 @@ const bookHref = airportBookHref(airport);
 
 const priceFactors = [
   { factor: 'Distance and route', detail: 'Where you start or finish matters most. Midtown and Downtown Brooklyn are similar distances; New Jersey and Connecticut add mileage and time.' },
-  { factor: 'Vehicle', detail: 'A Business Sedan costs less than an SUV or a First Class car. Pick the smallest car that fits your people and bags.' },
+  { factor: 'Vehicle', detail: 'The Executive Sedan is the lowest fare, then the First Class SUV, then the First Class Sedan. Pick the smallest car that fits your people and bags.' },
   { factor: 'Tolls', detail: 'The Van Wyck and Belt Parkway are toll-free, but tunnels and many bridges are not. Trips from New Jersey or across the Hudson almost always include tolls.' },
   { factor: 'Manhattan congestion charge', detail: 'Rides that start or end south of 60th Street in Manhattan include the congestion pricing charge for for-hire vehicles.' },
   { factor: 'Time and waiting', detail: 'Rush-hour trips take longer, and extended waiting after a pickup time or landing can add to the fare.' },
@@ -64,9 +64,9 @@ const comparison: { row: string; cells: Cell[] }[] = [
 
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts.
 const vehicles = [
-  { title: 'Business Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'Right for one or two travelers with checked bags. The most common choice for JFK.' },
-  { title: 'Business SUV', spec: 'Up to 6 passengers · 6 bags', body: 'For families, small teams, strollers, golf bags and long-haul luggage.' },
-  { title: 'First Class', spec: 'Sedan or SUV · same capacity', body: 'A newer, top-trim vehicle when you are collecting a client or senior executive.' },
+  { title: 'Executive Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'Right for one or two travelers with checked bags. The most common choice for JFK.' },
+  { title: 'First Class SUV', spec: 'Up to 6 passengers · 6 bags', body: 'For families, small teams, strollers, golf bags and long-haul luggage.' },
+  { title: 'First Class Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'A newer, top-trim vehicle when you are collecting a client or senior executive.' },
 ];
 
 const steps = [
@@ -108,7 +108,7 @@ const faqs = [
   },
   {
     q: 'Can you take a group or a lot of luggage to JFK?',
-    a: 'Yes. A Business SUV seats up to six with six bags. For larger groups we can send two cars timed to arrive together.',
+    a: 'Yes. A First Class SUV seats up to six with six bags. For larger groups, a Sprinter Van seats up to 14.',
   },
   {
     q: 'Do you drive from JFK to New Jersey, Connecticut or Philadelphia?',

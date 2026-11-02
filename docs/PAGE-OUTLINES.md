@@ -25,9 +25,9 @@ H2  Long-distance car service from NYC                                      [cha
 H2  Black car vs rideshare, taxi and train
     (comparison table)
 H2  Black car fleet: sedans and SUVs                                        [change: today "Pick the car that fits the trip"]
-    H3  Business Sedan
-    H3  Business SUV
-    H3  First Class
+    H3  Executive Sedan
+    H3  First Class SUV
+    H3  First Class Sedan
 H2  How to book your car
     H3  Tell us the trip
     H3  Choose the vehicle
@@ -78,9 +78,9 @@ H2  JFK terminals and where your driver meets you
 H2  JFK drive times by neighborhood
     (table: 10 places × distance, off-peak, rush hour)
 H2  JFK black car fleet: vehicles and capacity
-    H3  Business Sedan
-    H3  Business SUV
-    H3  First Class
+    H3  Executive Sedan
+    H3  First Class SUV
+    H3  First Class Sedan
 H2  Corporate JFK car service in NYC
 H2  When to book your JFK car, and what is included
     H3  Booking ahead

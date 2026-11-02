@@ -37,7 +37,7 @@ export const WHATSAPP_BOOKING_URL =
     '✈️ Flight Number (if airport):\n' +
     '👤 Full Name:\n' +
     '📱 Phone:\n' +
-    '🚗 Vehicle (Business/First Class):\n' +
+    '🚗 Vehicle (Sedan/SUV/Sprinter):\n' +
     '📝 Special Requests:'
   )}`;
 

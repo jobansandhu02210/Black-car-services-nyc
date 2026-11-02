@@ -25,7 +25,7 @@ Everything in `app/`, `components/` and `lib/` still says "Eagle Eye Chauffeur" 
 1. Put brand name, phone, email, WhatsApp number, address/service-area model into `lib/contact.ts` + `lib/site.ts`, then replace hardcoded "Eagle Eye" strings (grep `Eagle Eye`, `eagleeye`, phone `9299196499`, `Joban Sandhu`).
 2. `components/JsonLd.tsx`: new LocalBusiness data. **No fake street address / fake geo pin.** If there is no real staffed office, model as a service-area business (omit street address).
 3. `app/layout.tsx` metadata, `public/og-image.jpg`, logo, favicons, `public/*` fleet/service photos → new brand assets.
-4. Pricing: **decided 2026-10-28 — same prices as Eagle Eye** (base $120 + per mile $5/$6.50/$8/$16; hourly cards $110/$120/$130/$210; Sprinters $175/$200/$250 hr). Engine: `lib/booking-estimate-server.ts` (overridable via `PRICING_*` env). Keys/services setup guide: `docs/SETUP-SERVICES.md`.
+4. Pricing: **same as Eagle Eye's live engine (updated 2026-11-02)**. Executive Sedan $110 + $4.50/mi, First Class SUV $130 + $5.50/mi, First Class Sedan $300 + $7/mi, Sprinter Van $550 + $8.50/mi; hourly $110/$130/$180/$200 (2-hour minimum). No surcharges; customer sees one "Trip estimate" total. Engine: `lib/booking-estimate-server.ts` (overridable via `PRICING_*` env). Keys/services setup guide: `docs/SETUP-SERVICES.md`.
 5. Env vars + services: new Prisma DB (`prisma/`), Stripe, Resend domain (SPF/DKIM), GA4, Search Console, Google Ads.
 6. Legal pages (`/privacy`, `/terms`) must show the new legal business name; site info must match real TLC license/insurance paperwork.
 

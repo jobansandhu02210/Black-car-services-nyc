@@ -12,7 +12,7 @@ import {
 } from '@/lib/contact';
 
 type ServiceType = 'point-to-point' | 'hourly' | 'airport';
-type VehicleType = 'business-sedan' | 'business-suv' | 'first-suv' | 'first-sedan';
+type VehicleType = 'business-sedan' | 'first-suv' | 'first-sedan' | 'sprinter';
 
 const SERVICE_LABELS: Record<ServiceType, string> = {
   'point-to-point': 'Point-to-Point',
@@ -21,21 +21,19 @@ const SERVICE_LABELS: Record<ServiceType, string> = {
 };
 
 const VEHICLE_LABELS: Record<VehicleType, string> = {
-  'business-sedan': 'Business Sedan',
-  'business-suv': 'Business SUV',
+  'business-sedan': 'Executive Sedan',
   'first-suv': 'First Class SUV',
   'first-sedan': 'First Class Sedan',
+  sprinter: 'Sprinter Van',
 };
 
-// Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts and /fleet.
-// Hourly rates are shown on the vehicle cards for "By the hour" bookings (same rates as
-// eagleeyechauffeur.com, owner's choice 2026-10-28). Point-to-point and airport prices come
-// from /api/booking/estimate.
+// Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts. Hourly rates are shown on
+// the vehicle cards for "By the hour" bookings; other prices come from /api/booking/estimate.
 const VEHICLE_META: Record<VehicleType, { passengers: number; luggage: number; description: string; hourlyRate: number }> = {
-  'business-sedan': { passengers: 3, luggage: 3, description: 'The everyday choice for one or two travelers', hourlyRate: 110 },
-  'business-suv':   { passengers: 6, luggage: 6, description: 'Room for a family, a team or a lot of luggage', hourlyRate: 120 },
-  'first-suv':      { passengers: 6, luggage: 6, description: 'Our most spacious car, newer and top-trim', hourlyRate: 130 },
-  'first-sedan':    { passengers: 3, luggage: 3, description: 'Newer, quieter, more legroom — for clients', hourlyRate: 210 },
+  'business-sedan': { passengers: 3,  luggage: 3,  description: 'The everyday choice for one or two travelers', hourlyRate: 110 },
+  'first-suv':      { passengers: 6,  luggage: 6,  description: 'Room for a family, a team or a lot of luggage', hourlyRate: 130 },
+  'first-sedan':    { passengers: 3,  luggage: 3,  description: 'Quieter, more legroom — for clients and executives', hourlyRate: 180 },
+  sprinter:         { passengers: 14, luggage: 14, description: 'For groups and teams traveling together', hourlyRate: 200 },
 };
 
 const AIRPORTS = ['JFK - John F. Kennedy', 'LGA - LaGuardia', 'EWR - Newark Liberty'];
@@ -85,9 +83,9 @@ export default function BookPage() {
   const [estimateLoading, setEstimateLoading] = useState(false);
   const [allEstimates, setAllEstimates] = useState<Record<VehicleType, BookingEstimate | null>>({
     'business-sedan': null,
-    'business-suv': null,
     'first-suv': null,
     'first-sedan': null,
+    sprinter: null,
   });
   const [allEstimatesLoading, setAllEstimatesLoading] = useState(false);
 
@@ -182,14 +180,14 @@ export default function BookPage() {
     if (!hasRequiredLocations) {
       setAllEstimates({
         'business-sedan': null,
-        'business-suv': null,
         'first-suv': null,
         'first-sedan': null,
+        sprinter: null,
       });
       setAllEstimatesLoading(false);
       return;
     }
-    const vehicleTypes: VehicleType[] = ['business-sedan', 'business-suv', 'first-suv', 'first-sedan'];
+    const vehicleTypes: VehicleType[] = ['business-sedan', 'first-suv', 'first-sedan', 'sprinter'];
     let cancelled = false;
     setAllEstimatesLoading(true);
     Promise.all(

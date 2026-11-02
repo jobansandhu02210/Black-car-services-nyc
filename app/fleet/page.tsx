@@ -7,7 +7,7 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { PageHero, TextTable } from '@/components/PageHero';
 import { FaqList, RelatedLinks } from '@/components/AirportSections';
 import { VehiclePhoto } from '@/components/VehiclePhoto';
-import { FLEET_CLASSES, SPRINTERS } from '@/lib/fleet';
+import { FLEET_CLASSES, SPRINTERS, SPRINTER_HOURLY_RATE } from '@/lib/fleet';
 import { ogDefaults } from '@/lib/og';
 
 const path = '/fleet';
@@ -24,24 +24,24 @@ export const metadata: Metadata = {
 };
 
 const chooser: string[][] = [
-  ['1–2 people, carry-ons or one suitcase each', 'Business Sedan'],
-  ['3 people with one suitcase each', 'Business Sedan (tight) or Business SUV'],
-  ['4–6 people', 'Business SUV'],
-  ['Strollers, car seats, skis, golf bags', 'Business SUV'],
-  ['Visiting client or senior executive', 'First Class Sedan or SUV'],
-  ['Four-hour trip to Washington, DC', 'SUV or First Class for the legroom'],
-  ['7 or more people', 'A Sprinter van, or two cars timed to travel together'],
+  ['1–2 people, carry-ons or one suitcase each', 'Executive Sedan'],
+  ['3 people with one suitcase each', 'Executive Sedan (tight) or First Class SUV'],
+  ['4–6 people', 'First Class SUV'],
+  ['Strollers, car seats, skis, golf bags', 'First Class SUV'],
+  ['Visiting client or senior executive', 'First Class Sedan'],
+  ['Four-hour trip to Washington, DC', 'First Class SUV or Sedan for the legroom'],
+  ['7 or more people', 'Sprinter Van'],
 ];
 
 // TODO(owner): confirm child-seat policy and anything else you provide on request.
 const faqs = [
   {
     q: 'How many suitcases fit in a black car sedan?',
-    a: 'A Business or First Class Sedan takes up to three bags — typically two large suitcases and a carry-on. For more than that, choose an SUV.',
+    a: 'An Executive or First Class Sedan takes up to three bags — typically two large suitcases and a carry-on. For more than that, choose an SUV.',
   },
   {
-    q: 'What is the difference between Business and First Class?',
-    a: 'The same capacity, but First Class cars are newer, top-trim vehicles with quieter cabins and more legroom. Business Class is the everyday choice.',
+    q: 'What is the difference between the Executive and First Class sedans?',
+    a: 'They carry the same number of people and bags. The First Class Sedan is a flagship car with a quieter cabin and more rear legroom; the Executive Sedan is the everyday choice.',
   },
   {
     q: 'How many passengers fit in a black SUV?',
@@ -53,7 +53,7 @@ const faqs = [
   },
   {
     q: 'What if our group is too big for one car?',
-    a: 'Book a Sprinter — they seat 13 to 18 depending on the build — or we send two or more cars timed to travel together. Call or message us for a Sprinter quote.',
+    a: 'Book a Sprinter Van online — they seat 13 to 18 depending on the cabin — or we can send two or more cars timed to travel together.',
   },
   {
     q: 'Can I request a specific vehicle?',
@@ -85,7 +85,7 @@ export default function FleetPage() {
         eyebrow="Sedans · SUVs · Sprinter vans"
         idPrefix="fleet"
         h1="Our Fleet: Sedans, SUVs and Sprinter Vans"
-        answer={`${SITE_NAME} runs four classes of car — Business and First Class, each as a sedan for up to three people or an SUV for up to six — plus three Sprinter vans for groups of up to 18. Every car takes as many bags as it does passengers, so choosing is mostly about counting suitcases.`}
+        answer={`${SITE_NAME} runs four classes: Executive Sedan and First Class Sedan for up to three people, First Class SUV for up to six, and Sprinter Vans for groups of up to 18. Every car takes as many bags as it does passengers, so choosing is mostly about counting suitcases.`}
         ctaHref="/book"
         ctaLabel="Choose a car and book"
         phoneDisplay={CONTACT_PHONE_DISPLAY}
@@ -98,7 +98,7 @@ export default function FleetPage() {
           <SectionHeading
             id="classes-heading"
             eyebrow="Vehicle classes"
-            title="Business and First Class, sedan or SUV"
+            title="Executive and First Class sedans and SUVs"
             intro="You book a class, not a specific car. The models below are what each class looks like on the day."
           />
           <div className="space-y-12">
@@ -107,7 +107,7 @@ export default function FleetPage() {
                 <div className="flex flex-wrap items-baseline justify-between gap-3">
                   <h3 className="text-2xl text-brand-ink">{c.name}</h3>
                   <p className="text-sm font-semibold text-brand-accent">
-                    Up to {c.passengers} passengers · {c.bags} bags
+                    Up to {c.passengers} passengers · {c.bags} bags · ${c.hourlyRate}/hr
                   </p>
                 </div>
                 <p className="mt-2 max-w-3xl text-brand-muted leading-relaxed">{c.body}</p>
@@ -135,7 +135,7 @@ export default function FleetPage() {
             id="sprinter-heading"
             eyebrow="Groups"
             title="Sprinter vans for groups of up to 18"
-            intro="When the group is too big for one SUV. Sprinters are booked by the hour with a 2-hour minimum — call, WhatsApp or send us a message with the date, times and head count."
+            intro="When the group is too big for one SUV. Book online for an instant estimate, or call or WhatsApp us to choose your cabin. All three are the same price."
           />
           <ul className="grid gap-5 md:grid-cols-3">
             {SPRINTERS.map((v) => (
@@ -143,15 +143,15 @@ export default function FleetPage() {
                 <VehiclePhoto src={v.image} alt={v.name} />
                 <h3 className="mt-4 text-xl text-brand-ink">{v.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-brand-accent">
-                  {v.seats} · ${v.hourlyRate}/hr
+                  {v.seats} · ${SPRINTER_HOURLY_RATE}/hr
                 </p>
                 <p className="mt-3 text-brand-muted leading-relaxed">{v.body}</p>
               </li>
             ))}
           </ul>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/contact" className="rounded-lg bg-brand-accent px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover">
-              Ask for a Sprinter quote
+            <Link href="/book" className="rounded-lg bg-brand-accent px-6 py-3 text-center font-display text-sm font-bold text-brand-white hover:bg-brand-accent-hover">
+              Book a Sprinter
             </Link>
             <a
               href={`tel:${CONTACT_PHONE_E164}`}

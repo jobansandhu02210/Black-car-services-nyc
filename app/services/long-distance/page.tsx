@@ -59,9 +59,9 @@ const experience = [
 
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts.
 const vehicles = [
-  { title: 'Business Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'Comfortable for one or two people on trips up to a couple of hours.' },
-  { title: 'Business SUV', spec: 'Up to 6 passengers · 6 bags', body: 'More legroom for a long drive, and space for a family or team.' },
-  { title: 'First Class', spec: 'Sedan or SUV · same capacity', body: 'A newer, top-trim car for clients and four-hour trips to DC.' },
+  { title: 'Executive Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'Comfortable for one or two people on trips up to a couple of hours.' },
+  { title: 'First Class SUV', spec: 'Up to 6 passengers · 6 bags', body: 'More legroom for a long drive, and space for a family or team.' },
+  { title: 'First Class Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'A newer, top-trim car for clients and four-hour trips to DC.' },
 ];
 
 const steps = [

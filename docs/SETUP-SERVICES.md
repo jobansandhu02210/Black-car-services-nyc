@@ -26,7 +26,7 @@ The booking form calls three Google APIs from the server:
 | Google API | Used for |
 |---|---|
 | **Places API** | Address suggestions while typing (Autocomplete) and the chosen address (Place Details) |
-| **Distance Matrix API** | Real driving miles → price = $120 base + miles × per-mile rate |
+| **Distance Matrix API** | Real driving miles → price = base fare + miles × per-mile rate |
 | **Geocoding API** | Backup if Distance Matrix fails (straight-line miles × 1.22) |
 
 **Important (Google change, March 2025):** *Places API* and *Distance Matrix API* are now "legacy" and
@@ -131,12 +131,16 @@ Set `NEXT_PUBLIC_SITE_LIVE=true` only at the very end, then add GA4 / Search Con
 
 ## Prices (same as Eagle Eye)
 
-| | Business Sedan | Business SUV | First Class SUV | First Class Sedan |
-|---|---|---|---|---|
-| Base fare | $120 | $120 | $120 | $120 |
-| Per mile | $5 | $6.50 | $8 | $16 |
-| Hourly (shown on booking cards) | $110/hr | $120/hr | $130/hr | $210/hr |
-| Extra passenger / bag over capacity | $15 / $8 | $15 / $8 | $15 / $8 | $15 / $8 |
+Matches Eagle Eye's live booking engine (checked 2026-11-02).
 
-Sprinters (by phone/WhatsApp): Executive $175/hr, Limo $200/hr, Jet $250/hr, 2-hour minimum.
-Per-mile prices can be changed without code via the `PRICING_*` variables in `.env.example`.
+| | Executive Sedan | First Class SUV | First Class Sedan | Sprinter Van |
+|---|---|---|---|---|
+| Base fare | $110 | $130 | $300 | $550 |
+| Per mile | $4.50 | $5.50 | $7.00 | $8.50 |
+| Hourly (2-hour minimum) | $110/hr | $130/hr | $180/hr | $200/hr |
+
+- Airport and city-to-city: base fare + Google driving miles × per-mile rate. No flat airport prices.
+- Hourly: hours × hourly rate, no distance charge.
+- No extra-passenger or extra-bag charges.
+- The customer sees one "Trip estimate" total, never the breakdown.
+- Rates can be changed without code via the `PRICING_*` variables in `.env.example`.

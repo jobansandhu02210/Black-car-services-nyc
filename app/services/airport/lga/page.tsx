@@ -63,9 +63,9 @@ const comparison: { row: string; cells: Cell[] }[] = [
 
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts.
 const vehicles = [
-  { title: 'Business Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'The usual LaGuardia car: one or two travelers, a short hop into the city, room for checked bags.' },
-  { title: 'Business SUV', spec: 'Up to 6 passengers · 6 bags', body: 'Families heading home from Florida, ski trips, a team flying back from a conference.' },
-  { title: 'First Class', spec: 'Sedan or SUV · same capacity', body: 'For the client or executive coming in on the morning shuttle who has a meeting an hour later.' },
+  { title: 'Executive Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'The usual LaGuardia car: one or two travelers, a short hop into the city, room for checked bags.' },
+  { title: 'First Class SUV', spec: 'Up to 6 passengers · 6 bags', body: 'Families heading home from Florida, ski trips, a team flying back from a conference.' },
+  { title: 'First Class Sedan', spec: 'Up to 3 passengers · 3 bags', body: 'For the client or executive coming in on the morning shuttle who has a meeting an hour later.' },
 ];
 
 const steps = [

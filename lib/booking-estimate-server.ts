@@ -1,29 +1,18 @@
 /**
- * Server-only pricing: rates are NOT exposed to the client bundle.
- * Customer UI receives only totals and generic line labels via /api/booking/estimate.
+ * Server-only pricing: rates are NOT exposed to the client bundle. The customer sees a single
+ * "Trip estimate" total via /api/booking/estimate, never the base/per-mile breakdown.
  *
- * Pricing model: Flat base fare + per-mile charge based on Google Maps driving distance.
- *   Total = BASE_FARE_USD + (driving_miles × vehicle_per_mile_rate)
+ * Same model and numbers as eagleeyechauffeur.com's live engine (checked 2026-11-02):
+ *   Point-to-point and airport: vehicle base fare + (Google driving miles × vehicle per-mile rate)
+ *   Hourly: hours × vehicle per-hour rate (2-hour minimum, 24-hour maximum)
+ *   No flat airport rates, and no extra-passenger or extra-bag charges by default.
  */
 import { resolveDrivingMilesForPricing } from '@/lib/google-driving-distance';
 import { getPlacesServerApiKey } from '@/lib/places-env';
 
 /**
- * Pricing — read from Vercel env vars so rates can be updated without a code deploy.
- * Set these in Vercel → Settings → Environment Variables.
- * Defaults below are the production baseline — change env vars to override.
- *
- *   PRICING_BASE_FARE          — flat base fare for every trip (default: 120)
- *   PRICING_SEDAN              — per-mile rate, Business Sedan (default: 5)
- *   PRICING_SUV                — per-mile rate, Business SUV (default: 6.5)
- *   PRICING_FIRST_SUV          — per-mile rate, First Class SUV (default: 8)
- *   PRICING_FIRST_SEDAN        — per-mile rate, First Class Sedan (default: 16)
- *   PRICING_EXTRA_PASSENGER    — charge per passenger beyond the selected vehicle's capacity (default: 15)
- *   PRICING_EXTRA_LUGGAGE      — charge per bag beyond the selected vehicle's capacity (default: 8)
- *
- * Passengers/luggage within a vehicle's own advertised capacity (VEHICLE_CAPACITY below — matches
- * the capacities shown on /book and /fleet) never add a surcharge; only booking more people or
- * bags than that vehicle can actually hold does.
+ * Every rate can be overridden with an env var (Vercel → Settings → Environment Variables)
+ * without a code deploy. Unset vars use the defaults below. See .env.example for the full list.
  */
 function envNum(key: string, fallback: number): number {
   const raw = process.env[key];
@@ -32,33 +21,45 @@ function envNum(key: string, fallback: number): number {
   return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
-/** Base fare applied to every trip (point-to-point and airport transfers). */
-const BASE_FARE_USD = envNum('PRICING_BASE_FARE', 120);
+/** Fallback only; each vehicle normally has its own base fare below. */
+const BASE_FARE_USD = envNum('PRICING_BASE_FARE', 110);
 
-/** Per-mile rate charged on top of the base fare, by vehicle type. */
-const VEHICLE_PER_MILE_USD: Record<string, number> = {
-  'business-sedan': envNum('PRICING_SEDAN', 5),
-  'business-suv':   envNum('PRICING_SUV', 6.5),
-  'first-suv':      envNum('PRICING_FIRST_SUV', 8),
-  'first-sedan':    envNum('PRICING_FIRST_SEDAN', 16),
+const VEHICLE_BASE_FARE_USD: Record<string, number> = {
+  'business-sedan': envNum('PRICING_BASE_SEDAN', 110),
+  'first-suv':      envNum('PRICING_BASE_FIRST_SUV', 130),
+  'first-sedan':    envNum('PRICING_BASE_FIRST_SEDAN', 300),
+  'sprinter':       envNum('PRICING_BASE_SPRINTER', 550),
 };
 
-/** Passengers/luggage included free, per vehicle — matches the capacities advertised on /book and /fleet. */
+const VEHICLE_PER_MILE_USD: Record<string, number> = {
+  'business-sedan': envNum('PRICING_SEDAN', 4.5),
+  'first-suv':      envNum('PRICING_FIRST_SUV', 5.5),
+  'first-sedan':    envNum('PRICING_FIRST_SEDAN', 7),
+  'sprinter':       envNum('PRICING_SPRINTER', 8.5),
+};
+
+const VEHICLE_HOURLY_USD: Record<string, number> = {
+  'business-sedan': envNum('PRICING_HOURLY_SEDAN', 110),
+  'first-suv':      envNum('PRICING_HOURLY_FIRST_SUV', 130),
+  'first-sedan':    envNum('PRICING_HOURLY_FIRST_SEDAN', 180),
+  'sprinter':       envNum('PRICING_HOURLY_SPRINTER', 200),
+};
+
+/** Passengers/luggage included, per vehicle. Only matters if a surcharge env var is set above 0. */
 const VEHICLE_CAPACITY: Record<string, { passengers: number; luggage: number }> = {
   'business-sedan': { passengers: 3, luggage: 3 },
-  'business-suv':   { passengers: 6, luggage: 6 },
   'first-suv':      { passengers: 6, luggage: 6 },
   'first-sedan':    { passengers: 3, luggage: 3 },
+  'sprinter':       { passengers: 14, luggage: 14 },
 };
 
-const EXTRA_PASSENGER = envNum('PRICING_EXTRA_PASSENGER', 15);
-const EXTRA_LUGGAGE   = envNum('PRICING_EXTRA_LUGGAGE', 8);
+const EXTRA_PASSENGER = envNum('PRICING_EXTRA_PASSENGER', 0);
+const EXTRA_LUGGAGE   = envNum('PRICING_EXTRA_LUGGAGE', 0);
 
 const AIRPORT_DEST: Record<string, string> = {
   'JFK - John F. Kennedy': 'John F. Kennedy International Airport, Jamaica, NY, USA',
   'LGA - LaGuardia': 'LaGuardia Airport, Queens, NY, USA',
   'EWR - Newark Liberty': 'Newark Liberty International Airport, NJ, USA',
-  'HPN - Westchester County': 'Westchester County Airport, White Plains, NY, USA',
 };
 
 const ALLOWED_VEHICLES = new Set(Object.keys(VEHICLE_PER_MILE_USD));
@@ -71,10 +72,6 @@ export type BookingEstimateResponse =
       label: string;
       lines: { label: string; amount: number }[];
     };
-
-function perMileRate(vehicle: string): number {
-  return VEHICLE_PER_MILE_USD[vehicle] ?? VEHICLE_PER_MILE_USD['business-sedan'];
-}
 
 function roundUsd2(n: number): number {
   return Math.round((n + Number.EPSILON) * 100) / 100;
@@ -93,7 +90,6 @@ export async function computeBookingEstimate(input: {
   customerPhone?: string;
 }): Promise<BookingEstimateResponse> {
   const vehicle = ALLOWED_VEHICLES.has(input.vehicle) ? input.vehicle : 'business-sedan';
-  const rate = perMileRate(vehicle);
   const key = getPlacesServerApiKey();
 
   if (input.service === 'point-to-point') {
@@ -117,68 +113,42 @@ export async function computeBookingEstimate(input: {
     }
   }
 
-  let miles: number;
-  let distanceSource: 'hourly_model' | 'distance_matrix' | 'straight_line_approx' = 'hourly_model';
+  let tripTotal: number;
 
   if (input.service === 'hourly') {
-    const h = Math.max(2, Math.min(24, input.hours || 2));
-    miles = Math.max(10, h * 12);
-    distanceSource = 'hourly_model';
-  } else if (!key) {
-    return {
-      incomplete: true,
-      message: 'Price estimates need the server Google Maps key (see GOOGLE-APIS.md).',
-    };
-  } else if (input.service === 'airport') {
-    const dest = AIRPORT_DEST[input.airport];
-    const resolved = await resolveDrivingMilesForPricing(input.pickup, dest, key);
+    const hours = Math.max(2, Math.min(24, input.hours || 2));
+    tripTotal = hours * VEHICLE_HOURLY_USD[vehicle];
+  } else {
+    if (!key) {
+      return {
+        incomplete: true,
+        message: 'Price estimates need the server Google Maps key (see docs/SETUP-SERVICES.md).',
+      };
+    }
+    const destination = input.service === 'airport' ? AIRPORT_DEST[input.airport] : input.dropoff;
+    const resolved = await resolveDrivingMilesForPricing(input.pickup, destination, key);
     if (!resolved) {
       return {
         incomplete: true,
         message:
-          'Unable to calculate driving distance for this route. Check pick-up and airport, or contact us for a quote.',
+          input.service === 'airport'
+            ? 'Unable to calculate driving distance for this route. Check pick-up and airport, or contact us for a quote.'
+            : 'Unable to calculate driving distance for this route. Check both addresses or contact us for a quote.',
       };
     }
-    miles = resolved.miles;
-    distanceSource = resolved.source;
-  } else {
-    const resolved = await resolveDrivingMilesForPricing(input.pickup, input.dropoff, key);
-    if (!resolved) {
-      return {
-        incomplete: true,
-        message:
-          'Unable to calculate driving distance for this route. Check both addresses or contact us for a quote.',
-      };
-    }
-    miles = resolved.miles;
-    distanceSource = resolved.source;
+    const baseFare = VEHICLE_BASE_FARE_USD[vehicle] ?? BASE_FARE_USD;
+    tripTotal = baseFare + Math.max(0, resolved.miles) * VEHICLE_PER_MILE_USD[vehicle];
   }
 
-  const lines: { label: string; amount: number }[] = [];
-
-  if (input.service === 'hourly') {
-    // Hourly: show a single combined estimate (base + mileage model, no breakdown)
-    const hourlyCharge = roundUsd2(BASE_FARE_USD + miles * rate);
-    lines.push({ label: 'Trip estimate', amount: hourlyCharge });
-  } else {
-    // Point-to-point & airport: show base fare + distance charge separately
-    const distanceMiles = Math.max(0, miles);
-    const distanceCharge = roundUsd2(distanceMiles * rate);
-    const distLabel =
-      distanceSource === 'straight_line_approx'
-        ? `Distance charge (~${Math.round(distanceMiles)} mi, route approximate)`
-        : `Distance charge (${Math.round(distanceMiles)} mi)`;
-    lines.push({ label: 'Base fare', amount: BASE_FARE_USD });
-    lines.push({ label: distLabel, amount: distanceCharge });
-  }
+  const lines: { label: string; amount: number }[] = [{ label: 'Trip estimate', amount: roundUsd2(tripTotal) }];
 
   const capacity = VEHICLE_CAPACITY[vehicle] ?? VEHICLE_CAPACITY['business-sedan'];
 
-  if (input.passengers > capacity.passengers) {
+  if (EXTRA_PASSENGER > 0 && input.passengers > capacity.passengers) {
     const n = input.passengers - capacity.passengers;
     lines.push({ label: `Additional passengers (${n})`, amount: n * EXTRA_PASSENGER });
   }
-  if (input.luggage > capacity.luggage) {
+  if (EXTRA_LUGGAGE > 0 && input.luggage > capacity.luggage) {
     const n = input.luggage - capacity.luggage;
     lines.push({ label: `Additional luggage (${n})`, amount: n * EXTRA_LUGGAGE });
   }

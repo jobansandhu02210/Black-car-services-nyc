@@ -57,14 +57,15 @@ const comparison: { row: string; cells: Cell[] }[] = [
 
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts.
 const vehicles = [
-  { name: 'Business Sedan', photo: 'business-sedan' as VehicleClassId, seats: 'Up to 3 passengers', bags: '3 bags', body: 'The usual choice for one or two travelers and a couple of suitcases.' },
-  { name: 'Business SUV', photo: 'business-suv' as VehicleClassId, seats: 'Up to 6 passengers', bags: '6 bags', body: 'For families, small teams, ski bags and anyone packing heavy.' },
-  { name: 'First Class', photo: 'first-sedan' as VehicleClassId, seats: 'Sedan or SUV', bags: 'Same capacity', body: 'A newer, top-trim vehicle for client pickups and executive travel.' },
+  { name: 'Executive Sedan', photo: 'business-sedan' as VehicleClassId, seats: 'Up to 3 passengers', bags: '3 bags', body: 'The usual choice for one or two travelers and a couple of suitcases.' },
+  { name: 'First Class SUV', photo: 'first-suv' as VehicleClassId, seats: 'Up to 6 passengers', bags: '6 bags', body: 'For families, small teams, ski bags and anyone packing heavy.' },
+  { name: 'First Class Sedan', photo: 'first-sedan' as VehicleClassId, seats: 'Up to 3 passengers', bags: '3 bags', body: 'A flagship sedan for client pickups and executive travel.' },
+  { name: 'Sprinter Van', photo: 'sprinter' as VehicleClassId, seats: 'Up to 14 passengers', bags: '14 bags', body: 'For groups and teams who want to travel together.' },
 ];
 
 const steps = [
   { title: 'Tell us the trip', body: 'Pick-up, destination or airport, date and time. Add a flight number for airport rides.' },
-  { title: 'Choose the vehicle', body: 'Sedan for most trips, SUV for more people or bags, First Class for clients.' },
+  { title: 'Choose the vehicle', body: 'Sedan for most trips, SUV for more people or bags, Sprinter for groups.' },
   { title: 'Get your price', body: 'You see an estimate as you book, and we confirm the fare before the ride.' },
   { title: 'Meet your driver', body: 'Driver name, car and plate come to your phone ahead of pickup.' },
 ];
@@ -261,8 +262,8 @@ export default function HomePage() {
       {/* Vehicles */}
       <section className="bg-brand-tint py-16 lg:py-24" aria-labelledby="fleet-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="Black car fleet: sedans and SUVs" />
-          <div className="grid gap-5 md:grid-cols-3">
+          <SectionHeading id="fleet-heading" eyebrow="Vehicles" title="Black car fleet: sedans, SUVs and Sprinters" />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {vehicles.map((v) => (
               <Link key={v.name} href="/fleet" className="card-hover block rounded-2xl bg-brand-white p-6 ring-1 ring-brand-line">
                 <VehiclePhoto src={classPhoto(v.photo).image} alt={classPhoto(v.photo).name} className="mb-5" />

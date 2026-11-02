@@ -9,26 +9,29 @@
  * TODO(owner): replace with photos of your own cars before launch to keep the two sites distinct.
  */
 
-export type VehicleClassId = 'business-sedan' | 'business-suv' | 'first-sedan' | 'first-suv';
+export type VehicleClassId = 'business-sedan' | 'first-suv' | 'first-sedan' | 'sprinter';
 
 export type FleetModel = { name: string; image: string };
 
 export type FleetClass = {
-  id: VehicleClassId;
+  id: Exclude<VehicleClassId, 'sprinter'>;
   name: string;
   passengers: number;
   bags: number;
+  hourlyRate: number;
   body: string;
   bestFor: string;
   models: FleetModel[];
 };
 
+/** Rates here are for display; quotes are computed in lib/booking-estimate-server.ts. */
 export const FLEET_CLASSES: FleetClass[] = [
   {
     id: 'business-sedan',
-    name: 'Business Sedan',
+    name: 'Executive Sedan',
     passengers: 3,
     bags: 3,
+    hourlyRate: 110,
     body: 'Comfortable, quiet and understated — the car most of our airport and city-to-city rides use.',
     bestFor: 'Solo travelers, couples, most airport rides',
     models: [
@@ -39,13 +42,16 @@ export const FLEET_CLASSES: FleetClass[] = [
     ],
   },
   {
-    id: 'business-suv',
-    name: 'Business SUV',
+    id: 'first-suv',
+    name: 'First Class SUV',
     passengers: 6,
     bags: 6,
-    body: 'A full-size SUV with a third row and real cargo space behind it.',
+    hourlyRate: 130,
+    body: 'A full-size luxury SUV with a third row and real cargo space behind it.',
     bestFor: 'Families, small teams, ski and golf bags, long trips',
     models: [
+      { name: 'Cadillac Escalade', image: '/fleet/cadillac-escalade.jpg' },
+      { name: 'Lincoln Navigator', image: '/fleet/lincoln-navigator.jpg' },
       { name: 'Chevrolet Suburban', image: '/fleet/chevrolet-suburban.jpg' },
       { name: 'GMC Yukon XL', image: '/fleet/gmc-yukon-xl.jpg' },
     ],
@@ -55,6 +61,7 @@ export const FLEET_CLASSES: FleetClass[] = [
     name: 'First Class Sedan',
     passengers: 3,
     bags: 3,
+    hourlyRate: 180,
     body: 'A flagship sedan with the quietest cabin and the most rear legroom we offer.',
     bestFor: 'Client pickups, executives, a long ride to DC',
     models: [
@@ -62,43 +69,27 @@ export const FLEET_CLASSES: FleetClass[] = [
       { name: 'BMW 7 Series', image: '/fleet/bmw-7-series.jpg' },
     ],
   },
-  {
-    id: 'first-suv',
-    name: 'First Class SUV',
-    passengers: 6,
-    bags: 6,
-    body: 'Our most spacious car, in a top-trim luxury SUV.',
-    bestFor: 'VIP groups, families who want the most room',
-    models: [
-      { name: 'Cadillac Escalade', image: '/fleet/cadillac-escalade.jpg' },
-      { name: 'Lincoln Navigator', image: '/fleet/lincoln-navigator.jpg' },
-    ],
-  },
 ];
 
-/**
- * Sprinters are booked by phone/WhatsApp/contact (not in the online form). Hourly rates and
- * capacities match eagleeyechauffeur.com (owner's choice 2026-10-28); 2-hour minimum.
- */
+/** Sprinter Van: one class and one price for all three cabins; bookable online as `sprinter`. */
+export const SPRINTER_HOURLY_RATE = 200;
+
 export const SPRINTERS = [
   {
     name: 'Executive Sprinter',
     seats: 'Up to 14 passengers',
-    hourlyRate: 175,
     image: '/fleet/executive-sprinter.jpg',
     body: 'Forward-facing seats and room for luggage — for teams, conference transfers and big family airport runs.',
   },
   {
     name: 'Limo Sprinter',
     seats: 'Up to 18 passengers',
-    hourlyRate: 200,
     image: '/fleet/limo-sprinter.jpg',
     body: 'Side-facing lounge seating for a group that wants to travel together and talk on the way.',
   },
   {
     name: 'Jet Sprinter',
     seats: 'Up to 13 passengers',
-    hourlyRate: 250,
     image: '/fleet/jet-sprinter.jpg',
     body: 'Captain’s chairs and a private-jet style cabin for clients and special occasions.',
   },
@@ -106,5 +97,6 @@ export const SPRINTERS = [
 
 /** One representative photo per class (first model listed). */
 export function classPhoto(id: VehicleClassId): FleetModel {
+  if (id === 'sprinter') return { name: SPRINTERS[0].name, image: SPRINTERS[0].image };
   return FLEET_CLASSES.find((c) => c.id === id)!.models[0];
 }
