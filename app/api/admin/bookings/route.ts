@@ -16,6 +16,7 @@ const SELECT = {
   date: true,
   time: true,
   passengers: true,
+  luggage: true,
   hours: true,
   customerName: true,
   customerEmail: true,

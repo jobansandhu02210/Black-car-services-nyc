@@ -14,6 +14,7 @@ type Booking = {
   date: string | null;
   time: string | null;
   passengers: number | null;
+  luggage: number | null;
   hours: number | null;
   customerName: string | null;
   customerEmail: string | null;
@@ -81,6 +82,7 @@ function tripMessage(b: Booking, dest: string) {
     b.customerName ? `Client: ${b.customerName}` : '',
     b.customerPhone ? `Client phone: ${b.customerPhone}` : '',
     b.passengers != null ? `Passengers: ${b.passengers}` : '',
+    b.luggage != null ? `Bags: ${b.luggage}` : '',
     b.specialRequests ? `Notes: ${b.specialRequests}` : '',
   ].filter(Boolean);
   return lines.join('\n');
@@ -320,6 +322,7 @@ function BookingCard({ booking, drivers, onUpdate, onCharged, onEdit, onDelete }
         {booking.airport && <div><span className="text-gray-400">Airport:</span> {booking.airport}</div>}
         {booking.hours && <div><span className="text-gray-400">Hours:</span> {booking.hours}</div>}
         {booking.passengers != null && <div><span className="text-gray-400">Passengers:</span> {booking.passengers}</div>}
+        {booking.luggage != null && <div><span className="text-gray-400">Bags:</span> {booking.luggage}</div>}
         {booking.quoteAmount != null && <div><span className="text-gray-400">Quote:</span> {money(booking.quoteAmount)}</div>}
         {booking.tipAmount != null && booking.tipAmount > 0 && <div><span className="text-gray-400">Tip (customer):</span> {money(booking.tipAmount)}{booking.tipPercent ? ` (${booking.tipPercent}%)` : ''}</div>}
         {booking.specialRequests && <div className="sm:col-span-2"><span className="text-gray-400">Notes:</span> {booking.specialRequests}</div>}

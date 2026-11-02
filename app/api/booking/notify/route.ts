@@ -25,18 +25,41 @@ function oneLine(s: string, max: number): string {
   return s.replace(/[\r\n]+/g, ' ').trim().slice(0, max);
 }
 
+/** Stores the request for /admin/bookings. Returns null (never throws) if the database is unavailable. */
+async function saveBooking(data: {
+  service: string;
+  vehicle: string | null;
+  pickup: string;
+  dropoff: string | null;
+  airport: string | null;
+  date: string;
+  time: string;
+  passengers: number;
+  luggage: number;
+  hours: number | null;
+  specialRequests: string | null;
+  quoteAmount: number | null;
+  quoteLabel: string | null;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string | null;
+  source: string;
+}): Promise<string | null> {
+  try {
+    const { prisma } = await import('@/lib/prisma');
+    const booking = await prisma.booking.create({ data, select: { id: true } });
+    return booking.id;
+  } catch (err) {
+    console.error('[booking/notify] could not save booking', err);
+    return null;
+  }
+}
+
 export async function POST(request: NextRequest) {
   const denied = assertAllowedPlacesCaller(request);
   if (denied) return denied;
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: 'Email is not configured. Add RESEND_API_KEY in Vercel (see .env.example).' },
-      { status: 503 }
-    );
-  }
-
   const from = process.env.EMAIL_FROM?.trim() || `${SITE_NAME} <onboarding@resend.dev>`;
   const to = process.env.BOOKING_NOTIFY_TO?.trim() || CONTACT_EMAIL_BOOKINGS;
 
@@ -70,6 +93,36 @@ export async function POST(request: NextRequest) {
 
   if (!pickup || !date || !time) {
     return NextResponse.json({ error: 'Missing required booking fields.' }, { status: 400 });
+  }
+
+  // Save first so the request is kept (and shows in /admin/bookings) even if email fails.
+  const bookingId = await saveBooking({
+    service: service || 'Ride',
+    vehicle: vehicle || null,
+    pickup,
+    dropoff: dropoff || null,
+    airport: airport || null,
+    date,
+    time,
+    passengers,
+    luggage,
+    hours: hours ?? null,
+    specialRequests: specialRequests || null,
+    quoteAmount: quoteAmount > 0 ? quoteAmount : null,
+    quoteLabel: quoteLabel || null,
+    customerName,
+    customerEmail,
+    customerPhone: customerPhone || null,
+    source: 'web',
+  });
+
+  if (!apiKey) {
+    console.error('[booking/notify] RESEND_API_KEY is not set; no booking emails were sent');
+    if (bookingId) return NextResponse.json({ ok: true, bookingId, guestEmailSent: false });
+    return NextResponse.json(
+      { error: 'We could not send your request. Please call or WhatsApp us to book.' },
+      { status: 503 }
+    );
   }
 
   // Flag last-minute bookings (under 2 hours) — allow through but mark URGENT in the email.
@@ -128,6 +181,7 @@ export async function POST(request: NextRequest) {
 
   if (error) {
     console.error('[booking/notify] notify to business failed', error);
+    if (bookingId) return NextResponse.json({ ok: true, bookingId, guestEmailSent: false });
     return NextResponse.json(
       { error: publicEmailSendError(error.message) },
       { status: 502 }
@@ -159,10 +213,11 @@ ${referenceEstimate}
     return NextResponse.json({
       ok: true,
       id: data?.id,
+      bookingId,
       guestEmailSent: false,
       guestEmailError: publicEmailSendError(guestError.message),
     });
   }
 
-  return NextResponse.json({ ok: true, id: data?.id, guestEmailSent: true });
+  return NextResponse.json({ ok: true, id: data?.id, bookingId, guestEmailSent: true });
 }
