@@ -9,7 +9,7 @@ import { ogDefaults } from '@/lib/og';
 const path = '/book';
 const title = 'Book a Black Car Online | Black Car Service';
 const description =
-  'Book a private car to JFK, LaGuardia or Newark, or a long-distance ride from NYC, in five short steps. See an estimate as you go; no account needed.';
+  'Book a private car to JFK, LaGuardia or Newark, or a long-distance ride from NYC, in three short steps. See your price first; no account needed.';
 
 export const metadata: Metadata = {
   title: { absolute: title },
@@ -20,10 +20,10 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  { name: 'Trip', text: 'Airport, city to city or by the hour — then your pickup and destination.' },
-  { name: 'Date and time', text: 'When you want to be picked up. Online bookings need two hours’ notice.' },
-  { name: 'Car and guests', text: 'Choose the car and tell us how many people and bags.' },
-  { name: 'Your details', text: 'Name, phone, email and anything we should know. We confirm the fare by email.' },
+  { name: 'Your trip', text: 'Airport, city to city or by the hour, then your address, date and time.' },
+  { name: 'Your car', text: 'Set your group size and compare every car with its price side by side.' },
+  { name: 'Your details', text: 'Name, email and flight number if you have one. Nothing is charged here.' },
+  { name: 'We confirm', text: 'We email your confirmed fare and invoice, then your driver’s details before pickup.' },
 ];
 
 // TODO(owner): confirm the cancellation/changes answer once your policy is set.

@@ -5,20 +5,23 @@ import Link from 'next/link';
 import { GooglePlacesAutocomplete } from '@/components/GooglePlacesAutocomplete';
 import { VehiclePhoto } from '@/components/VehiclePhoto';
 import { classPhoto } from '@/lib/fleet';
-import {
-  CONTACT_EMAIL_BOOKINGS,
-  CONTACT_PHONE_DISPLAY,
-  CONTACT_PHONE_E164,
-} from '@/lib/contact';
+import { CONTACT_EMAIL_BOOKINGS, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_E164 } from '@/lib/contact';
 
 type ServiceType = 'point-to-point' | 'hourly' | 'airport';
 type VehicleType = 'business-sedan' | 'first-suv' | 'first-sedan' | 'sprinter';
 
+/** Names used in booking emails. */
 const SERVICE_LABELS: Record<ServiceType, string> = {
   'point-to-point': 'Point-to-Point',
   hourly: 'By the hour',
   airport: 'Airport Transfer',
 };
+
+const SERVICE_TABS: { id: ServiceType; label: string }[] = [
+  { id: 'airport', label: 'Airport' },
+  { id: 'point-to-point', label: 'City to city' },
+  { id: 'hourly', label: 'By the hour' },
+];
 
 const VEHICLE_LABELS: Record<VehicleType, string> = {
   'business-sedan': 'Executive Sedan',
@@ -28,7 +31,7 @@ const VEHICLE_LABELS: Record<VehicleType, string> = {
 };
 
 // Capacities match VEHICLE_CAPACITY in lib/booking-estimate-server.ts. Hourly rates are shown on
-// the vehicle cards for "By the hour" bookings; other prices come from /api/booking/estimate.
+// the vehicle rows for "By the hour" bookings; every total comes from /api/booking/estimate.
 const VEHICLE_META: Record<VehicleType, { passengers: number; luggage: number; description: string; hourlyRate: number }> = {
   'business-sedan': { passengers: 3,  luggage: 3,  description: 'The everyday choice for one or two travelers', hourlyRate: 110 },
   'first-suv':      { passengers: 6,  luggage: 6,  description: 'Room for a family, a team or a lot of luggage', hourlyRate: 130 },
@@ -36,7 +39,14 @@ const VEHICLE_META: Record<VehicleType, { passengers: number; luggage: number; d
   sprinter:         { passengers: 14, luggage: 14, description: 'For groups and teams traveling together', hourlyRate: 200 },
 };
 
-const AIRPORTS = ['JFK - John F. Kennedy', 'LGA - LaGuardia', 'EWR - Newark Liberty'];
+const VEHICLE_TYPES = Object.keys(VEHICLE_LABELS) as VehicleType[];
+
+const AIRPORT_CHOICES = [
+  { value: 'JFK - John F. Kennedy', code: 'JFK', name: 'Kennedy' },
+  { value: 'LGA - LaGuardia', code: 'LGA', name: 'LaGuardia' },
+  { value: 'EWR - Newark Liberty', code: 'EWR', name: 'Newark' },
+];
+const AIRPORTS = AIRPORT_CHOICES.map((a) => a.value);
 
 type EstimateLine = { label: string; amount: number };
 
@@ -44,33 +54,69 @@ type BookingEstimate =
   | { incomplete: true; message: string }
   | { incomplete: false; amount: number; label: string; lines: EstimateLine[] };
 
-const STEPS = [
-  'Service & locations',
-  'Date & time',
-  'Vehicle & guests',
-  'Details & quote',
-  'Confirm',
-];
+const STEPS = ['Your trip', 'Your car', 'Your details'];
+
+const labelClass = 'block text-xs font-semibold uppercase tracking-wide text-brand-muted mb-1.5';
+const fieldClass =
+  'w-full rounded-xl border border-brand-line bg-brand-white px-4 py-3 text-[15px] text-brand-ink placeholder:text-brand-muted/80 focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent-soft';
+
+const money = (n: number) => `$${Number.isInteger(n) ? n : n.toFixed(2)}`;
+
+/** − value + control for passengers, bags and hours. */
+function Stepper({
+  label,
+  value,
+  min,
+  max,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  onChange: (n: number) => void;
+}) {
+  const buttonClass =
+    'flex h-9 w-9 items-center justify-center rounded-full bg-brand-white text-lg text-brand-ink ring-1 ring-brand-line transition-colors hover:ring-brand-accent disabled:cursor-not-allowed disabled:opacity-40';
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl bg-brand-tint px-4 py-3">
+      <span className="text-sm font-medium text-brand-ink">{label}</span>
+      <div className="flex items-center gap-3">
+        <button type="button" aria-label={`Fewer: ${label}`} disabled={value <= min} onClick={() => onChange(value - 1)} className={buttonClass}>
+          −
+        </button>
+        <span aria-live="polite" className="w-6 text-center font-semibold tabular-nums text-brand-ink">
+          {value}
+        </span>
+        <button type="button" aria-label={`More: ${label}`} disabled={value >= max} onClick={() => onChange(value + 1)} className={buttonClass}>
+          +
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function BookPage() {
   const [step, setStep] = useState(1);
-  const [service, setService] = useState<ServiceType>('point-to-point');
+  const [service, setService] = useState<ServiceType>('airport');
+  const [airportDirection, setAirportDirection] = useState<'to' | 'from'>('to');
   const [pickup, setPickup] = useState('');
   const [dropoff, setDropoff] = useState('');
+  const [airport, setAirport] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [hours, setHours] = useState(2);
 
-  // Minimum pickup = now + 2 hours. Recomputed each render so it stays current.
-  const minPickupMs = Date.now() + 2 * 60 * 60 * 1000;
-  const minPickupDate = new Date(minPickupMs);
-  const minDateStr = minPickupDate.toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
-  const minTimeStr = minPickupDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // HH:MM local
+  // Earliest pickup = now + 2 hours. Set after mount so server and browser render the same HTML.
+  const [minPickupDate, setMinPickupDate] = useState<Date | null>(null);
+  const minDateStr = minPickupDate?.toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
+  const minTimeStr = minPickupDate?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // HH:MM local
+
   const [vehicle, setVehicle] = useState<VehicleType | null>(null);
   const [passengers, setPassengers] = useState(1);
-  const [luggage, setLuggage] = useState(0);
-  const [hours, setHours] = useState(2);
+  const [luggage, setLuggage] = useState(1);
+  const [flightNumber, setFlightNumber] = useState('');
   const [specialRequests, setSpecialRequests] = useState('');
-  const [airport, setAirport] = useState('');
   const [placesServerEnabled, setPlacesServerEnabled] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
@@ -89,20 +135,33 @@ export default function BookPage() {
   });
   const [allEstimatesLoading, setAllEstimatesLoading] = useState(false);
 
-  // Prefill from the home-page trip card (/book?service=…&pickup=…&airport=…&date=…&time=…).
+  // Prefill from links and the home-page trip card (/book?service=…&pickup=…&airport=…&date=…&time=…).
   // Read once on mount from window.location so the page can stay statically rendered.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     const s = q.get('service');
     if (s === 'airport' || s === 'point-to-point' || s === 'hourly') setService(s);
     const a = q.get('airport');
-    if (a && AIRPORTS.includes(a)) setAirport(a);
-    setPickup((v) => v || (q.get('pickup') ?? '').slice(0, 300));
-    setDropoff((v) => v || (q.get('dropoff') ?? '').slice(0, 300));
+    const validAirport = !!a && AIRPORTS.includes(a);
+    if (validAirport) setAirport(a);
+    const pick = (q.get('pickup') ?? '').slice(0, 300);
+    const drop = (q.get('dropoff') ?? '').slice(0, 300);
+    setPickup(pick);
+    setDropoff(drop);
+
+    const earliest = new Date(Date.now() + 2 * 60 * 60 * 1000);
+    setMinPickupDate(earliest);
     const d = q.get('date');
-    if (d && /^\d{4}-\d{2}-\d{2}$/.test(d)) setDate(d);
     const t = q.get('time');
-    if (t && /^\d{2}:\d{2}$/.test(t)) setTime(t);
+    const hasDate = !!d && /^\d{4}-\d{2}-\d{2}$/.test(d);
+    const hasTime = !!t && /^\d{2}:\d{2}$/.test(t);
+    setDate(hasDate ? d : earliest.toLocaleDateString('en-CA'));
+    if (hasTime) setTime(t);
+    else if (!hasDate) setTime(earliest.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }));
+
+    // The home-page card already collected the whole trip: go straight to choosing a car.
+    const routeDone = !!pick && ((s === 'airport' && validAirport) || (s === 'point-to-point' && !!drop));
+    if (routeDone && hasDate && hasTime) setStep(2);
   }, []);
 
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail.trim());
@@ -112,14 +171,9 @@ export default function BookPage() {
     (service === 'airport' && pickup.trim() && airport.trim()) ||
     service === 'hourly';
 
+  // Estimate for the chosen vehicle (shown in the trip panel)
   useEffect(() => {
-    if (service === 'hourly') {
-      setEstimate(null);
-      setEstimateLoading(false);
-      return;
-    }
-
-    if (step < 4 || !vehicle) {
+    if (step < 2 || !vehicle) {
       setEstimate(null);
       setEstimateLoading(false);
       return;
@@ -167,31 +221,25 @@ export default function BookPage() {
       } finally {
         if (!cancelled) setEstimateLoading(false);
       }
-    }, 550);
+    }, 300);
     return () => {
       cancelled = true;
       clearTimeout(t);
     };
   }, [step, service, vehicle, pickup, dropoff, airport, hours, passengers, luggage, customerEmail, customerPhone]);
 
-  // Fetch prices for ALL vehicle types simultaneously when user reaches step 3
+  // Prices for every vehicle on the car step
   useEffect(() => {
-    if (service === 'hourly' || step !== 3) return;
+    if (service === 'hourly' || step !== 2) return;
     if (!hasRequiredLocations) {
-      setAllEstimates({
-        'business-sedan': null,
-        'first-suv': null,
-        'first-sedan': null,
-        sprinter: null,
-      });
+      setAllEstimates({ 'business-sedan': null, 'first-suv': null, 'first-sedan': null, sprinter: null });
       setAllEstimatesLoading(false);
       return;
     }
-    const vehicleTypes: VehicleType[] = ['business-sedan', 'first-suv', 'first-sedan', 'sprinter'];
     let cancelled = false;
     setAllEstimatesLoading(true);
     Promise.all(
-      vehicleTypes.map((v) =>
+      VEHICLE_TYPES.map((v) =>
         fetch('/api/booking/estimate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -204,21 +252,16 @@ export default function BookPage() {
     ).then((results) => {
       if (cancelled) return;
       const estimates = {} as Record<VehicleType, BookingEstimate>;
-      vehicleTypes.forEach((v, i) => { estimates[v] = results[i]; });
+      VEHICLE_TYPES.forEach((v, i) => {
+        estimates[v] = results[i];
+      });
       setAllEstimates(estimates);
       setAllEstimatesLoading(false);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [step, service, pickup, dropoff, airport, hours, passengers, luggage, hasRequiredLocations]);
-
-  // Auto-default date & time to the minimum allowed (now + 3 h) when user reaches Step 2.
-  useEffect(() => {
-    if (step === 2 && !date && !time) {
-      setDate(minDateStr);
-      setTime(minTimeStr);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step]);
 
   useEffect(() => {
     let cancelled = false;
@@ -235,77 +278,39 @@ export default function BookPage() {
     };
   }, []);
 
-  const quoteReady = service !== 'hourly' && estimate && !estimate.incomplete;
-  const quoteAmount = quoteReady ? estimate.amount : 0;
-  const quoteLabel = quoteReady ? estimate.label : '';
-  const quoteLines = quoteReady ? estimate.lines : [];
-
-  const pricedEstimateBlock = (
-    <>
-      {estimateLoading ? (
-        <p className="text-sm text-brand-grey mt-3">Calculating your quote…</p>
-      ) : estimate?.incomplete ? (
-        <p className="text-sm text-brand-grey mt-3">{estimate.message}</p>
-      ) : quoteReady ? (
-        <>
-          <p className="text-sm text-brand-grey mt-1">{quoteLabel}</p>
-          <ul className="mt-4 space-y-2">
-            {quoteLines.map((line, i) => (
-              <li key={i} className="flex justify-between gap-4 text-sm text-brand-grey">
-                <span className="min-w-0">{line.label}</span>
-                <span className="shrink-0 tabular-nums text-brand-black font-medium">${line.amount}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="flex justify-between items-baseline gap-4 mt-5 pt-4 border-t border-brand-light">
-            <span className="font-serif text-lg font-semibold text-brand-black">Estimated total</span>
-            <span className="text-2xl font-semibold text-brand-black tabular-nums">${quoteAmount}</span>
-          </div>
-        </>
-      ) : (
-        <p className="text-sm text-brand-grey mt-3">Preparing quote…</p>
-      )}
-    </>
-  );
-
-  const estimateDisclaimer = (
-    <p className="text-xs text-brand-silver mt-3">
-      Estimate updates as details change. Your official price will be on the invoice we send after we confirm your trip.
-    </p>
-  );
-
-  /** Quote on step 3 (inline); steps 4–5 repeat it in the panel above the form so it stays visible. */
-  const showQuoteSummaryPanel =
-    service !== 'hourly' && !!vehicle && step >= 4 && step <= 5 && !bookingSubmitted;
+  const quoteReady = !!estimate && !estimate.incomplete;
+  const quoteAmount = estimate && !estimate.incomplete ? estimate.amount : 0;
+  const quoteLabel = estimate && !estimate.incomplete ? estimate.label : '';
 
   const canProceed =
-    (step === 1 &&
-      pickup.trim() &&
-      (service === 'point-to-point' ? dropoff.trim() : true) &&
-      (service !== 'airport' || airport)) ||
-    (step === 2 && date && time) ||
-    (step === 3 && !!vehicle) ||
-    (step === 4) ||
-    (step === 5 && bookingSubmitted);
+    step === 1
+      ? !!pickup.trim() &&
+        !!date &&
+        !!time &&
+        (service !== 'point-to-point' || !!dropoff.trim()) &&
+        (service !== 'airport' || !!airport)
+      : step === 2
+        ? !!vehicle
+        : false;
 
-  const next = () => {
-    if (step < 5 && canProceed) setStep(step + 1);
+  const goToStep = (n: number) => {
+    setStep(n);
+    window.scrollTo({ top: 0 });
   };
-  const prev = () => setStep(Math.max(1, step - 1));
 
   const submitBooking = async () => {
-    if (!customerName.trim() || !emailOk) return;
-    if (!vehicle) return;
+    if (!customerName.trim() || !emailOk || !vehicle) return;
     setBookingStatus('sending');
     setBookingError(null);
     setBookingGuestCopyIssue(null);
+    const notes = [flightNumber.trim() && `Flight: ${flightNumber.trim()}`, specialRequests.trim()].filter(Boolean).join('\n');
     try {
       const res = await fetch('/api/booking/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
         body: JSON.stringify({
-          service: SERVICE_LABELS[service],
+          service: service === 'airport' ? `${SERVICE_LABELS.airport} (${airportDirection === 'to' ? 'to' : 'from'} airport)` : SERVICE_LABELS[service],
           vehicle: VEHICLE_LABELS[vehicle],
           pickup,
           dropoff: service === 'point-to-point' || service === 'hourly' ? dropoff : '',
@@ -315,14 +320,9 @@ export default function BookPage() {
           passengers,
           luggage,
           hours: service === 'hourly' ? hours : undefined,
-          specialRequests,
-          quoteAmount: service === 'hourly' ? 0 : quoteAmount,
-          quoteLabel:
-            service === 'hourly'
-              ? `Hourly chauffeur, ${hours} hr (2 hr minimum)`
-              : quoteReady
-                ? quoteLabel
-                : 'Pending estimate',
+          specialRequests: notes,
+          quoteAmount,
+          quoteLabel: quoteReady ? quoteLabel : 'Pending estimate',
           customerName: customerName.trim(),
           customerEmail: customerEmail.trim(),
           customerPhone: customerPhone.trim(),
@@ -345,506 +345,462 @@ export default function BookPage() {
             : 'We could not send a copy to your email. Your request still reached our team.'
         );
       }
-
-
       setBookingSubmitted(true);
       setBookingStatus('idle');
+      window.scrollTo({ top: 0 });
     } catch {
       setBookingError('Network error. Please try again or call us.');
       setBookingStatus('error');
     }
   };
 
+  const airportName = AIRPORT_CHOICES.find((a) => a.value === airport);
+  const fromLine = service === 'airport' && airportDirection === 'from' ? airportName && `${airportName.name} Airport (${airportName.code})` : pickup;
+  const toLine =
+    service === 'airport'
+      ? airportDirection === 'from'
+        ? pickup
+        : airportName && `${airportName.name} Airport (${airportName.code})`
+      : dropoff;
+  const whenLine =
+    date && time
+      ? new Date(`${date}T${time}`).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+      : '';
+
   return (
-    <div className="bg-brand-offwhite min-h-screen py-12 lg:py-20">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-10">
-          <p className="font-display text-xs font-bold uppercase tracking-[0.14em] text-brand-accent mb-3">Book a ride</p>
-          <h1 className="text-3xl lg:text-4xl text-brand-ink">Book Your Black Car</h1>
-          <p className="mt-3 text-brand-muted leading-relaxed">
-            Airport or city to city, five short steps. You see an estimate as you go; we confirm the fare by email before
-            the ride. No account needed.
+    <div className="bg-brand-tint py-8 lg:py-12">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-5xl text-brand-ink lg:text-[72px]">Book Your Black Car</h1>
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-brand-muted">
+            Three short steps, no account needed. You see your price before you send anything, and nothing is charged here.
           </p>
         </div>
 
-        <h2 className="sr-only">Booking Form</h2>
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+          {/* Form card */}
+          <div className="rounded-3xl bg-brand-white p-5 shadow-[0_24px_60px_-40px_rgb(15_27_45/0.5)] ring-1 ring-brand-line sm:p-8">
+            <h2 className="sr-only">Booking form</h2>
 
-        {/* Step indicator */}
-        <ol className="flex justify-between mb-10 text-xs sm:text-sm" aria-label="Progress">
-          {STEPS.map((label, i) => (
-            <li
-              key={i}
-              className={`flex-1 text-center ${i + 1 <= step ? 'text-brand-black font-medium' : 'text-brand-silver'}`}
-            >
-              <span className="hidden sm:inline">{label}</span>
-              <span className="sm:hidden">{i + 1}</span>
-            </li>
-          ))}
-        </ol>
+            {!bookingSubmitted && (
+              <ol className="mb-8 flex items-center gap-2" aria-label="Progress">
+                {STEPS.map((label, i) => {
+                  const n = i + 1;
+                  const done = n < step;
+                  const current = n === step;
+                  return (
+                    <li key={label} className="flex min-w-0 flex-1 items-center gap-2">
+                      <button
+                        type="button"
+                        disabled={!done}
+                        onClick={() => goToStep(n)}
+                        aria-current={current ? 'step' : undefined}
+                        className="flex min-w-0 items-center gap-2 disabled:cursor-default"
+                      >
+                        <span
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
+                            done || current ? 'bg-brand-accent text-brand-white' : 'bg-brand-tint text-brand-muted'
+                          }`}
+                        >
+                          {done ? '✓' : n}
+                        </span>
+                        <span className={`hidden truncate text-sm sm:block ${current ? 'font-semibold text-brand-ink' : 'text-brand-muted'}`}>{label}</span>
+                      </button>
+                      {n < STEPS.length && <span aria-hidden="true" className={`h-0.5 flex-1 rounded ${done ? 'bg-brand-accent' : 'bg-brand-line'}`} />}
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
 
-        {showQuoteSummaryPanel && (
-          <div
-            className="mb-6 border border-brand-light bg-brand-white p-5 sm:p-6 shadow-sm"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <p className="text-xs font-medium uppercase tracking-wider text-brand-silver">Your quote</p>
-            <p className="text-sm font-medium text-brand-black mt-2">
-              {vehicle ? VEHICLE_LABELS[vehicle] : 'Select a vehicle'} · {passengers} passenger{passengers !== 1 ? 's' : ''}
-              {luggage > 0 ? ` · ${luggage} luggage` : ''}
-            </p>
-            <div className="mt-4">{pricedEstimateBlock}</div>
-            {estimateDisclaimer}
-          </div>
-        )}
+            {/* Confirmation */}
+            {bookingSubmitted && (
+              <div className="py-6 text-center">
+                <span aria-hidden="true" className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-accent text-2xl text-brand-white">
+                  ✓
+                </span>
+                <h3 className="mt-5 text-2xl text-brand-ink">Request received</h3>
+                <p className="mx-auto mt-3 max-w-md leading-relaxed text-brand-muted">
+                  Thanks, {customerName.trim().split(' ')[0]}. We&apos;ll confirm your trip and send your invoice by email. Questions? Call{' '}
+                  <a href={`tel:${CONTACT_PHONE_E164}`} className="font-semibold text-brand-accent hover:underline">
+                    {CONTACT_PHONE_DISPLAY}
+                  </a>{' '}
+                  or email{' '}
+                  <a href={`mailto:${CONTACT_EMAIL_BOOKINGS}`} className="font-semibold text-brand-accent hover:underline">
+                    {CONTACT_EMAIL_BOOKINGS}
+                  </a>
+                  .
+                </p>
+                {bookingGuestCopyIssue && <p className="mx-auto mt-3 max-w-md text-sm text-brand-muted">{bookingGuestCopyIssue}</p>}
+                <Link href="/" className="mt-6 inline-flex rounded-lg bg-brand-accent px-6 py-3 text-brand-white hover:bg-brand-accent-hover">
+                  Back to home
+                </Link>
+              </div>
+            )}
 
-        <div className="bg-brand-white border border-brand-light p-6 sm:p-8 shadow-sm">
-          {/* Step 1: Service & locations */}
-          {step === 1 && (
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-brand-black mb-3">
-                  Service type
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {(Object.keys(SERVICE_LABELS) as ServiceType[]).map((s) => (
+            {/* Step 1: trip */}
+            {!bookingSubmitted && step === 1 && (
+              <div className="space-y-5">
+                <div role="tablist" aria-label="Trip type" className="grid grid-cols-3 gap-1 rounded-xl bg-brand-tint p-1">
+                  {SERVICE_TABS.map((t) => (
                     <button
-                      key={s}
+                      key={t.id}
                       type="button"
-                      onClick={() => setService(s)}
-                      className={`py-3 px-4 border text-sm font-medium transition-colors ${
-                        service === s
-                          ? 'border-brand-black bg-brand-black text-brand-white'
-                          : 'border-brand-light text-brand-dark hover:border-brand-grey'
+                      role="tab"
+                      aria-selected={service === t.id}
+                      onClick={() => setService(t.id)}
+                      className={`rounded-lg py-2.5 text-sm font-medium transition-colors ${
+                        service === t.id ? 'bg-brand-white text-brand-accent shadow-sm' : 'text-brand-muted hover:text-brand-ink'
                       }`}
                     >
-                      {SERVICE_LABELS[s]}
+                      {t.label}
                     </button>
                   ))}
                 </div>
-              </div>
-              <div>
+
+                {service === 'airport' && (
+                  <>
+                    <div>
+                      <p className={labelClass}>Which airport?</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {AIRPORT_CHOICES.map((a) => (
+                          <button
+                            key={a.value}
+                            type="button"
+                            aria-pressed={airport === a.value}
+                            onClick={() => setAirport(a.value)}
+                            className={`rounded-xl border px-2 py-3 text-center transition-colors ${
+                              airport === a.value
+                                ? 'border-brand-accent bg-brand-accent text-brand-white'
+                                : 'border-brand-line bg-brand-white text-brand-ink hover:border-brand-accent'
+                            }`}
+                          >
+                            <span className="block font-heading text-2xl leading-none">{a.code}</span>
+                            <span className={`mt-1 block text-xs ${airport === a.value ? 'text-brand-silver' : 'text-brand-muted'}`}>{a.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1 rounded-xl bg-brand-tint p-1">
+                      {(['to', 'from'] as const).map((d) => (
+                        <button
+                          key={d}
+                          type="button"
+                          aria-pressed={airportDirection === d}
+                          onClick={() => setAirportDirection(d)}
+                          className={`rounded-lg py-2 text-sm font-medium transition-colors ${
+                            airportDirection === d ? 'bg-brand-white text-brand-accent shadow-sm' : 'text-brand-muted hover:text-brand-ink'
+                          }`}
+                        >
+                          {d === 'to' ? 'To the airport' : 'From the airport'}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
                 <GooglePlacesAutocomplete
                   id="pickup"
-                  label="Pick-up location"
+                  label={service === 'airport' ? (airportDirection === 'to' ? 'Pick-up address' : 'Drop-off address') : 'Pick-up address'}
                   value={pickup}
                   onChange={setPickup}
-                  placeholder="Address, airport, or hotel"
+                  placeholder="Address, hotel or office"
                   serverProxyEnabled={placesServerEnabled}
+                  labelClassName={labelClass}
+                  inputClassName={fieldClass}
+                  hideLoading
                 />
-                {placesServerEnabled && (
-                  <p className="mt-1 text-xs text-brand-silver">Address suggestions powered by Google</p>
-                )}
-              </div>
-              {(service === 'point-to-point' || service === 'hourly') && (
-                <div>
+
+                {service !== 'airport' && (
                   <GooglePlacesAutocomplete
                     id="dropoff"
-                    label={`Drop-off location${service === 'hourly' ? ' (optional for hourly)' : ''}`}
+                    label={service === 'hourly' ? 'Drop-off address (optional)' : 'Destination'}
                     value={dropoff}
                     onChange={setDropoff}
-                    placeholder="Address, airport, or hotel"
+                    placeholder="Address, city or airport"
                     serverProxyEnabled={placesServerEnabled}
+                    labelClassName={labelClass}
+                    inputClassName={fieldClass}
+                    hideLoading
                   />
-                </div>
-              )}
-              {service === 'airport' && (
-                <div>
-                  <label className="block text-sm font-medium text-brand-black mb-2">
-                    Airport
-                  </label>
-                  <select
-                    value={airport}
-                    onChange={(e) => setAirport(e.target.value)}
-                    className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-black"
-                  >
-                    <option value="">Select airport</option>
-                    {AIRPORTS.map((a) => (
-                      <option key={a} value={a}>{a}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Step 2: Date & time */}
-          {step === 2 && (
-            <div className="space-y-6">
-              <div>
-                <label htmlFor="date" className="block text-sm font-medium text-brand-black mb-2">
-                  Date
-                </label>
-                <input
-                  id="date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => {
-                    setDate(e.target.value);
-                    // Reset time when date changes so user doesn't keep a now-invalid time
-                    if (e.target.value === minDateStr) setTime(minTimeStr);
-                    else setTime('');
-                  }}
-                  min={minDateStr}
-                  className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-black"
-                />
-              </div>
-              <div>
-                <label htmlFor="time" className="block text-sm font-medium text-brand-black mb-2">
-                  Pick-up Time
-                </label>
-                <input
-                  id="time"
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  min={date === minDateStr ? minTimeStr : undefined}
-                  className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-black"
-                />
-                <p className="mt-1.5 text-xs text-brand-grey">
-                  We require at least 2 hours&apos; notice. Earliest available:{' '}
-                  <span className="font-medium text-brand-black">
-                    {minPickupDate.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
-                  </span>
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Vehicle & guests */}
-          {step === 3 && (
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-brand-black mb-1">
-                  Choose your vehicle
-                </label>
-                {service === 'hourly' ? (
-                  <p className="text-xs text-brand-grey mb-4">Hourly bookings have a 2-hour minimum</p>
-                ) : (
-                  <p className="text-xs text-brand-grey mb-4">Estimates update for your route and car</p>
                 )}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {(Object.keys(VEHICLE_LABELS) as VehicleType[]).map((v) => {
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="date" className={labelClass}>Date</label>
+                    <input
+                      id="date"
+                      type="date"
+                      value={date}
+                      min={minDateStr}
+                      onChange={(e) => {
+                        setDate(e.target.value);
+                        // Clear the time when the date changes so an earlier time can't stay selected
+                        setTime(e.target.value === minDateStr && minTimeStr ? minTimeStr : '');
+                      }}
+                      className={fieldClass}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="time" className={labelClass}>{service === 'airport' && airportDirection === 'from' ? 'Landing time' : 'Pick-up time'}</label>
+                    <input
+                      id="time"
+                      type="time"
+                      value={time}
+                      min={date === minDateStr ? minTimeStr : undefined}
+                      onChange={(e) => setTime(e.target.value)}
+                      className={fieldClass}
+                    />
+                  </div>
+                </div>
+                {minPickupDate && (
+                  <p className="text-xs text-brand-muted">
+                    Online bookings need 2 hours&apos; notice. Sooner?{' '}
+                    <a href={`tel:${CONTACT_PHONE_E164}`} className="font-semibold text-brand-accent hover:underline">
+                      Call {CONTACT_PHONE_DISPLAY}
+                    </a>
+                  </p>
+                )}
+
+                {service === 'hourly' && <Stepper label="Hours (2 minimum)" value={hours} min={2} max={12} onChange={setHours} />}
+              </div>
+            )}
+
+            {/* Step 2: car */}
+            {!bookingSubmitted && step === 2 && (
+              <div className="space-y-5">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Stepper label="Passengers" value={passengers} min={1} max={18} onChange={setPassengers} />
+                  <Stepper label="Bags" value={luggage} min={0} max={20} onChange={setLuggage} />
+                </div>
+
+                <ul className="space-y-3">
+                  {VEHICLE_TYPES.map((v) => {
                     const meta = VEHICLE_META[v];
                     const est = allEstimates[v];
                     const isSelected = vehicle === v;
+                    const tooSmall = passengers > meta.passengers || luggage > meta.luggage;
                     return (
-                      <button
-                        key={v}
-                        type="button"
-                        onClick={() => setVehicle(v)}
-                        className={`card-hover text-left rounded-xl border overflow-hidden ${
-                          isSelected
-                            ? 'border-brand-accent ring-2 ring-brand-accent'
-                            : 'border-brand-line hover:border-brand-accent'
-                        }`}
-                      >
-                        {/* Vehicle image */}
-                        <div className="relative overflow-hidden">
-                          <VehiclePhoto src={classPhoto(v).image} alt={`${VEHICLE_LABELS[v]} — ${classPhoto(v).name}`} className="rounded-none" sizes="(min-width: 640px) 320px, 100vw" />
-                          {isSelected && (
-                            <div className="absolute top-2 right-2 rounded-md bg-brand-accent text-brand-white text-xs px-2 py-1 font-semibold">
-                              ✓ Selected
-                            </div>
-                          )}
-                        </div>
-                        {/* Vehicle info + price */}
-                        <div className={`p-4 ${ isSelected ? 'bg-brand-accent' : 'bg-brand-white' }`}>
-                          <p className={`font-serif text-base font-semibold ${ isSelected ? 'text-brand-white' : 'text-brand-black' }`}>
-                            {VEHICLE_LABELS[v]}
-                          </p>
-                          <p className={`text-xs mt-0.5 ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
-                            {meta.description}
-                          </p>
-                          <p className={`text-xs mt-1 ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
-                            Up to {meta.passengers} passengers · {meta.luggage} bags
-                          </p>
-                          {/* Price display */}
-                          <div className={`mt-3 pt-3 border-t ${ isSelected ? 'border-white/20' : 'border-brand-light' }`}>
+                      <li key={v}>
+                        <button
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => setVehicle(v)}
+                          className={`card-hover flex w-full items-center gap-3 rounded-2xl border bg-brand-white p-3 text-left sm:gap-4 ${
+                            isSelected ? 'border-brand-accent ring-2 ring-brand-accent' : 'border-brand-line hover:border-brand-accent'
+                          }`}
+                        >
+                          <VehiclePhoto
+                            src={classPhoto(v).image}
+                            alt={`${VEHICLE_LABELS[v]} — ${classPhoto(v).name}`}
+                            className="w-24 shrink-0 sm:w-40"
+                            sizes="160px"
+                          />
+                          <span className="min-w-0 flex-1">
+                            <span className="block font-semibold text-brand-ink">{VEHICLE_LABELS[v]}</span>
+                            <span className="mt-0.5 hidden text-sm text-brand-muted sm:block">{meta.description}</span>
+                            <span className={`mt-0.5 block text-xs ${tooSmall ? 'font-semibold text-red-700' : 'text-brand-muted'}`}>
+                              {tooSmall ? `Too small: fits ${meta.passengers} people, ${meta.luggage} bags` : `Up to ${meta.passengers} people · ${meta.luggage} bags`}
+                            </span>
+                          </span>
+                          <span className="shrink-0 text-right">
                             {service === 'hourly' ? (
-                              <div className="flex items-baseline gap-1">
-                                <span className={`text-2xl font-semibold tabular-nums ${ isSelected ? 'text-brand-white' : 'text-brand-black' }`}>
-                                  ${meta.hourlyRate}
-                                </span>
-                                <span className={`text-xs ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
-                                  / hr
-                                </span>
-                              </div>
-                            ) : !hasRequiredLocations ? (
-                              <p className={`text-sm ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
-                                Enter your route to see estimate
-                              </p>
+                              <>
+                                <span className="block text-xl font-semibold tabular-nums text-brand-ink">{money(meta.hourlyRate)}</span>
+                                <span className="block text-xs text-brand-muted">per hour</span>
+                              </>
                             ) : allEstimatesLoading ? (
-                              <p className={`text-sm ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
-                                Calculating…
-                              </p>
+                              <span className="text-sm text-brand-muted">…</span>
                             ) : est && !est.incomplete ? (
-                              <div className="flex items-baseline gap-1">
-                                <span className={`text-2xl font-semibold tabular-nums ${ isSelected ? 'text-brand-white' : 'text-brand-black' }`}>
-                                  ${est.amount}
-                                </span>
-                                <span className={`text-xs ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
-                                  estimated
-                                </span>
-                              </div>
+                              <>
+                                <span className="block text-xl font-semibold tabular-nums text-brand-ink">{money(est.amount)}</span>
+                                <span className="block text-xs text-brand-muted">estimate</span>
+                              </>
                             ) : (
-                              <p className={`text-sm ${ isSelected ? 'text-brand-silver' : 'text-brand-grey' }`}>
-                                Quote on request
-                              </p>
+                              <span className="text-xs text-brand-muted">Quote on request</span>
                             )}
-                          </div>
-                        </div>
-                      </button>
+                          </span>
+                          <span
+                            aria-hidden="true"
+                            className={`hidden h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs sm:flex ${
+                              isSelected ? 'bg-brand-accent text-brand-white' : 'ring-1 ring-brand-line'
+                            }`}
+                          >
+                            {isSelected ? '✓' : ''}
+                          </span>
+                        </button>
+                      </li>
                     );
                   })}
+                </ul>
+              </div>
+            )}
+
+            {/* Step 3: details */}
+            {!bookingSubmitted && step === 3 && (
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="cust-name" className={labelClass}>Full name</label>
+                  <input
+                    id="cust-name"
+                    type="text"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    autoComplete="name"
+                    className={fieldClass}
+                    placeholder="Your name"
+                  />
                 </div>
-                {!vehicle && (
-                  <p className="mt-3 text-xs text-brand-silver">
-                    Select a vehicle to continue.
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="cust-email" className={labelClass}>Email</label>
+                    <input
+                      id="cust-email"
+                      type="email"
+                      value={customerEmail}
+                      onChange={(e) => setCustomerEmail(e.target.value)}
+                      autoComplete="email"
+                      className={fieldClass}
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="cust-phone" className={labelClass}>Mobile (optional)</label>
+                    <input
+                      id="cust-phone"
+                      type="tel"
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      autoComplete="tel"
+                      className={fieldClass}
+                      placeholder="For your driver's text"
+                    />
+                  </div>
+                </div>
+                {service === 'airport' && (
+                  <div>
+                    <label htmlFor="flight" className={labelClass}>Flight number (optional)</label>
+                    <input
+                      id="flight"
+                      type="text"
+                      value={flightNumber}
+                      onChange={(e) => setFlightNumber(e.target.value)}
+                      className={fieldClass}
+                      placeholder="e.g. DL 402"
+                    />
+                  </div>
+                )}
+                <div>
+                  <label htmlFor="requests" className={labelClass}>Anything else? (optional)</label>
+                  <textarea
+                    id="requests"
+                    rows={2}
+                    value={specialRequests}
+                    onChange={(e) => setSpecialRequests(e.target.value)}
+                    placeholder="Child seat, extra stop, accessibility needs"
+                    className={`${fieldClass} resize-y`}
+                  />
+                </div>
+                {bookingError && (
+                  <p className="text-sm text-red-700" role="alert">
+                    {bookingError}
                   </p>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="passengers" className="block text-sm font-medium text-brand-black mb-2">
-                    Passengers
-                  </label>
-                  <input
-                    id="passengers"
-                    type="number"
-                    min={1}
-                    max={10}
-                    value={passengers}
-                    onChange={(e) => setPassengers(Number(e.target.value))}
-                    className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-black"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="luggage" className="block text-sm font-medium text-brand-black mb-2">
-                    Luggage (bags)
-                  </label>
-                  <input
-                    id="luggage"
-                    type="number"
-                    min={0}
-                    max={20}
-                    value={luggage}
-                    onChange={(e) => setLuggage(Number(e.target.value))}
-                    className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-black"
-                  />
+            )}
+
+            {/* Buttons */}
+            {!bookingSubmitted && (
+              <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                {step > 1 ? (
+                  <button type="button" onClick={() => goToStep(step - 1)} className="py-2 text-sm font-medium text-brand-muted hover:text-brand-ink">
+                    ← Back
+                  </button>
+                ) : (
+                  <span />
+                )}
+                {step < 3 ? (
+                  <button
+                    type="button"
+                    onClick={() => goToStep(step + 1)}
+                    disabled={!canProceed}
+                    className="rounded-lg bg-brand-accent px-8 py-3 text-brand-white hover:bg-brand-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {step === 1 ? 'See cars and prices' : 'Continue'}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={submitBooking}
+                    disabled={bookingStatus === 'sending' || !customerName.trim() || !emailOk}
+                    className="rounded-lg bg-brand-accent px-8 py-3 text-brand-white hover:bg-brand-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {bookingStatus === 'sending' ? 'Sending…' : 'Request this ride'}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Live trip panel */}
+          <aside className="rounded-3xl bg-brand-ink p-6 text-brand-white lg:sticky lg:top-24" aria-label="Your trip" aria-live="polite">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-silver">Your trip</p>
+
+            <div className="mt-4 space-y-4">
+              <div className="flex gap-3">
+                <span aria-hidden="true" className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-brand-white" />
+                <div className="min-w-0">
+                  <p className="text-xs text-brand-silver">From</p>
+                  <p className="break-words text-sm">{fromLine || '—'}</p>
                 </div>
               </div>
+              <div className="flex gap-3">
+                <span aria-hidden="true" className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-brand-white" />
+                <div className="min-w-0">
+                  <p className="text-xs text-brand-silver">To</p>
+                  <p className="break-words text-sm">{toLine || (service === 'hourly' ? 'As directed' : '—')}</p>
+                </div>
+              </div>
+            </div>
+
+            <dl className="mt-5 space-y-2 border-t border-brand-white/15 pt-4 text-sm">
+              <div className="flex justify-between gap-4">
+                <dt className="text-brand-silver">When</dt>
+                <dd className="text-right">{whenLine || '—'}</dd>
+              </div>
               {service === 'hourly' && (
-                <div>
-                  <label htmlFor="hours" className="block text-sm font-medium text-brand-black mb-2">
-                    Hours <span className="text-brand-silver font-normal">(2 minimum)</span>
-                  </label>
-                  <input
-                    id="hours"
-                    type="number"
-                    min={2}
-                    max={12}
-                    value={hours}
-                    onChange={(e) => setHours(Number(e.target.value))}
-                    className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-black"
-                  />
+                <div className="flex justify-between gap-4">
+                  <dt className="text-brand-silver">Hours</dt>
+                  <dd>{hours}</dd>
                 </div>
               )}
+              <div className="flex justify-between gap-4">
+                <dt className="text-brand-silver">Car</dt>
+                <dd className="text-right">{vehicle ? VEHICLE_LABELS[vehicle] : '—'}</dd>
+              </div>
+              {step > 1 && (
+                <div className="flex justify-between gap-4">
+                  <dt className="text-brand-silver">Group</dt>
+                  <dd>
+                    {passengers} {passengers === 1 ? 'person' : 'people'} · {luggage} {luggage === 1 ? 'bag' : 'bags'}
+                  </dd>
+                </div>
+              )}
+            </dl>
 
-              {/* Disclaimer — estimate is now shown inline on each vehicle card */}
-              {service !== 'hourly' && (
-                <p className="text-xs text-brand-silver">
-                  Estimates are based on your route and update as you change vehicle or guest details. Final price will be on your invoice.
+            <div className="mt-5 border-t border-brand-white/15 pt-4">
+              <p className="text-xs text-brand-silver">Trip estimate</p>
+              <p className="mt-1 font-heading text-4xl tabular-nums">{estimateLoading ? '…' : quoteReady ? money(quoteAmount) : '—'}</p>
+              {estimate?.incomplete && !estimateLoading ? (
+                <p className="mt-2 text-xs text-brand-silver">{estimate.message}</p>
+              ) : (
+                <p className="mt-2 text-xs leading-relaxed text-brand-silver">
+                  {vehicle ? 'We confirm the final price by email before your ride.' : 'Your price appears when you choose a car.'}
                 </p>
               )}
             </div>
-          )}
-
-          {/* Step 4: Details */}
-          {step === 4 && (
-            <div className="space-y-6">
-              <div>
-                <label htmlFor="requests" className="block text-sm font-medium text-brand-black mb-2">
-                  Special requests
-                </label>
-                <textarea
-                  id="requests"
-                  rows={3}
-                  value={specialRequests}
-                  onChange={(e) => setSpecialRequests(e.target.value)}
-                  placeholder="Child seat, accessibility needs, etc."
-                  className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black placeholder-brand-silver focus:outline-none focus:ring-2 focus:ring-brand-black resize-y"
-                />
-              </div>
-              <p className="text-sm text-brand-grey">
-                {service === 'hourly' ? (
-                  <>
-                    Add any notes here. Hourly bookings have a <strong className="text-brand-black">2 hour minimum</strong>.
-                  </>
-                ) : (
-                  <>
-                    Add any notes here. The <strong className="text-brand-black">estimate</strong> above is a guide;
-                    your invoice will show the confirmed price.
-                  </>
-                )}
-              </p>
-            </div>
-          )}
-
-          {/* Step 5: Confirm & notify */}
-          {step === 5 && (
-            <div className="space-y-6">
-              {bookingSubmitted ? (
-                <div className="bg-brand-offwhite border border-brand-light p-6 text-center">
-                  <h3 className="font-serif text-xl font-semibold text-brand-black mb-2">
-                    Request received
-                  </h3>
-                  <p className="text-brand-grey text-sm">
-                    <>
-                      Your booking request has been received. Our team will be in touch shortly with your invoice and
-                      confirmed trip details. Questions?{' '}
-                      <a href={`mailto:${CONTACT_EMAIL_BOOKINGS}`} className="text-brand-black underline">
-                        {CONTACT_EMAIL_BOOKINGS}
-                      </a>
-                    </>{' '}
-                    Questions? Call{' '}
-                    <a href={`tel:${CONTACT_PHONE_E164}`} className="text-brand-black underline">
-                      {CONTACT_PHONE_DISPLAY}
-                    </a>
-                    .
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div className="bg-brand-offwhite border border-brand-light p-6">
-                    <h3 className="font-serif text-lg font-semibold text-brand-black mb-2">
-                      Summary
-                    </h3>
-                    <ul className="text-sm text-brand-grey space-y-1">
-                      <li>{SERVICE_LABELS[service]} • {vehicle ? VEHICLE_LABELS[vehicle] : 'Vehicle TBD'}</li>
-                      <li>Pick-up: {pickup || '—'}</li>
-                      {dropoff && <li>Drop-off: {dropoff}</li>}
-                      {service === 'airport' && airport && <li>Airport: {airport}</li>}
-                      <li>{date} at {time}</li>
-                      {service === 'hourly' && (
-                        <>
-                          <li>Hours: {hours}</li>
-                          <li className="font-medium text-brand-black mt-2">2 hours minimum</li>
-                        </>
-                      )}
-                      {service !== 'hourly' && (
-                        <li className="font-medium text-brand-black mt-2">
-                          Website estimate: {quoteReady ? `$${quoteAmount}` : '—'} (invoice will show final price)
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-lg font-semibold text-brand-black mb-4">
-                      Your contact details
-                    </h3>
-                    <p className="text-brand-grey text-sm mb-4">
-                      Submitting notifies our team at {CONTACT_EMAIL_BOOKINGS}. We&apos;ll email you an acknowledgment,
-                      then send your <strong className="text-brand-black">invoice</strong> with the final ride price
-                      after we confirm details.
-                    </p>
-                    <div className="space-y-4">
-                      <div>
-                        <label htmlFor="cust-name" className="block text-sm font-medium text-brand-black mb-2">
-                          Full name
-                        </label>
-                        <input
-                          id="cust-name"
-                          type="text"
-                          value={customerName}
-                          onChange={(e) => setCustomerName(e.target.value)}
-                          autoComplete="name"
-                          className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-black"
-                          placeholder="Your name"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="cust-email" className="block text-sm font-medium text-brand-black mb-2">
-                          Email
-                        </label>
-                        <input
-                          id="cust-email"
-                          type="email"
-                          value={customerEmail}
-                          onChange={(e) => setCustomerEmail(e.target.value)}
-                          autoComplete="email"
-                          className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-black"
-                          placeholder="you@example.com"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="cust-phone" className="block text-sm font-medium text-brand-black mb-2">
-                          Phone <span className="text-brand-silver font-normal">(optional)</span>
-                        </label>
-                        <input
-                          id="cust-phone"
-                          type="tel"
-                          value={customerPhone}
-                          onChange={(e) => setCustomerPhone(e.target.value)}
-                          autoComplete="tel"
-                          className="w-full px-4 py-3 border border-brand-light bg-brand-offwhite text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-black"
-                          placeholder={CONTACT_PHONE_DISPLAY}
-                        />
-                      </div>
-                    </div>
-                    {bookingError && (
-                      <p className="mt-4 text-sm text-red-600" role="alert">
-                        {bookingError}
-                      </p>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          <div className="mt-8 flex flex-col-reverse sm:flex-row gap-4 justify-between">
-            <button
-              type="button"
-              onClick={prev}
-              className="py-3 px-6 border border-brand-dark text-brand-black font-medium hover:bg-brand-offwhite transition-colors"
-            >
-              Back
-            </button>
-            {step < 5 ? (
-              <button
-                type="button"
-                onClick={next}
-                disabled={!canProceed}
-                className="py-3 px-8 bg-brand-black text-brand-white font-medium hover:bg-brand-charcoal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Continue
-              </button>
-            ) : bookingSubmitted ? (
-              <Link
-                href="/"
-                className="py-3 px-8 bg-brand-black text-brand-white font-medium hover:bg-brand-charcoal transition-colors text-center sm:inline-block"
-              >
-                Back to home
-              </Link>
-            ) : (
-              <button
-                type="button"
-                onClick={submitBooking}
-                disabled={bookingStatus === 'sending' || !customerName.trim() || !emailOk}
-                className="py-3 px-8 bg-brand-black text-brand-white font-medium hover:bg-brand-charcoal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {bookingStatus === 'sending' ? 'Sending…' : 'Submit booking request'}
-              </button>
-            )}
-          </div>
+          </aside>
         </div>
-
-        <p className="mt-6 text-center text-sm text-brand-grey">
-          <Link href="/contact" className="hover:text-brand-black underline">
-            Need help? Contact us
-          </Link>
-        </p>
       </div>
     </div>
   );
