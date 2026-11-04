@@ -7,7 +7,7 @@ const base = getSiteUrl();
 // Stable last-modified date for static pages. Bump this ONLY when page content
 // actually changes — do NOT use `new Date()`, which re-stamps every URL on every
 // build and destroys the freshness signal Google uses to prioritize re-crawls.
-const LAST_UPDATED = new Date('2026-10-22');
+const LAST_UPDATED = new Date('2026-11-03');
 
 // Lean launch set — keep in sync with LAUNCH-PLAN.md. Add pages one at a time.
 const paths: { path: string; priority: number; changeFrequency: 'weekly' | 'monthly' | 'yearly' }[] = [
