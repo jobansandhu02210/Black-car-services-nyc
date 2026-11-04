@@ -68,12 +68,19 @@ use an alias.
    record** → add that **DKIM TXT** (`google._domainkey`) at the registrar → **Start authentication**.
 7. SPF: one **TXT** on `@`: `v=spf1 include:_spf.google.com ~all`.
 8. DMARC (recommended): **TXT** `_dmarc` → `v=DMARC1; p=none; rua=mailto:info@blackcarservicesnyc.com`.
+9. Reply as the new brand: in Gmail → **Settings → Accounts → Send mail as → Add another email address**
+   → `Black Car Service` / `info@blackcarservicesnyc.com`. Tick **"When replying, reply from the same
+   address the message was sent to"**. Optional: a Gmail filter `to:info@blackcarservicesnyc.com` →
+   label "Black Car Service" so the two businesses stay apart in one inbox.
 
 If the inbox address is not `info@…`, change `CONTACT_EMAIL_BOOKINGS` in `lib/contact.ts`.
 
 ## 3. Resend — sending the booking emails
 
 Use the **same Resend account** as Eagle Eye, with a new domain and a new key.
+The free plan allows **one** domain. If Eagle Eye already uses it, either upgrade that team to **Pro**
+(several domains) or create a **new team** under the same Resend login for Black Car Service (its own free
+plan). Never reuse Eagle Eye's API key.
 1. [resend.com](https://resend.com) → **Domains → Add domain** → `blackcarservicesnyc.com`.
 2. Add exactly the DNS records Resend shows (usually an **MX** and a **TXT (SPF)** on the `send`
    subdomain, and a **TXT (DKIM)** on `resend._domainkey`). These live on subdomains, so they **do not
