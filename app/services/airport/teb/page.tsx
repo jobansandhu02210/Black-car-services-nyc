@@ -79,7 +79,7 @@ const related = [
   { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'Bergen County, Hoboken, Princeton and the Shore.' },
   { href: '/services/airport', title: 'Compare NYC airports', body: 'JFK, LaGuardia, Newark, HPN and Teterboro.' },
   { href: '/fleet', title: 'Our vehicles', body: 'Sedans, SUVs and Sprinter vans.' },
-  { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
+  { href: '/services/areas/manhattan', title: 'Manhattan car service', body: 'About 30 minutes from Teterboro to Midtown.' },
 ];
 
 export default function TebPage() {

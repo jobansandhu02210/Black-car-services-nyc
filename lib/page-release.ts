@@ -10,6 +10,11 @@ export const HELD_PATHS = new Set<string>([
   '/services/airport/teb',
   '/services/areas/queens',
   '/services/routes/nyc-to-hamptons',
+  '/services/areas/manhattan',
+  '/services/areas/brooklyn',
+  '/services/areas/long-island',
+  '/services/areas/westchester',
+  '/services/routes/nyc-to-boston',
 ]);
 
 export function isHeld(path: string): boolean {

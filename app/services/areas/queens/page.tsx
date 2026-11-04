@@ -78,7 +78,7 @@ const related = [
   { href: '/services/routes/nyc-to-hamptons', title: 'NYC to the Hamptons', body: 'Straight out the Long Island Expressway.' },
   { href: '/services/areas/connecticut', title: 'Connecticut car service', body: 'Greenwich, Stamford and the shoreline.' },
   { href: '/services/airport', title: 'Compare NYC airports', body: 'JFK, LaGuardia, Newark, HPN and Teterboro.' },
-  { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
+  { href: '/services/areas/long-island', title: 'Long Island car service', body: 'Just over the line into Nassau.' },
 ];
 
 export default function QueensPage() {

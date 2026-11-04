@@ -125,6 +125,7 @@ const related = [
   { href: '/services/airport', title: 'Compare NYC airports', body: 'Drive times and terminals for JFK, LGA and EWR.' },
   { href: '/services/areas/connecticut', title: 'Connecticut car service', body: 'LaGuardia to Greenwich, Stamford and beyond.' },
   { href: '/services/areas/queens', title: 'Queens car service', body: 'Astoria and LIC are minutes from LaGuardia.' },
+  { href: '/services/areas/manhattan', title: 'Manhattan car service', body: 'The East Side is often under half an hour away.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];
 

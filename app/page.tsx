@@ -43,7 +43,7 @@ const routes = [
   { to: 'Princeton, NJ', href: '/services/areas/new-jersey', miles: '≈ 55 mi', time: '≈ 1 h 15 min' },
   { to: 'The Hamptons', href: '/services/routes/nyc-to-hamptons', miles: '≈ 90 mi', time: '≈ 2 h' },
   { to: 'Stamford, CT', href: '/services/areas/connecticut', miles: '≈ 40 mi', time: '≈ 1 h' },
-  { to: 'New Haven, CT', href: '/services/areas/connecticut', miles: '≈ 80 mi', time: '≈ 1 h 45 min' },
+  { to: 'Boston, MA', href: '/services/routes/nyc-to-boston', miles: '≈ 215 mi', time: '≈ 4 h 15 min' },
 ];
 
 const comparison: { row: string; cells: Cell[] }[] = [

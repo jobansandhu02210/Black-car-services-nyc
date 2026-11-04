@@ -90,7 +90,7 @@ const related = [
   { href: '/services/areas/connecticut', title: 'Connecticut car service', body: 'Greenwich, Stamford and the shoreline.' },
   { href: '/services/airport/teb', title: 'Teterboro car service', body: 'Private flights on the New Jersey side.' },
   { href: '/fleet', title: 'Our vehicles', body: 'Sedans, SUVs and Sprinter vans.' },
-  { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
+  { href: '/services/areas/westchester', title: 'Westchester car service', body: 'County rides to LaGuardia, JFK and Newark.' },
 ];
 
 export default function HpnPage() {

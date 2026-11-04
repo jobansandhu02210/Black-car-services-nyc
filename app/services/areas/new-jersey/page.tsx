@@ -110,6 +110,7 @@ const related = [
   { href: '/services/long-distance', title: 'Long-distance car service', body: 'All our routes out of New York.' },
   { href: '/services/areas/connecticut', title: 'Connecticut car service', body: 'The other direction — Greenwich to New Haven.' },
   { href: '/services/airport/teb', title: 'Teterboro car service', body: 'Private flights in Bergen County.' },
+  { href: '/services/areas/manhattan', title: 'Manhattan car service', body: 'Across the Hudson, pickups anywhere on the island.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];
 

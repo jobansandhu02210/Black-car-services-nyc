@@ -99,6 +99,8 @@ const related = [
   { href: '/services/routes/nyc-to-washington-dc', title: 'NYC to Washington, DC', body: 'Keep going south — about four hours.' },
   { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'Princeton and other stops on the way.' },
   { href: '/services/airport/ewr', title: 'Newark airport car service', body: 'The closest NYC airport to Philadelphia.' },
+  { href: '/services/routes/nyc-to-boston', title: 'NYC to Boston', body: 'North instead — about four hours.' },
+  { href: '/services/areas/brooklyn', title: 'Brooklyn car service', body: 'Pickups from Williamsburg to Bay Ridge.' },
   { href: '/fleet', title: 'Our vehicles', body: 'Sedans, SUVs and First Class cars.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];

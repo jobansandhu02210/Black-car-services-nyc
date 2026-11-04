@@ -85,7 +85,7 @@ const related = [
   { href: '/services/airport/jfk', title: 'JFK car service', body: 'The closest NYC airport to the East End.' },
   { href: '/services/airport/teb', title: 'Teterboro car service', body: 'Flying private? We meet you at the FBO.' },
   { href: '/fleet', title: 'Our vehicles', body: 'SUVs for beach gear, Sprinters for groups.' },
-  { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
+  { href: '/services/areas/long-island', title: 'Long Island car service', body: 'Nassau and western Suffolk.' },
 ];
 
 export default function NycToHamptonsPage() {

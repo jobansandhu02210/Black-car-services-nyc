@@ -29,6 +29,7 @@ const routes = [
   { to: 'Princeton, NJ', miles: '≈ 55 mi', time: '≈ 1 h 15 min', href: '/services/areas/new-jersey', note: 'The university, Route 1 offices and nearby towns.' },
   { to: 'The Hamptons', miles: '≈ 90 mi', time: '≈ 2 h', href: '/services/routes/nyc-to-hamptons', note: 'Westhampton to Montauk; book ahead for summer.' },
   { to: 'Stamford, CT', miles: '≈ 40 mi', time: '≈ 1 h', href: '/services/areas/connecticut', note: 'Downtown offices and the Fairfield County shoreline.' },
+  { to: 'Boston, MA', miles: '≈ 215 mi', time: '≈ 4–4.5 h', href: '/services/routes/nyc-to-boston', note: 'Back Bay, Cambridge, the Seaport and Logan Airport.' },
   { to: 'New Haven, CT', miles: '≈ 80 mi', time: '≈ 1 h 45 min', href: '/services/areas/connecticut', note: 'Yale, the hospital campus and the station area.' },
 ];
 
@@ -74,7 +75,7 @@ const steps = [
 const faqs = [
   {
     q: 'How far will you drive from New York City?',
-    a: 'Our regular long-distance routes cover New Jersey, Connecticut, Philadelphia and Washington, DC. For anywhere else in the Northeast, call or WhatsApp us and we will tell you whether we can take it.',
+    a: 'Our regular long-distance routes cover New Jersey, Connecticut, the Hamptons, Philadelphia, Washington, DC and Boston. For anywhere else in the Northeast, call or WhatsApp us and we will tell you whether we can take it.',
   },
   {
     q: 'How much does a long-distance car service from NYC cost?',
@@ -110,6 +111,7 @@ const related = [
   { href: '/services/routes/nyc-to-philadelphia', title: 'NYC to Philadelphia', body: 'About two hours door to door from Midtown.' },
   { href: '/services/routes/nyc-to-washington-dc', title: 'NYC to Washington, DC', body: 'About four to four and a half hours.' },
   { href: '/services/routes/nyc-to-hamptons', title: 'NYC to the Hamptons', body: 'About two hours outside summer weekends.' },
+  { href: '/services/routes/nyc-to-boston', title: 'NYC to Boston', body: 'About four to four and a half hours.' },
   { href: '/services/areas/connecticut', title: 'Connecticut car service', body: 'Greenwich, Stamford and New Haven.' },
   { href: '/services/airport', title: 'Airport car service', body: 'JFK, LaGuardia and Newark compared.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },

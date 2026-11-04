@@ -106,6 +106,8 @@ const related = [
   { href: '/services/routes/nyc-to-philadelphia', title: 'NYC to Philadelphia', body: 'The halfway city — about two hours.' },
   { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'Princeton and the Turnpike towns.' },
   { href: '/services/airport/ewr', title: 'Newark airport car service', body: 'The closest NYC airport heading south.' },
+  { href: '/services/routes/nyc-to-boston', title: 'NYC to Boston', body: 'The same distance in the other direction.' },
+  { href: '/services/areas/manhattan', title: 'Manhattan car service', body: 'Pickups anywhere on the island.' },
   { href: '/fleet', title: 'Our vehicles', body: 'Sedans, SUVs and First Class cars.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];

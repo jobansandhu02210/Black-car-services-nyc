@@ -125,6 +125,7 @@ const related = [
   { href: '/services/airport', title: 'Compare NYC airports', body: 'Drive times and terminals for JFK, LGA and EWR.' },
   { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'Newark to Princeton, Morristown, Short Hills and the Shore.' },
   { href: '/services/routes/nyc-to-philadelphia', title: 'NYC to Philadelphia', body: 'Door to door, about two hours from Midtown.' },
+  { href: '/services/areas/manhattan', title: 'Manhattan car service', body: 'Through the tunnels from the West Side and downtown.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];
 

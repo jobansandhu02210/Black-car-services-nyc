@@ -102,6 +102,8 @@ const related = [
   { href: '/services/long-distance', title: 'Long-distance car service', body: 'All our routes out of New York.' },
   { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'The other side of the Hudson.' },
   { href: '/services/airport/hpn', title: 'Westchester Airport car service', body: 'Often the quickest airport from Greenwich and Stamford.' },
+  { href: '/services/areas/westchester', title: 'Westchester car service', body: 'Next door, from Rye to Tarrytown.' },
+  { href: '/services/routes/nyc-to-boston', title: 'NYC to Boston', body: 'Carry on up I-95 — about four hours from Midtown.' },
   { href: '/fleet', title: 'Our vehicles', body: 'Sedans, SUVs and First Class cars.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];

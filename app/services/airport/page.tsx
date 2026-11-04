@@ -97,6 +97,9 @@ const related = [
   { href: '/services/airport/hpn', title: 'Westchester Airport (HPN)', body: 'A small one-terminal airport north of the city.' },
   { href: '/services/airport/teb', title: 'Teterboro Airport (TEB)', body: 'Private flights, about 12 miles from Midtown.' },
   { href: '/services/areas/queens', title: 'Queens car service', body: 'Both JFK and LaGuardia are in Queens.' },
+  { href: '/services/areas/manhattan', title: 'Manhattan car service', body: 'Which airport is easiest from your side of the island.' },
+  { href: '/services/areas/brooklyn', title: 'Brooklyn car service', body: 'JFK is the closest airport for most of Brooklyn.' },
+  { href: '/services/areas/long-island', title: 'Long Island car service', body: 'Nassau and Suffolk to JFK and LaGuardia.' },
 ];
 
 export default function AirportHubPage() {

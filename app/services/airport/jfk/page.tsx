@@ -126,6 +126,7 @@ const related = [
   { href: '/services/airport', title: 'Compare NYC airports', body: 'JFK, LGA and EWR side by side.' },
   { href: '/services/long-distance', title: 'Long-distance car service', body: 'JFK to Philadelphia, DC, New Jersey and Connecticut.' },
   { href: '/services/areas/queens', title: 'Queens car service', body: 'Most of Queens is 10 to 30 minutes from JFK.' },
+  { href: '/services/areas/brooklyn', title: 'Brooklyn car service', body: 'The Belt Parkway runs straight to JFK.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];
 
