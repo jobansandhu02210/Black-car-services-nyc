@@ -109,7 +109,7 @@ const related = [
   { href: '/services/routes/nyc-to-philadelphia', title: 'NYC to Philadelphia', body: 'Straight down the Turnpike, about two hours.' },
   { href: '/services/long-distance', title: 'Long-distance car service', body: 'All our routes out of New York.' },
   { href: '/services/areas/connecticut', title: 'Connecticut car service', body: 'The other direction — Greenwich to New Haven.' },
-  { href: '/services/airport', title: 'Airport car service', body: 'JFK, LaGuardia and Newark compared.' },
+  { href: '/services/airport/teb', title: 'Teterboro car service', body: 'Private flights in Bergen County.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];
 

@@ -41,7 +41,7 @@ const routes = [
   { to: 'Philadelphia, PA', href: '/services/routes/nyc-to-philadelphia', miles: '≈ 95 mi', time: '≈ 2 h' },
   { to: 'Washington, DC', href: '/services/routes/nyc-to-washington-dc', miles: '≈ 225 mi', time: '≈ 4 h 15 min' },
   { to: 'Princeton, NJ', href: '/services/areas/new-jersey', miles: '≈ 55 mi', time: '≈ 1 h 15 min' },
-  { to: 'Morristown, NJ', href: '/services/areas/new-jersey', miles: '≈ 35 mi', time: '≈ 1 h' },
+  { to: 'The Hamptons', href: '/services/routes/nyc-to-hamptons', miles: '≈ 90 mi', time: '≈ 2 h' },
   { to: 'Stamford, CT', href: '/services/areas/connecticut', miles: '≈ 40 mi', time: '≈ 1 h' },
   { to: 'New Haven, CT', href: '/services/areas/connecticut', miles: '≈ 80 mi', time: '≈ 1 h 45 min' },
 ];

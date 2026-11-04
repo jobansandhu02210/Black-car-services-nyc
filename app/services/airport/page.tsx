@@ -94,9 +94,9 @@ const related = [
   { href: '/services/airport/jfk', title: 'JFK car service', body: 'Terminals, drive times and the pickup planner for JFK.' },
   { href: '/services/airport/lga', title: 'LaGuardia car service', body: 'The closest airport to Midtown and the East Side.' },
   { href: '/services/airport/ewr', title: 'Newark airport car service', body: 'United’s hub, and New Jersey’s main airport.' },
-  { href: '/services/long-distance', title: 'Long-distance car service', body: 'Airport rides to Philadelphia, DC and beyond.' },
-  { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'Newark and NYC airports to towns across NJ.' },
-  { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
+  { href: '/services/airport/hpn', title: 'Westchester Airport (HPN)', body: 'A small one-terminal airport north of the city.' },
+  { href: '/services/airport/teb', title: 'Teterboro Airport (TEB)', body: 'Private flights, about 12 miles from Midtown.' },
+  { href: '/services/areas/queens', title: 'Queens car service', body: 'Both JFK and LaGuardia are in Queens.' },
 ];
 
 export default function AirportHubPage() {

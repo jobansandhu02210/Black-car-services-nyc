@@ -101,7 +101,7 @@ const related = [
   { href: '/services/airport/lga', title: 'LaGuardia car service', body: 'The nearest NYC airport to Fairfield County.' },
   { href: '/services/long-distance', title: 'Long-distance car service', body: 'All our routes out of New York.' },
   { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'The other side of the Hudson.' },
-  { href: '/services/airport/jfk', title: 'JFK car service', body: 'For long-haul flights from Connecticut.' },
+  { href: '/services/airport/hpn', title: 'Westchester Airport car service', body: 'Often the quickest airport from Greenwich and Stamford.' },
   { href: '/fleet', title: 'Our vehicles', body: 'Sedans, SUVs and First Class cars.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];

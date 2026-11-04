@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { getSiteUrl } from '@/lib/site';
+import { isHeld } from '@/lib/page-release';
 
 const base = getSiteUrl();
 
@@ -16,11 +17,15 @@ const paths: { path: string; priority: number; changeFrequency: 'weekly' | 'mont
   { path: '/services/airport/jfk', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/services/airport/lga', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/services/airport/ewr', priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/services/airport/hpn', priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/services/airport/teb', priority: 0.8, changeFrequency: 'monthly' },
   { path: '/services/long-distance', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/services/routes/nyc-to-philadelphia', priority: 0.85, changeFrequency: 'monthly' },
   { path: '/services/routes/nyc-to-washington-dc', priority: 0.85, changeFrequency: 'monthly' },
+  { path: '/services/routes/nyc-to-hamptons', priority: 0.8, changeFrequency: 'monthly' },
   { path: '/services/areas/new-jersey', priority: 0.85, changeFrequency: 'monthly' },
   { path: '/services/areas/connecticut', priority: 0.85, changeFrequency: 'monthly' },
+  { path: '/services/areas/queens', priority: 0.8, changeFrequency: 'monthly' },
   { path: '/pricing', priority: 0.8, changeFrequency: 'monthly' },
   { path: '/fleet', priority: 0.8, changeFrequency: 'monthly' },
   { path: '/about', priority: 0.6, changeFrequency: 'monthly' },
@@ -30,7 +35,8 @@ const paths: { path: string; priority: number; changeFrequency: 'weekly' | 'mont
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return paths.map(({ path, priority, changeFrequency }) => ({
+  // Held pages (lib/page-release.ts) stay out until they are released.
+  return paths.filter(({ path }) => !isHeld(path)).map(({ path, priority, changeFrequency }) => ({
     url: `${base}${path}`,
     lastModified: LAST_UPDATED,
     changeFrequency,

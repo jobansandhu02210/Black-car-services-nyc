@@ -27,7 +27,7 @@ const routes = [
   { to: 'Philadelphia, PA', miles: '≈ 95 mi', time: '≈ 2 h', href: '/services/routes/nyc-to-philadelphia', note: 'Center City, University City, the Main Line and PHL airport.' },
   { to: 'Washington, DC', miles: '≈ 225 mi', time: '≈ 4–4.5 h', href: '/services/routes/nyc-to-washington-dc', note: 'Capitol Hill, Downtown, Georgetown, Arlington and Bethesda.' },
   { to: 'Princeton, NJ', miles: '≈ 55 mi', time: '≈ 1 h 15 min', href: '/services/areas/new-jersey', note: 'The university, Route 1 offices and nearby towns.' },
-  { to: 'Morristown, NJ', miles: '≈ 33 mi', time: '≈ 1 h', href: '/services/areas/new-jersey', note: 'Corporate campuses along Routes 287 and 78.' },
+  { to: 'The Hamptons', miles: '≈ 90 mi', time: '≈ 2 h', href: '/services/routes/nyc-to-hamptons', note: 'Westhampton to Montauk; book ahead for summer.' },
   { to: 'Stamford, CT', miles: '≈ 40 mi', time: '≈ 1 h', href: '/services/areas/connecticut', note: 'Downtown offices and the Fairfield County shoreline.' },
   { to: 'New Haven, CT', miles: '≈ 80 mi', time: '≈ 1 h 45 min', href: '/services/areas/connecticut', note: 'Yale, the hospital campus and the station area.' },
 ];
@@ -109,7 +109,7 @@ const faqs = [
 const related = [
   { href: '/services/routes/nyc-to-philadelphia', title: 'NYC to Philadelphia', body: 'About two hours door to door from Midtown.' },
   { href: '/services/routes/nyc-to-washington-dc', title: 'NYC to Washington, DC', body: 'About four to four and a half hours.' },
-  { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'Hoboken to Princeton and the Shore.' },
+  { href: '/services/routes/nyc-to-hamptons', title: 'NYC to the Hamptons', body: 'About two hours outside summer weekends.' },
   { href: '/services/areas/connecticut', title: 'Connecticut car service', body: 'Greenwich, Stamford and New Haven.' },
   { href: '/services/airport', title: 'Airport car service', body: 'JFK, LaGuardia and Newark compared.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },

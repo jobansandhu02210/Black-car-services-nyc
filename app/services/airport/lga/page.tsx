@@ -124,7 +124,7 @@ const related = [
   { href: '/services/airport/ewr', title: 'Newark airport car service', body: 'United’s hub, and handy from the West Side and New Jersey.' },
   { href: '/services/airport', title: 'Compare NYC airports', body: 'Drive times and terminals for JFK, LGA and EWR.' },
   { href: '/services/areas/connecticut', title: 'Connecticut car service', body: 'LaGuardia to Greenwich, Stamford and beyond.' },
-  { href: '/fleet', title: 'Our vehicles', body: 'Sedans, SUVs and First Class cars.' },
+  { href: '/services/areas/queens', title: 'Queens car service', body: 'Astoria and LIC are minutes from LaGuardia.' },
   { href: '/book', title: 'Book a ride', body: 'Get an estimate in a couple of minutes.' },
 ];
 

@@ -121,7 +121,7 @@ const faqs = [
 
 const related = [
   { href: '/services/airport/jfk', title: 'JFK car service', body: 'Most long-haul airlines and JetBlue’s home terminal.' },
-  { href: '/services/airport/lga', title: 'LaGuardia car service', body: 'The quickest airport from the East Side and the Bronx.' },
+  { href: '/services/airport/teb', title: 'Teterboro car service', body: 'Private flights about 15 miles north of Newark.' },
   { href: '/services/airport', title: 'Compare NYC airports', body: 'Drive times and terminals for JFK, LGA and EWR.' },
   { href: '/services/areas/new-jersey', title: 'New Jersey car service', body: 'Newark to Princeton, Morristown, Short Hills and the Shore.' },
   { href: '/services/routes/nyc-to-philadelphia', title: 'NYC to Philadelphia', body: 'Door to door, about two hours from Midtown.' },
