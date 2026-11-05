@@ -9,6 +9,13 @@ const nextConfig = {
   async redirects() {
     // New domain, no legacy URLs to preserve (Eagle Eye's historical redirects were dropped).
     return [
+      // One canonical host: www → apex (keeps path and query).
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.blackcarservicesnyc.com' }],
+        destination: 'https://blackcarservicesnyc.com/:path*',
+        permanent: true,
+      },
       {
         source: '/bookings',
         destination: '/book',
